@@ -17,7 +17,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Galen
  * @since 2016/6/6
  */
-public class RequestPageMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public class PageableMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
     //页码
     private static final String PAGE_NUMBER = "pageNumber";
