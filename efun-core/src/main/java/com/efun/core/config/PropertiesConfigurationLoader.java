@@ -5,6 +5,7 @@ import com.efun.core.utils.FileUtils;
 import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
@@ -53,7 +54,7 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
 
         for (String fileName : fileNameList) {
             String resourceName =  FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) + fileName;
-            logger.debug("Loading properties from {} ", resourceName);
+            logger.info("loading properties from {} ", resourceName);
             Properties properties = PropertiesLoaderUtils.loadProperties(new FileSystemResource(resourceName));
 
 
@@ -63,7 +64,8 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
                     Object key = entry.getKey();
                     String value = (String) entry.getValue();
                     Configuration.putProperty((String) key, value);
-                    logger.debug("putProperty {}:{} to Configuration", key, value);
+                    ThreadContext.put((String) key, value);
+                    logger.info("putProperty {}:{} to Configuration", key, value);
                 }
             } else {
                 logger.error("Loading Error from file: {}", resourceName);

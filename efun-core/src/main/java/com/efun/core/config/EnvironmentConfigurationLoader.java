@@ -3,6 +3,7 @@ package com.efun.core.config;
 import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -21,7 +22,7 @@ public class EnvironmentConfigurationLoader implements ConfigurationLoader {
 
     @Override
     public void setProperties() throws Exception {
-        logger.info("load properties from System Environment");
+        logger.info("loading properties from System Environment");
         Field[] fields = Configuration.class.getFields();
         if (fields != null) {
             for (Field field : fields) {
@@ -30,9 +31,14 @@ public class EnvironmentConfigurationLoader implements ConfigurationLoader {
                     String key = field.get(null).toString();
 
                     String value = System.getenv(key);
+                    if (StringUtils.isEmpty(value)) {
+                        //导入默认配置
+                        value = Configuration.getDefaultConfigValue(key);
+                    }
                     if (StringUtils.isNotEmpty(value)) {
                         Configuration.putProperty(key, value);
-                        logger.debug("putProperty {}:{} to EchoConfiguration", key, value);
+                        ThreadContext.put((String) key, value);
+                        logger.info("putProperty {}:{} to EchoConfiguration", key, value);
                     }
                 }
             }

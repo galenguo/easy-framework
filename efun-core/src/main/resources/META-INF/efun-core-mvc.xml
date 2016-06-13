@@ -43,12 +43,7 @@
                     <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
                         <property name="features">
                             <list>
-                                <value>QuoteFieldNames</value>
-                                <value>WriteNullNumberAsZero</value>
-                                <value>WriteNullListAsEmpty</value>
-                                <value>WriteDateUseDateFormat</value>
-                                <value>WriteNullStringAsEmpty</value>
-                                <value>WriteDateUseDateFormat</value>
+                                <value>AllowISO8601DateFormat</value>
                             </list>
                         </property>
                     </bean>
@@ -59,7 +54,7 @@
 
     <mvc:interceptors>
 
-        <mvc:interceptor>
+        <!--<mvc:interceptor>
 
             <mvc:mapping path="/**" />
             <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
@@ -67,7 +62,7 @@
             </bean>
 
 
-        </mvc:interceptor>
+        </mvc:interceptor>-->
 
         <!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />

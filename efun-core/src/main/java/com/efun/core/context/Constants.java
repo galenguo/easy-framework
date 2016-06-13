@@ -105,6 +105,6 @@ public abstract class Constants {
      */
     public static final String CURRENT_URL = "currentURL";
 
-    public static final String DEFAULT_LOG_LEVEL = "";
+    public static final String DEFAULT_LOG_LEVEL = "info";
 
 }

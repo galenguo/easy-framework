@@ -121,7 +121,7 @@
     </filter-mapping>
 
     <!-- anti XSS -->
-    <filter>
+    <!--<filter>
         <filter-name>AntiSamy filter</filter-name>
         <filter-class>com.efun.core.filter.AntiSamyFilter</filter-class>
     </filter>
@@ -129,7 +129,7 @@
     <filter-mapping>
         <filter-name>AntiSamy filter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 
     <!-- Druid -->
     <filter>

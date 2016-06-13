@@ -31,6 +31,8 @@ public class Configuration {
 
     public static final String PATTERN_DATETIMESTAMP = "pattern.dateTimeStamp";
 
+    public static final String LOG_LEVEL = "log.level";
+
     private static Map<String, Object> properties = new HashMap<String, Object>();
 
     private static String patternTime;
@@ -129,5 +131,24 @@ public class Configuration {
         }
 
         return configPath;
+    }
+
+    public static String getDefaultConfigValue(String key) {
+        if (PATTERN_TIME.equals(key)) {
+            return Constants.DEFAULT_PATTERN_TIME;
+
+        } else if (PATTERN_DATE.equals(key)) {
+            return Constants.DEFAULT_PATTERN_DATE;
+
+        }else if (PATTERN_DATETIME.equals(key)) {
+            return Constants.DEFAULT_PATTERN_DATETIME;
+
+        } else if (PATTERN_DATETIMESTAMP.equals(key)) {
+            return Constants.DEFAULT_PATTERN_DATETIMESTAMP;
+
+        } else if (LOG_LEVEL.equals(key)) {
+            return Constants.DEFAULT_LOG_LEVEL;
+        }
+        return null;
     }
 }

@@ -22,8 +22,9 @@
 
     <Loggers>
         <AsyncLogger name="org.springframework" level="info" includeLocation="true"/>
-        <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="debug" includeLocation="true"/>
-        <AsyncLogger name="com.efun" level="debug" includeLocation="true"/>
+        <AsyncLogger name="com.efun.core.config" level="info" includeLocation="true"/>
+        <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="${ctx:log.level}" includeLocation="true"/>
+        <AsyncLogger name="com.efun" level="${ctx:log.level}" includeLocation="true"/>
 
         <AsyncRoot level="info" includeLocation="true">
             <AppenderRef ref="console" />
