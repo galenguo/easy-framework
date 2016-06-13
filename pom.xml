@@ -166,6 +166,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.owasp.antisamy</groupId>
+            <artifactId>antisamy</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -398,6 +403,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <!-- security -->
+            <dependency>
+                <groupId>org.owasp.antisamy</groupId>
+                <artifactId>antisamy</artifactId>
+                <version>1.5.3</version>
             </dependency>
 
         </dependencies>

@@ -1,4 +1,4 @@
-package com.efun.core.web.resolver;
+package com.efun.core.web.binding;
 
 import com.efun.core.domain.page.PageRequest;
 import com.efun.core.domain.page.Pageable;

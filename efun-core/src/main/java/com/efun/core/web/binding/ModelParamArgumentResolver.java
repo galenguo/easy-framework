@@ -1,4 +1,4 @@
-package com.efun.core.web.resolver;
+package com.efun.core.web.binding;
 
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.utils.StringUtils;
@@ -214,6 +214,7 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
         }
     }
 
+    //预留根据id和类型读取缓存或者读取数据库
     private Object convertIfDomainClass(NativeWebRequest nativeWebRequest, PropertyValues pvs, Class<?> paramType, WebDataBinderFactory webDataBinderFactory, String prefix) throws Exception  {
         // 如果参数是Domain Class，则看看是否有ID，有就根据ID读取数据
         if (BaseEntity.class.isAssignableFrom(paramType)) {

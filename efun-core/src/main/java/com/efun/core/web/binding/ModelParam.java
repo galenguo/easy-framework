@@ -1,4 +1,4 @@
-package com.efun.core.web.resolver;
+package com.efun.core.web.binding;
 
 import java.lang.annotation.*;
 

@@ -12,28 +12,67 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <bean id="webBindingInitializer" class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
-        <property name="validator" ref="validator"/>
-    </bean>
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 
     <aop:config proxy-target-class="true"/>
 
-    <mvc:annotation-driven>
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.efun.core.web.converter.DateConverter" />
+            </set>
+        </property>
+    </bean>
+
+    <mvc:annotation-driven conversion-service="conversionService" validator="validator">
         <mvc:argument-resolvers>
-            <!--<bean class="gov.platform.core.web.annotation.RequestPageMethodArgumentResolver"/>
-            <bean class="gov.platform.core.web.annotation.FormBeanArgumentResolver">
-                <constructor-arg ref="webBindingInitializer"/>
-            </bean>-->
+            <bean class="com.efun.core.web.binding.PageableMethodArgumentResolver"/>
+            <bean class="com.efun.core.web.binding.ModelParamArgumentResolver"/>
         </mvc:argument-resolvers>
         <mvc:message-converters register-defaults="true">
-            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
-                <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+            <bean class="com.efun.core.web.converter.FastJsonJsonpHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+                <property name="fastJsonConfig">
+                    <bean class="com.alibaba.fastjson.support.config.FastJsonConfig">
+                        <property name="features">
+                            <list>
+                                <value>QuoteFieldNames</value>
+                                <value>WriteNullNumberAsZero</value>
+                                <value>WriteNullListAsEmpty</value>
+                                <value>WriteDateUseDateFormat</value>
+                                <value>WriteNullStringAsEmpty</value>
+                                <value>WriteDateUseDateFormat</value>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <mvc:interceptors>
+
+        <mvc:interceptor>
+
+            <mvc:mapping path="/**" />
+            <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+                <property name="entityManagerFactory" ref="entityManagerFactory" />
+            </bean>
+
+
+        </mvc:interceptor>
+
+        <!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+
+    </mvc:interceptors>
 
     <!--
         <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
