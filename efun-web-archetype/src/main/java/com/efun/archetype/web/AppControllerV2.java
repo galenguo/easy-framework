@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 public class AppControllerV2 extends BaseController {
 
-    @RequestMapping("helloworld2")
+    @RequestMapping("helloworld10")
     public List<String> helloworld() {
         logger.debug("helloworld");
         List<String> list = new ArrayList<String>();

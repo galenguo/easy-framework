@@ -9,6 +9,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -143,8 +144,7 @@ public class ApplicationContext {
      * @return
      */
     public static Locale getCurrentUserLocale() {
-        //return RequestContextUtils.getLocale(getHttpRequest());
-        return null;
+        return RequestContextUtils.getLocale(getHttpRequest());
     }
 
     /**

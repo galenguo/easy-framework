@@ -1,6 +1,7 @@
 package com.efun.archetype.domain;
 
 import com.efun.core.domain.BaseEntity;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * User
@@ -18,5 +19,6 @@ public class User extends BaseEntity<String> {
         this.name = name;
     }
 
+    @Length(min = 10, max = 15, message = "")
     private String name;
 }

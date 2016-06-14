@@ -43,7 +43,7 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        ModelParam annotation = methodParameter.getMethodAnnotation(ModelParam.class);
+        ModelParam annotation = methodParameter.getParameterAnnotation(ModelParam.class);
         return annotation != null && StringUtils.isNoneBlank(annotation.value());
     }
 
@@ -75,7 +75,7 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                     bindObject = binder.convertIfNecessary(targetObject, paramType);
                 }
             }
-        } else if (Map.class.isAssignableFrom(paramType)) {
+        } else if (MapWapper.class.isAssignableFrom(paramType)) {
             Class<?> genericClass = null;
             Type type = methodParameter.getGenericParameterType();
             if (type instanceof ParameterizedType) {
@@ -93,22 +93,26 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                         targetObject.put(key, entry.getValue());
                     }
                     WebDataBinder binder = webDataBinderFactory.createBinder(nativeWebRequest, targetObject, prefix);
-                    bindObject = binder.convertIfNecessary(targetObject, paramType);
+                    bindObject = binder.convertIfNecessary(targetObject, Map.class);
+                    MapWapper mapWapper = MapWapper.class.newInstance();
+                    mapWapper.setInnerMap((Map) bindObject);
+                    bindObject = mapWapper;
                 }
             }
 
         } else {
             pvs = new ServletRequestParameterPropertyValues(servletRequest, prefix, separator);
 
-            bindObject = convertIfDomainClass(nativeWebRequest, pvs, paramType, webDataBinderFactory, prefix);
+            /*bindObject = convertIfDomainClass(nativeWebRequest, pvs, paramType, webDataBinderFactory, prefix);
 
             if (null == bindObject) {
                 bindObject = BeanUtils.instantiateClass(paramType);
-            }
+            }*/
+            bindObject = BeanUtils.instantiateClass(paramType);
 
             WebDataBinder binder = webDataBinderFactory.createBinder(nativeWebRequest, bindObject, prefix);
 
-            // binder.initDirectFieldAccess();
+            binder.initDirectFieldAccess();
             binder.bind(pvs);
 
             // 如果有校验注解@Valid，则校验绑定，通过Request传递校验结果
@@ -217,7 +221,7 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
     //预留根据id和类型读取缓存或者读取数据库
     private Object convertIfDomainClass(NativeWebRequest nativeWebRequest, PropertyValues pvs, Class<?> paramType, WebDataBinderFactory webDataBinderFactory, String prefix) throws Exception  {
         // 如果参数是Domain Class，则看看是否有ID，有就根据ID读取数据
-        if (BaseEntity.class.isAssignableFrom(paramType)) {
+        /*if (BaseEntity.class.isAssignableFrom(paramType)) {
             PropertyValue idValue = pvs.getPropertyValue("id");
             PropertyValue versionNumberValue = pvs.getPropertyValue("versionNumber");
             if (null != idValue) {
@@ -227,7 +231,7 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                     Object obj =  binder.convertIfNecessary(idString, paramType);
 
                     //乐观锁，防止多次提交
-                    /*if (null != versionNumberValue) {
+                    if (null != versionNumberValue) {
                         if (obj instanceof VersionLocked) {
                             String versionNumberString = (String) versionNumberValue.getValue();
                             int versionNumber = new Integer(versionNumberString);
@@ -236,17 +240,17 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                                 throw new ObjectOptimisticLockingFailureException(entity.getClass(), entity);
                             }
                         }
-                    }*/
+                    }
 
                     return obj;
                 }
             }
-        }
+        }*/
         return null;
     }
 
     private String getPrefix(MethodParameter methodParameter) {
-        return methodParameter.getMethodAnnotation(ModelParam.class).value();
+        return methodParameter.getParameterAnnotation(ModelParam.class).value();
     }
 
     private boolean isValid(MethodParameter parameter) {
