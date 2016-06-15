@@ -2,6 +2,7 @@ package com.efun.archetype.mapper;
 
 import com.efun.archetype.domain.User;
 import com.efun.core.mapper.BaseMapper;
+import com.efun.core.mapper.support.DataSource;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,8 @@ public interface UserMapper extends BaseMapper<User, String> {
 
     @Select("select * from t_user where id = #{id}")
     User findById(@Param("id") String id);
+
+    void insertUser(User user);
 
     /*@Select("select * from t_user where name = #{name}")*/
     User getUser(/*@Param("name") */String name);

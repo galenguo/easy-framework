@@ -39,6 +39,8 @@ public class AppController extends BaseController {
         list.add("hello world!");
         list.add(userService.getUserByName("galen").getName());
         list.add(userService.findById("1").getName());
+        list.add(userService.findById1("1").getName());
+        list.add(userService.findById2("1").getName());
         list.add(null);
         return list;
     }
@@ -78,10 +80,21 @@ public class AppController extends BaseController {
     }
 
     //国际化测试
+    //http://localhost:8000/app/getMessage
     @RequestMapping("getMessage")
     public List<String> testMessage() {
         List<String> list = new ArrayList<String>();
         list.add(ApplicationContext.getMessage("message"));
+        return list;
+    }
+
+    //测试事务
+    //http://localhost:8000/app/insertUsers
+    @RequestMapping("insertUsers")
+    public List<String> insertUsers() {
+        List<String> list = new ArrayList<String>();
+        userService.inserUsers();
+        list.add("success");
         return list;
     }
 }

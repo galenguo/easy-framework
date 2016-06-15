@@ -13,5 +13,11 @@ public interface UserService {
 
     User findById(String id);
 
+    User findById1(String id);
+
+    User findById2(String id);
+
     User getUserByName(String name);
+
+    void inserUsers();
 }

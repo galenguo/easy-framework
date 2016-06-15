@@ -5,10 +5,10 @@
 <mapper namespace="com.efun.archetype.mapper.UserMapper">
 
     <!-- 这里namespace必须是UserMapper接口的路径” -->
-    <!--<insert id="insertUser" parameterType="com.efun.archetype.domain.User">
-        insert into user(name,age) values(#{name},#{age})
-        &lt;!&ndash; 这里sql结尾不能加分号，否则报“ORA-00911”的错误 &ndash;&gt;
-    </insert>-->
+    <insert id="insertUser" parameterType="com.efun.archetype.domain.User">
+        insert into t_user(id,name) values(#{id},#{name})
+        <!-- 这里sql结尾不能加分号，否则报“ORA-00911”的错误 -->
+    </insert>
 
     <!-- 这里的id必须和UserMapper接口中的接口方法名相同 -->
     <select id="getUser" resultType="User" parameterType="java.lang.String">
