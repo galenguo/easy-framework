@@ -8,7 +8,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 /**
  * DataSourceInterceptor
- * 数据源选择的拦截，应用于service层。
+ * 数据源选择的拦截，应用于service和mapper层。
  *
  * @author Galen
  * @since 2016/6/15
@@ -20,15 +20,15 @@ public class DataSourceInterceptor {
     public Object invoke(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object object = null;
-
+        DataSource dataSource = null;
         try {
             MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            DataSource dataSource = methodSignature.getMethod().getAnnotation(DataSource.class);
+            dataSource = methodSignature.getMethod().getAnnotation(DataSource.class);
             if (dataSource == null) {
                 Class<?> clz = methodSignature.getDeclaringType();
                 dataSource = clz.getAnnotation(DataSource.class);
             }
-            if (dataSource != null && StringUtils.isNotBlank(dataSource.value())) {
+            if (dataSource != null) {
                 DataSourceContext.setDataSourceKey(dataSource.value());
                 logger.debug("### rounting to dataSource: " + dataSource.value());
             }
@@ -36,7 +36,9 @@ public class DataSourceInterceptor {
         } catch (Throwable throwable) {
             throw throwable;
         } finally {
-            DataSourceContext.cleanDataSourceKey();
+            if (dataSource != null) {
+                DataSourceContext.cleanDataSourceKey(dataSource.value());
+            }
         }
         return object;
     }

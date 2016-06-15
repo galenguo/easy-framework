@@ -32,14 +32,16 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     @DataSource("read")
     public User findById1(String id) {
         return mapper.findById(id);
     }
     @Override
+    @Transactional
     @DataSource("write")
     public User findById2(String id) {
-        return mapper.findById(id);
+        return mapper.findOne(id);
     }
 
     @Override
@@ -48,7 +50,6 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     @DataSource("write")
     public void inserUsers() {
         //测试回滚
@@ -61,12 +62,18 @@ public class UseServiceImpl implements UserService {
         user2.setName("1");
         mapper.insertUser(user2);*/
 
-        //测试夸库事务叠加。
-        /*User readUser = mapper.findById("1");
-        logger.debug("######" + readUser.getName());*/
-        User user = new User();
+        //指定库写入
+        /*User user = new User();
         user.setId("2");
         user.setName("galen");
-        mapper.insertUser(user);
+        mapper.insertUser(user);*/
+
+        //测试夸库事务叠加。
+        User user = mapper.findOne("1");
+        logger.debug("######" + user.getName());
+        user = mapper.findById("1");
+        logger.debug("######" + user.getName());
+        user = mapper.findOne("1");
+        logger.debug("######" + user.getName());
     }
 }
