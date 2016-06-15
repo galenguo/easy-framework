@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * AntiSamyFilter
+ * 安全过滤filter，暂不使用
  *
  * @author Galen
  * @since 2016/6/13

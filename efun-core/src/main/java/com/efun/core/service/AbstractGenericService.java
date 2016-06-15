@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * AbstractGenericService
+ * 泛型service抽象类
  *
  * @author Galen
  * @since 2016/6/1

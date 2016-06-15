@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * BaseService
+ * 基础service接口
  *
  * @author Galen
  * @since 2016/5/30

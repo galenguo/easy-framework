@@ -5,6 +5,7 @@
 
     <!-- 应用层组件 -->
     <import resource="classpath*:/META-INF/efun-core-service.xml" />
+    <import resource="applicationContext-service.xml"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
@@ -15,6 +16,5 @@
         <property name="defaultEncoding" value="utf-8" />
     </bean>
 
-    <import resource="applicationContext-service.xml"/>
 
 </beans>

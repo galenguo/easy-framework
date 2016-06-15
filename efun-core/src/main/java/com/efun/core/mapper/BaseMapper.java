@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * BaseMapper
+ * 基础DAO接口
  *
  * @author Galen
  * @since 2016/6/1

@@ -7,7 +7,7 @@ import java.util.Set;
 
 /**
  * MapWapper
- * mapper注入的封装
+ * map注入的封装
  *
  * @author Galen
  * @since 2016/6/14

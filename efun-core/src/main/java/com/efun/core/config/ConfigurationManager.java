@@ -14,6 +14,8 @@ import java.util.Map;
 
 /**
  * ConfigurationManager
+ * 配置管理器
+ *
  * @author Galen
  * @since 2016/5/30
  */

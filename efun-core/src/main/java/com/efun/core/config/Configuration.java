@@ -11,6 +11,7 @@ import java.util.Set;
 
 /**
  * Configuration
+ * 配置组件
  *
  * @author Galen
  * @since 2016/5/30

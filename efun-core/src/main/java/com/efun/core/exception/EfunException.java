@@ -7,6 +7,7 @@ import java.util.Locale;
 
 /**
  * EfunException
+ * 系统异常类
  *
  * @author Galen
  * @since 2016/5/30

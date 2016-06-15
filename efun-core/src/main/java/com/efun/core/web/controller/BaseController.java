@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * BaseController
+ * 基础controller
  *
  * @author Galen
  * @since 2016/5/30

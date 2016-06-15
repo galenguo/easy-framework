@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * GenericService
+ * 泛型service接口
  *
  * @author Galen
  * @since 2016/6/1

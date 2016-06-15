@@ -16,6 +16,7 @@ import java.util.Set;
 
 /**
  * DateConverter
+ * 日期转换组件
  *
  * @author Galen
  * @since 2016/6/13

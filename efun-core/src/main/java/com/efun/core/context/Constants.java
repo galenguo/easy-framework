@@ -1,8 +1,8 @@
 package com.efun.core.context;
 
 /**
- * <p>Constants
- * <p>define some contants name, such as servlet context path.
+ * Constants
+ * 系统常量
  *
  * @author Galen
  * @since 2016/05/30

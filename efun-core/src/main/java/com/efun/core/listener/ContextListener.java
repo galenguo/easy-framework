@@ -18,7 +18,11 @@ import java.io.IOException;
 import java.util.jar.Manifest;
 
 /**
- * Created by Efun on 2016/5/30.
+ * ContextListener
+ * servlet上下文监听器
+ *
+ * @author Galen
+ * @since 2016/5/30
  */
 public class ContextListener implements ServletContextListener {
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * BaseEntity
+ * 基础entity
  *
  * @author Galen
  * @since 2016/5/30

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 /**
  * FastJsonJsonpHttpMessageConverter
+ * json转换组件
  *
  * @author Galen
  * @since 2016/6/13

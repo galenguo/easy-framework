@@ -25,6 +25,7 @@ import java.util.*;
 
 /**
  * RequestBeanArgumentResolver
+ * 数据绑定解析器
  *
  * @author Galen
  * @since 2016/6/6
