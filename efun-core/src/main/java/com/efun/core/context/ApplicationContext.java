@@ -144,7 +144,11 @@ public class ApplicationContext {
      * @return
      */
     public static Locale getCurrentUserLocale() {
-        return RequestContextUtils.getLocale(getHttpRequest());
+        HttpServletRequest request = getHttpRequest();
+        if (request == null) {
+            return null;
+        }
+        return RequestContextUtils.getLocale(request);
     }
 
     /**
@@ -154,7 +158,9 @@ public class ApplicationContext {
      */
     public static HttpServletRequest getHttpRequest() {
         ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        AssertUtils.notNull(attrs);
+        if (attrs == null) {
+            return null;
+        }
         return attrs.getRequest();
     }
 

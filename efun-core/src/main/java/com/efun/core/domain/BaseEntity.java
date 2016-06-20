@@ -1,5 +1,8 @@
 package com.efun.core.domain;
 
+import com.efun.core.mapper.support.Column;
+import com.efun.core.mapper.support.Id;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +14,7 @@ import java.io.Serializable;
  */
 public abstract class BaseEntity<ID extends Serializable> {
 
+    @Id("id")
     protected ID id;
 
     public ID getId() {
