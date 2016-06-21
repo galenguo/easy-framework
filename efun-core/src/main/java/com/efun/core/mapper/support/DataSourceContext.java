@@ -1,10 +1,12 @@
 package com.efun.core.mapper.support;
 
 import com.efun.core.exception.EfunException;
+import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -33,7 +35,11 @@ public class DataSourceContext {
     }
 
     public static String getDataSourceKey() {
-        return dataSourceHolder.get().getFirst();
+        LinkedList<String> stack = dataSourceHolder.get();
+        if (CollectionUtils.isEmpty(stack)) {
+            return null;
+        }
+        return stack.getFirst();
     }
 
     public static void cleanDataSourceKey(String dataSourceKey) {

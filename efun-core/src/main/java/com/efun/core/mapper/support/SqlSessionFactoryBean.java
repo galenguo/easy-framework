@@ -5,7 +5,6 @@ import com.efun.core.utils.StringUtils;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
-import org.apache.ibatis.reflection.MetaClass;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -44,7 +42,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
     protected SqlSessionFactory buildSqlSessionFactory() throws IOException {
         SqlSessionFactory sqlSessionFactory = super.buildSqlSessionFactory();
         Configuration configuration = sqlSessionFactory.getConfiguration();
-        //scanResultMaps(configuration);
+        scanResultMaps(configuration);
         return sqlSessionFactory;
     }
 
@@ -73,7 +71,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         }
         String tableName = tableAnnotation.name();
         List<ResultMapping> resultMappingList = new ArrayList<ResultMapping>();
-        String className = clazz.getName().toLowerCase();
+        String className = clazz.getName();
         tableNameMap.put(className, tableName);
 
         for (Field field : getDeclaredFields(clazz)) {
@@ -86,6 +84,9 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             if (field.getAnnotation(Id.class) != null) {
                 Id idAnnotation = field.getAnnotation(Id.class);
                 columnName = idAnnotation.value();
+                if (StringUtils.isBlank(className)) {
+                    className = field.getName();
+                }
                 jdbcType = idAnnotation.jdbcType();
                 javaType = field.getType();
                 if (javaType.equals(Serializable.class)) {
@@ -95,6 +96,9 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             } else if (field.getAnnotation(Column.class) != null) {
                 Column columnAnnotation = field.getAnnotation(Column.class);
                 columnName = columnAnnotation.value();
+                if (StringUtils.isBlank(className)) {
+                    className = field.getName();
+                }
                 jdbcType = columnAnnotation.jdbcType();
                 javaType = field.getType();
             } else {
