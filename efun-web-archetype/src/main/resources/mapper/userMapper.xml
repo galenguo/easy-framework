@@ -4,6 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.efun.archetype.mapper.UserMapper">
 
+    <!--<resultMap id="user" type="com.efun.archetype.domain.User">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>-->
+
     <!-- 这里namespace必须是UserMapper接口的路径” -->
     <insert id="insertUser" parameterType="com.efun.archetype.domain.User">
         insert into t_user(id,name) values(#{id},#{name})

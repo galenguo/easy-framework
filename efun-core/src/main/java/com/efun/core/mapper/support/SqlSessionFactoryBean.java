@@ -5,12 +5,15 @@ import com.efun.core.utils.StringUtils;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.reflection.MetaClass;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -69,7 +72,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         }
         String tableName = tableAnnotation.name();
         List<ResultMapping> resultMappingList = new ArrayList<ResultMapping>();
-        String className = clazz.getSimpleName().toLowerCase();
+        String className = clazz.getName();
         tableNameMap.put(className, tableName);
 
         for (Field field : getDeclaredFields(clazz)) {
@@ -77,16 +80,20 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             String propertyName = field.getName();
             String columnName = null;
             String jdbcType = null;
+            Class javaType = null;
             boolean lazy = configuration.isLazyLoadingEnabled();
             if (field.getAnnotation(Id.class) != null) {
                 Id idAnnotation = field.getAnnotation(Id.class);
                 columnName = idAnnotation.value();
                 jdbcType = idAnnotation.jdbcType();
+                //javaType = field.getType();
+                javaType = (Class<?>)((ParameterizedType)clazz.getGenericSuperclass()).getActualTypeArguments()[0];
                 flags.add(ResultFlag.ID);
             } else if (field.getAnnotation(Column.class) != null) {
                 Column columnAnnotation = field.getAnnotation(Column.class);
                 columnName = columnAnnotation.value();
                 jdbcType = columnAnnotation.jdbcType();
+                javaType = field.getType();
             } else {
                 continue;
             }
@@ -95,7 +102,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             }
             JdbcType jdbcTypeEnum = resolveJdbcType(jdbcType);
 
-            ResultMapping mapping = new ResultMapping.Builder(configuration, propertyName, columnName, field.getType()).jdbcType(jdbcTypeEnum).flags(flags).lazy(lazy).build();
+            ResultMapping mapping = new ResultMapping.Builder(configuration, propertyName, columnName, javaType).jdbcType(jdbcTypeEnum).flags(flags).lazy(lazy).build();
             resultMappingList.add(mapping);
         }
 
