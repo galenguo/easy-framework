@@ -1,8 +1,8 @@
 package com.efun.archetype.domain;
 
 import com.efun.core.domain.BaseEntity;
-import com.efun.core.mapper.support.Column;
-import com.efun.core.mapper.support.Table;
+import com.efun.core.mapper.annotation.Column;
+import com.efun.core.mapper.annotation.Table;
 import org.hibernate.validator.constraints.Length;
 
 /**

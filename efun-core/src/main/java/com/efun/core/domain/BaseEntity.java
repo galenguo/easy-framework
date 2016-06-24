@@ -1,7 +1,6 @@
 package com.efun.core.domain;
 
-import com.efun.core.mapper.support.Column;
-import com.efun.core.mapper.support.Id;
+import com.efun.core.mapper.annotation.Id;
 
 import java.io.Serializable;
 

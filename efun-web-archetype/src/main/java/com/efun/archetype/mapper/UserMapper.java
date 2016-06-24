@@ -2,11 +2,8 @@ package com.efun.archetype.mapper;
 
 import com.efun.archetype.domain.User;
 import com.efun.core.mapper.BaseMapper;
-import com.efun.core.mapper.support.DataSource;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * UserMapper

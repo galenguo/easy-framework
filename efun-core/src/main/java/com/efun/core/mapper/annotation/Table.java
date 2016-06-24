@@ -1,4 +1,4 @@
-package com.efun.core.mapper.support;
+package com.efun.core.mapper.annotation;
 
 import java.lang.annotation.*;
 

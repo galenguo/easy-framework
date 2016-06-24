@@ -2,10 +2,7 @@ package com.efun.archetype.service;
 
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
-import com.efun.core.context.ApplicationContext;
-import com.efun.core.exception.EfunException;
-import com.efun.core.mapper.support.DataSource;
-import com.efun.core.utils.AssertUtils;
+import com.efun.core.mapper.annotation.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
