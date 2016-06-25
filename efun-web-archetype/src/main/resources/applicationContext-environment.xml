@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 加载系统运行环境依赖的配置，例如：系统设置的变量、数据源等等 -->
+
+    <bean class="com.efun.core.config.PropertiesConfigurationLoader">
+        <property name="fileNames">
+            <list>
+                <value>echo-demo.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:component-scan base-package="com.efun.core.config"/>
+
+    <!-- 数据源配置 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+        <property name="driverClassName" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.efun.driver')}"/>
+        <property name="url" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.efun.url')}" />
+        <property name="username" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.efun.username')}" />
+        <property name="password" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.efun.password')}" />
+    </bean>
+
+</beans>

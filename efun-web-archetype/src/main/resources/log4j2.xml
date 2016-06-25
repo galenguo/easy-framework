@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="off" monitorInterval="1800">
+
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <property name="FILE_NAME">log</property>
+    </properties>
+
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] - %msg%n" />
+        </Console>
+
+        <RollingRandomAccessFile name="log" fileName="${LOG_HOME}/${FILE_NAME}.log"
+                                 filePattern="${LOG_HOME}/${FILE_NAME}-%d{yyyy-MM-dd-HH}.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%file:%line] - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <AsyncLogger name="org.springframework" level="info" includeLocation="true"/>
+        <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="debug" includeLocation="true"/>
+        <AsyncLogger name="com.efun" level="debug" includeLocation="true"/>
+
+        <AsyncRoot level="info" includeLocation="true">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="log" />
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
