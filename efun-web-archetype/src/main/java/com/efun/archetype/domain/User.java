@@ -19,6 +19,9 @@ public class User extends BaseEntity<String> {
     @Column("name")
     private String name;
 
+    @Column("phone_number")
+    private String phoneNumber;
+
     public String getName() {
         return name;
     }
@@ -27,4 +30,11 @@ public class User extends BaseEntity<String> {
         this.name = name;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

@@ -50,20 +50,30 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
     private static final String BASE_MAPPER = "com.efun.core.mapper.BaseMapper";
 
     /**
-     * class类， value表名
-     */
-    private static final Map<Class<?>, String> tableNameMap = new HashMap<Class<?>, String>();
-
-    /**
      * mybatis的configuration，全局单例。
      */
     private static Configuration configuration;
+
+    /**
+     * <key>entity
+     * <value>tableName
+     */
+    private static final Map<Class<?>, String> tableNameMap = new HashMap<Class<?>, String>();
 
     /**
      * 基础mapper扩展接口
      */
     private Map<Class<?>, AbstractSqlProvider> registerMapperMap = new LinkedHashMap<Class<?>, AbstractSqlProvider>();
 
+    /**
+     * <key>statementId
+     * <value>sqlprovider
+     */
+    private Map<String, AbstractSqlProvider> statementCache = new LinkedHashMap<>();
+
+    /**
+     * 所有注册过的通用mapper接口，包括通用mapper接口父mapper的接口
+     */
     private List<Class<?>> registerMpperList = new LinkedList<Class<?>>();
 
     private List<String> genericMappers;
@@ -97,9 +107,9 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         SqlSessionFactory sqlSessionFactory = super.buildSqlSessionFactory();
         configuration = sqlSessionFactory.getConfiguration();
         //扫描Entity生成ResultMap
-        scanResultMaps(configuration);
+       // scanResultMaps(configuration);
         //注入通用mapper，支持通用mapper接口可继承扩展
-        injectMapper(configuration);
+        //injectMapper(configuration);
         return sqlSessionFactory;
     }
 
@@ -230,7 +240,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             try {
                 registerMapper(Class.forName(mapperClass));
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("注册通用Mapper[" + mapperClass + "]失败，找不到该通用Mapper!");
+                throw new RuntimeException("register generic mapper[" + mapperClass + "]fail，can not find this mapper!");
             }
         }
     }
@@ -280,7 +290,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             if (providerClass == null) {
                 providerClass = tempClass;
             } else if (providerClass != tempClass) {
-                throw new RuntimeException("一个通用Mapper中只允许存在一个AbstractSqlProvider子类!");
+                throw new RuntimeException("a generic mapper should use one subclass of AbstractSqlProvider !");
             }
         }
         if (providerClass == null || !AbstractSqlProvider.class.isAssignableFrom(providerClass)) {
@@ -290,14 +300,14 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         try {
             sqlProvider = (AbstractSqlProvider) providerClass.getConstructor(Class.class).newInstance(mapperClass);
         } catch (Exception e) {
-            throw new RuntimeException("实例化sqlProvider对象失败:" + e.getMessage());
+            throw new RuntimeException("sqlProvider new instance error: " + e.getMessage());
         }
         //注册方法
         for (String methodName : methodSet) {
             try {
                 sqlProvider.addMethod(methodName, providerClass.getMethod(methodName, MappedStatement.class));
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(providerClass.getCanonicalName() + "中缺少" + methodName + "方法!");
+                throw new RuntimeException(providerClass.getCanonicalName() + "lack method:" + methodName + "!");
             }
         }
         return sqlProvider;
@@ -318,26 +328,29 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         }
     }
 
-    public boolean isMapperMethod(String msId) {
-        if (msIdSkip.get(msId) != null) {
-            return msIdSkip.get(msId);
-        }
-        for (Map.Entry<Class<?>, AbstractSqlProvider> entry : registerMapperMap.entrySet()) {
-            if (entry.getValue().supportMethod(msId)) {
-                msIdSkip.put(msId, true);
-                msIdCache.put(msId, entry.getValue());
-                return true;
+    public boolean isMapperMethod(String mappedStatementId) {
+        AbstractSqlProvider provider = statementCache.get(mappedStatementId);
+        if (provider instanceof EmptyProvider) {
+            return false;
+        } else if (provider != null){
+            return true;
+        } else {
+            for (Map.Entry<Class<?>, AbstractSqlProvider> entry : registerMapperMap.entrySet()) {
+                if (entry.getValue().supportMethod(mappedStatementId)) {
+                    statementCache.put(mappedStatementId, entry.getValue());
+                    return true;
+                }
             }
+            statementCache.put(mappedStatementId, new EmptyProvider(null));
+            return false;
         }
-        msIdSkip.put(msId, false);
-        return false;
     }
 
-    public void setSqlSource(MappedStatement ms) {
-        AbstractSqlProvider sqlProvider = msIdCache.get(ms.getId());
+    public void setSqlSource(MappedStatement mappedStatement) {
+        AbstractSqlProvider sqlProvider = statementCache.get(mappedStatement.getId());
         try {
-            if (mapperTemplate != null) {
-                mapperTemplate.setSqlSource(ms);
+            if (sqlProvider != null) {
+                sqlProvider.setSqlSource(mappedStatement);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

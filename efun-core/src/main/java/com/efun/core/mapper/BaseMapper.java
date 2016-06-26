@@ -63,7 +63,7 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
      * @param <E>
      * @return
      */
-    @SelectProvider(type = BaseSqlProvider.class, method = "")
+    /*@SelectProvider(type = BaseSqlProvider.class, method = "")*/
     <E extends BaseEntity> List<E> queryList(@Param("query")Query query);
 
 }

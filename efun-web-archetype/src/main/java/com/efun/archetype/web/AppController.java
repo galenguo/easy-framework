@@ -39,8 +39,8 @@ public class AppController extends BaseController {
         list.add("hello world!");
         list.add(userService.getUserByName("galen").getName());
         list.add(userService.findById("1").getName());
+        list.add(userService.findById("1").getPhoneNumber());
         list.add(userService.findById1("1").getName());
-        list.add(userService.findById2("1").getName());
         list.add(null);
         return list;
     }

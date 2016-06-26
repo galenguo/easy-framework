@@ -22,12 +22,16 @@ import java.util.Map;
  */
 public class BaseSqlProvider extends AbstractSqlProvider {
 
+    public BaseSqlProvider() {
+
+    }
+
     public BaseSqlProvider(Class<?> mapperClass) {
         super(mapperClass);
     }
 
     public String findById(MappedStatement mappedStatement) {
-        Class<?> entityClass = null;
+        Class<?> entityClass = getEntityClass(mappedStatement);
         String tableName = getTableName(entityClass);
         String idField = getId(entityClass);
         String sql = new SQL() {{
@@ -39,7 +43,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String insert(MappedStatement mappedStatement) {
-        Class<?> entityClass = null;
+        Class<?> entityClass = getEntityClass(mappedStatement);;
         String tableName = getTableName(entityClass);
         String columns = getColumns(entityClass);
         String values = getValues(entityClass);
@@ -51,7 +55,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String update(MappedStatement mappedStatement) {
-        Class<?> entityClass = null;
+        Class<?> entityClass = getEntityClass(mappedStatement);;
         String tableName = getTableName(entityClass);
         String sets = getSets(entityClass);
         String idField = getId(entityClass);
@@ -64,7 +68,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String delete(MappedStatement mappedStatement) {
-        Class<?> entityClass = null;
+        Class<?> entityClass = getEntityClass(mappedStatement);;
         String tableName = getTableName(entityClass);
         String idField = getId(entityClass);
         String sql = new SQL() {{
@@ -75,7 +79,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String query(MappedStatement mappedStatement) {
-        Class<?> entityClass = null;
+        Class<?> entityClass = getEntityClass(mappedStatement);;
         String tableName = getTableName(entityClass);
         return new SQL() {{
             SELECT("*");
