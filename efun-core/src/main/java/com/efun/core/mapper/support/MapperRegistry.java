@@ -29,13 +29,13 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 /**
- * MapperRegister
+ * MapperRegistry
  * 通用mapper注册器
  *
  * @author Galen
  * @since 2016/6/26
  */
-public class MapperRegister {
+public class MapperRegistry {
 
     private static final String BASE_MAPPER = "com.efun.core.mapper.BaseMapper";
 
@@ -161,21 +161,29 @@ public class MapperRegister {
     }
 
     public void processConfiguration(Configuration configuration, Class<?> mapperInterface) {
-        injectResultMap(configuration, mapperInterface);
+        injectResultMapByMapper(configuration, mapperInterface);
         injectStatement(configuration, mapperInterface);
     }
 
-    private void injectResultMap(Configuration configuration, Class<?> mapperInterface) {
+    public void injectResultMapByEntity(Configuration configuration, Class<?> entityClass) {
+        injectResultMap(configuration, entityClass, entityClass.getSimpleName());
+    }
+
+    public void injectResultMapByMapper(Configuration configuration, Class<?> mapperInterface) {
         Type[] types = mapperInterface.getGenericInterfaces();
-        Class<?> entityClass = (Class<?>) ((ParameterizedType)types[0]).getActualTypeArguments()[0];;
+        Class<?> entityClass = (Class<?>) ((ParameterizedType)types[0]).getActualTypeArguments()[0];
+        mapperEntityCache.put(mapperInterface.getCanonicalName(), entityClass);
         String id = mapperInterface.getCanonicalName() + Constants.SEPARATOR_DOT + entityClass.getSimpleName();
+        injectResultMap(configuration, entityClass, id);
+    }
+
+    private void injectResultMap(Configuration configuration, Class<?> entityClass, String id) {
         Table tableAnnotation = entityClass.getAnnotation(Table.class);
         if (tableAnnotation == null) {
             return;
         }
         String tableName = tableAnnotation.name();
         tableNameCache.put(entityClass, tableName);
-        mapperEntityCache.put(mapperInterface.getCanonicalName(), entityClass);
         List<ResultMapping> resultMappingList = new ArrayList<ResultMapping>();
         String className = entityClass.getName();
 

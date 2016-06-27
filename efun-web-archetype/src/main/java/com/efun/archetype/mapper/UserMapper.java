@@ -17,8 +17,8 @@ public interface UserMapper extends BaseMapper<User, String> {
     @Select("select * from t_user where id = #{id}")
     User findById(@Param("id") String id);*/
 
+    @ResultMap("User")
     @Select("select * from t_user where id = #{id}")
-    /*@ResultMap("User")*/
     User findOne(@Param("id") String id);
 
     void insertUser(User user);

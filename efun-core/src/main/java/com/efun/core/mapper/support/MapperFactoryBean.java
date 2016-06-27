@@ -8,7 +8,7 @@ package com.efun.core.mapper.support;
  */
 public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactoryBean<T> {
 
-    protected MapperRegister mapperRegister;
+    protected MapperRegistry mapperRegistry;
 
     public MapperFactoryBean() {
     }
@@ -21,14 +21,13 @@ public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactor
     protected void checkDaoConfig() {
         super.checkDaoConfig();
         //通用Mapper
-        mapperRegister.registerMapper();
-        if (mapperRegister.isExtendGenericMapper(getObjectType())) {
-            mapperRegister.processConfiguration(getSqlSession().getConfiguration(), getObjectType());
+        mapperRegistry.registerMapper();
+        if (mapperRegistry.isExtendGenericMapper(getObjectType())) {
+            mapperRegistry.processConfiguration(getSqlSession().getConfiguration(), getObjectType());
         }
-        System.out.println("");
     }
 
-    public void setMapperRegister(MapperRegister mapperRegister) {
-        this.mapperRegister = mapperRegister;
+    public void setMapperRegistry(MapperRegistry mapperRegistry) {
+        this.mapperRegistry = mapperRegistry;
     }
 }

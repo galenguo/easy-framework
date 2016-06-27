@@ -1,8 +1,7 @@
 package com.efun.core.mapper;
 
 import com.efun.core.context.Constants;
-import com.efun.core.mapper.support.MapperRegister;
-import org.apache.commons.collections4.map.HashedMap;
+import com.efun.core.mapper.support.MapperRegistry;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -33,7 +32,7 @@ public abstract class AbstractSqlProvider {
 
     protected static final XMLLanguageDriver languageDriver = new XMLLanguageDriver();
 
-    protected MapperRegister register;
+    protected MapperRegistry register;
 
     /**
      * 方法缓存
@@ -267,7 +266,7 @@ public abstract class AbstractSqlProvider {
         }
     }
 
-    public void setRegister(MapperRegister register) {
+    public void setRegister(MapperRegistry register) {
         this.register = register;
     }
 

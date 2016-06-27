@@ -1,17 +1,7 @@
 package com.efun.core.mapper;
 
-import com.efun.core.context.Constants;
-import com.efun.core.mapper.query.Query;
-import com.efun.core.mapper.support.SqlSessionFactoryBean;
-import com.efun.core.utils.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultMap;
-import org.apache.ibatis.mapping.ResultMapping;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * BaseSqlProvider

@@ -16,10 +16,8 @@ import java.util.List;
  */
 public class MapperScannerConfigurer extends org.mybatis.spring.mapper.MapperScannerConfigurer {
 
-    private MapperRegister register = new MapperRegister();
-
     public void setGenericMappers(List<String> genericMappers) {
-        this.register.addGenericMapper(genericMappers);
+        SqlSessionFactoryBean.getMapperRegistry().addGenericMapper(genericMappers);
     }
 
     @Override
@@ -27,7 +25,7 @@ public class MapperScannerConfigurer extends org.mybatis.spring.mapper.MapperSca
         super.setMarkerInterface(superClass);
         //是否多余？
         if (BaseMapper.class.isAssignableFrom(superClass)) {
-            register.registerMapper(superClass);
+            SqlSessionFactoryBean.getMapperRegistry().registerMapper(superClass);
         }
     }
 
@@ -43,7 +41,7 @@ public class MapperScannerConfigurer extends org.mybatis.spring.mapper.MapperSca
                 if (StringUtils.isNotBlank(definition.getBeanClassName())
                         && definition.getBeanClassName().equals("org.mybatis.spring.mapper.MapperFactoryBean")) {
                     definition.setBeanClass(MapperFactoryBean.class);
-                    definition.getPropertyValues().add("mapperRegister", this.register);
+                    definition.getPropertyValues().add("mapperRegistry", SqlSessionFactoryBean.getMapperRegistry());
                 }
             }
         }
