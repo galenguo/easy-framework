@@ -219,9 +219,18 @@ public class MapperRegister {
         }
 
         ResultMap resultMap = new ResultMap.Builder(configuration, id, entityClass, resultMappingList).build();
-        if (!configuration.getResultMaps().contains(resultMap.getId())) {
+        if (!contineResultMap(configuration, resultMap.getId())) {
             configuration.addResultMap(resultMap);
-            resultMapCache.put(entityClass, configuration.getResultMap(resultMap.getId()));
+        }
+        resultMapCache.put(entityClass, configuration.getResultMap(resultMap.getId()));
+    }
+
+    private boolean contineResultMap(Configuration configuration, String resultMapId) {
+        try {
+            configuration.getResultMap(resultMapId);
+            return true;
+        } catch (Exception ex) {
+            return false;
         }
     }
 

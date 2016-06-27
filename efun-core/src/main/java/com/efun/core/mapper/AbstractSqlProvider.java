@@ -17,6 +17,9 @@ import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,7 +102,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getColumns(Class<?> entityClass) {
-        String column = null;
+        String column = "";
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             column += mapping.getColumn() + Constants.SEPARATOR_COMMA;
         }
@@ -114,7 +117,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getValues(Class<?> entityClass) {
-        String values = null;
+        String values = "";
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             values += "#{" + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
         }
@@ -129,7 +132,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getSets(Class<?> entityClass) {
-        String sets = null;
+        String sets = "";
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             sets += mapping.getColumn() + " = #{" + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
         }
@@ -220,6 +223,14 @@ public abstract class AbstractSqlProvider {
     protected void setSqlSource(MappedStatement mappedStatement, SqlSource sqlSource) {
         MetaObject metaObject = SystemMetaObject.forObject(mappedStatement);
         metaObject.setValue("sqlSource", sqlSource);
+    }
+
+    protected void setResultType(MappedStatement mappedStatement, Class<?> entityClass) {
+        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+        resultMaps.add(register.getResultMapFromEntity(entityClass));
+        MetaObject metaObject = SystemMetaObject.forObject(mappedStatement);
+        metaObject.setValue("resultMaps", Collections.unmodifiableList(resultMaps));
+        metaObject.setValue("resultSetType", null);
     }
 
     /**

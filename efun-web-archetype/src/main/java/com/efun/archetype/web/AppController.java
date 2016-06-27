@@ -37,11 +37,11 @@ public class AppController extends BaseController {
         logger.debug(user.getName());
         List<String> list = new ArrayList<String>();
         list.add("hello world!");
-        list.add(userService.getUserByName("galen").getName());
-        list.add(userService.findById("1").getName());
+        /*list.add(userService.getUserByName("galen").getName());*/
+        list.add(userService.findById2("1").getPhoneNumber());
         list.add(userService.findById("1").getPhoneNumber());
-        list.add(userService.findById1("1").getName());
-        list.add(null);
+        list.add(userService.getUserByName("galen").getName());
+        list.add(userService.getUserByName("galen").getPhoneNumber());
         return list;
     }
 

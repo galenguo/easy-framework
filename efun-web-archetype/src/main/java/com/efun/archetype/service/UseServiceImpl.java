@@ -25,7 +25,7 @@ public class UseServiceImpl implements UserService {
 
     @Override
     public User findById(String id) {
-        return mapper.findOne(id);
+        return mapper.findById(id);
     }
 
     @Override

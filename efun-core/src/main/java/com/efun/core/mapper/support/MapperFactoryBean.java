@@ -25,7 +25,7 @@ public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactor
         if (mapperRegister.isExtendGenericMapper(getObjectType())) {
             mapperRegister.processConfiguration(getSqlSession().getConfiguration(), getObjectType());
         }
-        System.out.println("****");
+        System.out.println("");
     }
 
     public void setMapperRegister(MapperRegister mapperRegister) {

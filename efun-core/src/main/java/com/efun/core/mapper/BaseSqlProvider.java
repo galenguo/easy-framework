@@ -32,6 +32,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
 
     public String findById(MappedStatement mappedStatement) {
         Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         String idField = getId(entityClass);
         String sql = new SQL() {{
@@ -43,7 +44,8 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String insert(MappedStatement mappedStatement) {
-        Class<?> entityClass = getEntityClass(mappedStatement);;
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         String columns = getColumns(entityClass);
         String values = getValues(entityClass);
@@ -55,7 +57,8 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String update(MappedStatement mappedStatement) {
-        Class<?> entityClass = getEntityClass(mappedStatement);;
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         String sets = getSets(entityClass);
         String idField = getId(entityClass);
@@ -68,7 +71,8 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String delete(MappedStatement mappedStatement) {
-        Class<?> entityClass = getEntityClass(mappedStatement);;
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         String idField = getId(entityClass);
         String sql = new SQL() {{
@@ -79,7 +83,8 @@ public class BaseSqlProvider extends AbstractSqlProvider {
     }
 
     public String query(MappedStatement mappedStatement) {
-        Class<?> entityClass = getEntityClass(mappedStatement);;
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         return new SQL() {{
             SELECT("*");
