@@ -55,10 +55,12 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         String sql = new SQL() {{
             UPDATE(tableName);
             SET(sets);
-            WHERE(idField + "= #{id}");
+            WHERE(idField + "= #{entity.id}");
         }}.toString();
         return sql;
     }
+
+
 
     public String delete(MappedStatement mappedStatement) {
         Class<?> entityClass = getEntityClass(mappedStatement);
@@ -87,11 +89,11 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
-        return new SQL() {{
-            SELECT("count(*)");
-            FROM(tableName);
-            WHERE("");
-        }}.toString();
+        StringBuilder sql = new StringBuilder();
+        sql.append("select count(*) ");
+        sql.append(from(tableName));
+        sql.append(where());
+        return sql.toString();
     }
 
     public String query(MappedStatement mappedStatement) {
