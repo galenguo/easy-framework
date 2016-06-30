@@ -37,7 +37,7 @@ public class Query {
         addCriteria(criteria);
     }
 
-    Query fields(String... fields) {
+    public Query fields(String... fields) {
         String fieldStr = null;
         for (String field : fields) {
             fieldStr += field + ", ";
@@ -46,17 +46,17 @@ public class Query {
         return this;
     }
 
-    Query fields(String fields) {
+    public Query fields(String fields) {
         this.fields = fields;
         return this;
     }
 
-    Query addCriteria(Criteria criteria) {
+    public Query addCriteria(Criteria criteria) {
         this.whereClause = criteria;
         return this;
     }
 
-    Query groupBy(String... fields) {
+    public Query groupBy(String... fields) {
         String fieldStr = null;
         for (String field : fields) {
             fieldStr += field + ", ";
@@ -65,12 +65,12 @@ public class Query {
         return this;
     }
 
-    Query groupBy(String fields) {
+    public Query groupBy(String fields) {
         this.groupByClause = fields;
         return this;
     }
 
-    Query with(Sort sort) {
+    public Query with(Sort sort) {
         String orderBy = null;
         Iterator<Sort.Order> iterator = sort.iterator();
         while (iterator.hasNext()) {
@@ -81,19 +81,19 @@ public class Query {
         return this;
     }
 
-    Query with(Pageable pageable) {
+    public Query with(Pageable pageable) {
         limit(pageable.getPageNumber() * pageable.getPageSize());
         skip(pageable.getPageSize());
         with(pageable.getSort());
         return this;
     }
 
-    Query limit(int limit) {
+    public Query limit(int limit) {
         this.limit = limit;
         return this;
     }
 
-    Query skip(int skip) {
+    public Query skip(int skip) {
         this.skip = skip;
         return this;
     }

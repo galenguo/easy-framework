@@ -113,7 +113,7 @@ public class AppController extends BaseController {
     //http://localhost:8000/app/queryUser
     @RequestMapping("queryUser")
     public List<User> queryUser() {
-        Query query = new Query(Criteria.where("id").is("1"));
+        Query query = new Query(Criteria.where("creation_time").lte(new Date()));
         return userMapper.queryList(query);
     }
 }

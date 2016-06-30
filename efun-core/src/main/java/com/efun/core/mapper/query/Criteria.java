@@ -29,9 +29,10 @@ public class Criteria {
         this.key = key;
     }
 
-    protected Criteria(List<Criteria> criteriaChain, String Operator, String key) {
+    protected Criteria(List<Criteria> criteriaChain, String operator, String key) {
         this.criteriaChain = criteriaChain;
         this.criteriaChain.add(this);
+        this.operator = operator;
         this.key = key;
     }
 
@@ -44,6 +45,7 @@ public class Criteria {
     }
 
     public Criteria andOperator(Criteria criteria) {
+        criteria = criteria.criteriaChain.get(0);
         criteria.operator = "and";
         criteria.closed = true;
         this.criteriaChain.add(criteria);
@@ -55,6 +57,7 @@ public class Criteria {
     }
 
     public Criteria orOperator(Criteria criteria) {
+        criteria = criteria.criteriaChain.get(0);
         criteria.operator = "or";
         criteria.closed = true;
         this.criteriaChain.add(criteria);
@@ -62,68 +65,73 @@ public class Criteria {
     }
 
     public Criteria gt(Object o) {
-        criteria.put(">", o);
+        this.criteria.put(">", o);
         return this;
     }
 
     public Criteria gte(Object o) {
-        criteria.put(">=", o);
+        this.criteria.put(">=", o);
         return this;
     }
 
     public Criteria lt(Object o) {
-        criteria.put("<", o);
+        this.criteria.put("<", o);
         return this;
     }
 
     public Criteria lte(Object o) {
-        criteria.put("<=", o);
+        this.criteria.put("<=", o);
         return this;
     }
 
     public Criteria is(Object o) {
-        criteria.put("=", o);
+        this.criteria.put("=", o);
+        return this;
+    }
+
+    public Criteria not(Object o) {
+        this.criteria.put("<>", o);
         return this;
     }
 
     public Criteria like(Object o) {
-        criteria.put("like", o);
+        this.criteria.put("like", o);
         return this;
     }
 
     public Criteria leftLike(Object o) {
-        criteria.put("like", o + "%");
+        this.criteria.put("like", o + "%");
         return this;
     }
 
     public Criteria in(Object... object) {
-        criteria.put("in", object);
+        this.criteria.put("in", object);
         return this;
     }
 
     public Criteria between(Object object1, Object object2) {
-        criteria.put("betwenen", object1);
-        criteria.put("and", object2);
+        this.criteria.put("betwenen", object1);
+        this.criteria.put("and", object2);
         return this;
     }
 
     public String getOperator() {
-        return operator;
+        return this.operator;
     }
 
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public List<Criteria> getCriteriaChain() {
-        return criteriaChain;
+        return this.criteriaChain;
     }
 
     public Map<String, Object> getCriteria() {
-        return criteria;
+        return this.criteria;
     }
 
     public boolean getClosed() {
-        return closed;
+        return this.closed;
     }
 }
