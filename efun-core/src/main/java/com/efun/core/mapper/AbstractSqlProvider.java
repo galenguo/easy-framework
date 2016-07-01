@@ -74,75 +74,6 @@ public abstract class AbstractSqlProvider {
     }
 
     /**
-     * 获取表名
-     *
-     * @param entityClass
-     * @return
-     */
-    protected String getTableName(Class<?> entityClass) {
-        return register.getTableNameFromEntity(entityClass);
-    }
-
-    /**
-     * 获取表id
-     *
-     * @param entityClass
-     * @return
-     */
-    protected String getId(Class<?> entityClass) {
-        return getEntityResultMap(entityClass).getIdResultMappings().get(0).getColumn();
-    }
-
-    /**
-     * 获取表字段
-     * <p>column0, column1, column2, ...</p>
-     *
-     * @param entityClass
-     * @return
-     */
-    protected String getColumns(Class<?> entityClass) {
-        String column = "";
-        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            column += mapping.getColumn() + Constants.SEPARATOR_COMMA;
-        }
-        return column.substring(0, column.length() - 1);
-    }
-
-    /**
-     * 获取inser语句的字段占位符语句
-     * <p>#{column0}, #{column1}, #{column2}, ...</p>
-     *
-     * @param entityClass
-     * @return
-     */
-    protected String getValues(Class<?> entityClass) {
-        String values = "";
-        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            values += "#{" + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
-        }
-        return values.substring(0, values.length() - 1);
-    }
-
-    /**
-     * 获取update语句的字段占位符语句
-     * <p>column0 = #{column0}, column1 = #{column1}, column2 = #{column2}, ...</p>
-     *
-     * @param entityClass
-     * @return
-     */
-    protected String getSets(Class<?> entityClass) {
-        String sets = "";
-        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            sets += mapping.getColumn() + " = #{" + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
-        }
-        return sets.substring(0, sets.length() - 1);
-    }
-
-    private ResultMap getEntityResultMap(Class<?> entityClass) {
-        return register.getResultMapFromEntity(entityClass);
-    }
-
-    /**
      * provider是否提供mappedStatementId所指定的方法
      *
      * @param mappedStatementId
@@ -272,5 +203,179 @@ public abstract class AbstractSqlProvider {
 
     public Class<?> getEntityClass(MappedStatement mappedStatement) {
         return register.getEntityClass(mappedStatement.getId().substring(0, mappedStatement.getId().lastIndexOf(Constants.SEPARATOR_DOT)));
+    }
+
+    private ResultMap getEntityResultMap(Class<?> entityClass) {
+        return register.getResultMapFromEntity(entityClass);
+    }
+
+    /**
+     * 获取表名
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getTableName(Class<?> entityClass) {
+        return register.getTableNameFromEntity(entityClass);
+    }
+
+    /**
+     * 获取表id
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getId(Class<?> entityClass) {
+        return getEntityResultMap(entityClass).getIdResultMappings().get(0).getColumn();
+    }
+
+    /**
+     * 获取表字段
+     * <p>column0, column1, column2, ...</p>
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getColumns(Class<?> entityClass) {
+        String column = "";
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            column += mapping.getColumn() + Constants.SEPARATOR_COMMA;
+        }
+        return column.substring(0, column.length() - 1);
+    }
+
+    /**
+     * 获取inser语句的字段占位符语句
+     * <p>#{column0}, #{column1}, #{column2}, ...</p>
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getValues(Class<?> entityClass) {
+        String values = "";
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            values += "#{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+        }
+        return values.substring(0, values.length() - 1);
+    }
+
+    /**
+     * 获取update语句的字段占位符语句
+     * <p>column0 = #{column0}, column1 = #{column1}, column2 = #{column2}, ...</p>
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getSets(Class<?> entityClass) {
+        String sets = "<choose>";
+        sets += "<when test=\"ignoreNull == false\">";
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+        }
+        sets.substring(0, sets.length() - 1);
+        sets += "</when>";
+        sets += "<otherwise>";
+        int i = 0;
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            if (mapping.getProperty() == "id") {
+                continue;
+            }
+            sets += "<if test=\"entity." + mapping.getProperty() + " != null\">";
+            if (i != 0) {
+                sets += Constants.SEPARATOR_COMMA + " ";
+            }
+            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}";
+            sets += "</if>";
+            i++;
+        }
+        sets += "</otherwise>";
+        sets += "</choose>";
+        return sets;
+    }
+
+    protected String selectByQuery() {
+        return "select" +
+                "<if test=\"_parameter != null\">" +
+                " ${query.fields} " +
+                "</if>" +
+                "<if test=\"_parameter == null\">" +
+                " * " +
+                "</if>";
+    }
+
+    protected String from(String table) {
+        return "from " + table + " ";
+    }
+
+    /**
+     * 只能支持两层嵌套查询
+     * @return
+     */
+    protected String whereByQuery() {
+        return "<if test=\"_parameter != null\">" +
+                "<if test=\"query.whereClause != null\">" +
+                "   <where>" +
+                "       <foreach collection=\"query.whereClause.criteriaChain\" item=\"criteria\">" +
+                "       <choose>" +
+                "           <when test=\"criteria.closed == false\">" +
+                "               ${criteria.operator} ${criteria.key} " +
+                "               <foreach collection=\"criteria.criteria\" index=\"condition\" item=\"value\">" +
+                "                   <choose>" +
+                "                       <when test='condition == \"in\"'>" +
+                "                            ${condition} " +
+                "                           <foreach collection=\"value\" item=\"valueItem\" open=\"(\" close=\")\" separator=\",\">" +
+                "                               #{valueItem}" +
+                "                           </foreach>" +
+                "                       </when>" +
+                "                       <otherwise> ${condition} #{value} </otherwise>" +
+                "                   </choose>" +
+                "               </foreach>" +
+                "           </when>" +
+                "           <otherwise>" +
+                "               ${criteria.operator} " +
+                "               <foreach collection=\"criteria.criteriaChain\" index=\"index\" item=\"subCriteria\" open=\"(\" close=\")\">" +
+                "                   <if test=\"index != 0\">${subCriteria.operator}</if> ${subCriteria.key}" +
+                "                   <foreach collection=\"subCriteria.criteria\" index=\"subCondition\" item=\"subValue\">" +
+                "                       <choose>" +
+                "                           <when test='subCondition == \"in\"'>" +
+                "                                ${subCondition} " +
+                "                               <foreach collection=\"subValue\" item=\"valueItem\" open=\"(\" close=\")\" separator=\",\">" +
+                "                                   #{valueItem}" +
+                "                               </foreach>" +
+                "                           </when>" +
+                "                           <otherwise> ${subCondition} #{subValue} </otherwise>" +
+                "                       </choose>" +
+                "                   </foreach>" +
+                "               </foreach>" +
+                "           </otherwise>" +
+                "       </choose>" +
+                "       </foreach>" +
+                "   </where>" +
+                "</if>" +
+                "</if>";
+    }
+
+    protected String groupByQuery() {
+        return "<if test=\"_parameter != null\">" +
+                "<if test=\"query.groupByClause != null\">" +
+                "   group by ${query.groupByClause} " +
+                "</if>" +
+                "</if>";
+    }
+
+    protected String orderByQuery() {
+        return "<if test=\"_parameter != null\">" +
+                "<if test=\"query.oderByClause != null\">" +
+                "   order by ${query.oderByClause} " +
+                "</if>" +
+                "</if>";
+    }
+
+    protected String limitByQuery() {
+        return "<if test=\"_parameter != null\">" +
+                "<if test=\"query.limit != null\">" +
+                "   limit #{query.limit}, #{query.skip} " +
+                "</if>" +
+                "</if>";
     }
 }

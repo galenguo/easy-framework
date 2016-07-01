@@ -106,14 +106,30 @@ public class AppController extends BaseController {
 
     //http://localhost:8000/app/findById
     @RequestMapping("findById")
-    public String findById() {
-        return userService.findById("1").getName();
+    public User findById() {
+        return userService.findById("3");
     }
 
     //http://localhost:8000/app/queryUser
     @RequestMapping("queryUser")
     public List<User> queryUser() {
-        Query query = new Query(Criteria.where("creation_time").lte(new Date()));
+        Query query = new Query(Criteria.where("creation_time").gte(new Date()));
         return userMapper.queryList(query);
+    }
+
+    //http://localhost:8000/app/insert
+    @RequestMapping("insert")
+    public String insert() {
+        User user = new User();
+        user.setName("galenecho");
+        user.setId("4");
+        user.setPhoneNumber("12345678");
+        user.setCreationTime(new Date());
+        user.setModificationTime(new Date());
+        userMapper.insert(user);
+
+        userMapper.queryList(new Query(Criteria.where("creation_time").lte("NOW()").and("name").is("galen")));
+        //userMapper.update(user,null);
+        return "success";
     }
 }

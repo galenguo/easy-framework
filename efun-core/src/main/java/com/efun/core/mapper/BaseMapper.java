@@ -42,12 +42,13 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     <E extends BaseEntity> void insertBatch(@Param("collection")Collection<E> collection);
 
     /**
-     * 更新一条记录
+     * 更新一条记录，默认ignoreNull为true
      * @param entity
+     * @param ignoreNull 默认为true
      * @param <E>
      */
     @UpdateProvider(type = BaseSqlProvider.class, method = "update")
-    <E extends BaseEntity> void update(@Param("entity")E entity);
+    <E extends BaseEntity> void update(@Param("entity")E entity, @Param("ignoreNull")Boolean ignoreNull);
 
     /**
      * 根据id删除一条记录

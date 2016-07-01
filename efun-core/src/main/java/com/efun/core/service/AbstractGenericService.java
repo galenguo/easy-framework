@@ -2,10 +2,10 @@ package com.efun.core.service;
 
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.domain.page.Page;
+import com.efun.core.domain.page.PageImpl;
 import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.BaseMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.efun.core.mapper.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -31,17 +31,28 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
 
     @Override
     public List<E> findAll() {
-        return null;
+        return this.mapper.queryList(null);
     }
 
     @Override
     public List<E> findList(Pageable pageable) {
-        return null;
+        return this.mapper.queryList(new Query().with(pageable));
     }
 
     @Override
     public Page<E> findPage(Pageable pageable) {
-        return null;
+        Page<E> page = new PageImpl<E>(this.mapper.queryList(new Query().with(pageable)), pageable, 0);
+        return page;
+    }
+
+    @Override
+    public Page<E> findPage(Pageable pageable, Boolean hasTotal) {
+        long count = 0;
+        if (hasTotal) {
+            count = this.count();
+        }
+        Page<E> page = new PageImpl<E>(this.mapper.queryList(new Query().with(pageable)), pageable, count);
+        return page;
     }
 
     @Override
@@ -51,14 +62,14 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
 
     @Override
     public void update(E entity) {
-        this.update(entity);
+        this.mapper.update(entity, null);
     }
 
     @Override
     public void save(E entity) {
-        try {
+        if (this.count() > 0) {
             this.update(entity);
-        } catch (Throwable throwable) {
+        } else {
             this.inerst(entity);
         }
     }
