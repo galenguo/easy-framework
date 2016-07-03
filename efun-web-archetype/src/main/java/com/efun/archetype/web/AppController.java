@@ -97,4 +97,10 @@ public class AppController extends BaseController {
         list.add("success");
         return list;
     }
+
+    //http://localhost:8000/app/findById
+    @RequestMapping("findById")
+    public String findById() {
+        return userService.findById("1").getName();
+    }
 }

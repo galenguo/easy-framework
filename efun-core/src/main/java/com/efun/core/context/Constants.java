@@ -46,6 +46,11 @@ public abstract class Constants {
     public static final String URL = "url";
 
     /**
+     * separator dot
+     */
+    public static final String SEPARATOR_DOT = ".";
+
+    /**
      * separator comma
      */
     public static final String SEPARATOR_COMMA = ",";

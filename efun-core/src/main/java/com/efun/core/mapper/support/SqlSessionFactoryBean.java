@@ -34,14 +34,34 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             "list", "arraylist", "collection", "iterator", "ResultSet"};
 
     /**
-     * key类名， value表名
+     * class类， value表名
      */
-    private final Map<String, String> tableNameMap = new HashMap<String, String>();
+    private static final Map<Class<?>, String> tableNameMap = new HashMap<Class<?>, String>();
+
+    private static Configuration configuration;
+
+    /**
+     * 根据实体类获取表名。
+     * @param entityClass
+     * @return
+     */
+    public static String getTableNameFromEntity(Class<?> entityClass) {
+        return tableNameMap.get(entityClass);
+    }
+
+    /**
+     * 根据实体类获取ResultMap映射关系。
+     * @param entityClass
+     * @return
+     */
+    public static ResultMap getResultMapFromEntity(Class<?> entityClass) {
+        return configuration.getResultMap(entityClass.getName());
+    }
 
     @Override
     protected SqlSessionFactory buildSqlSessionFactory() throws IOException {
         SqlSessionFactory sqlSessionFactory = super.buildSqlSessionFactory();
-        Configuration configuration = sqlSessionFactory.getConfiguration();
+        configuration = sqlSessionFactory.getConfiguration();
         scanResultMaps(configuration);
         return sqlSessionFactory;
     }
@@ -72,7 +92,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
         String tableName = tableAnnotation.name();
         List<ResultMapping> resultMappingList = new ArrayList<ResultMapping>();
         String className = clazz.getName();
-        tableNameMap.put(className, tableName);
+        tableNameMap.put(clazz, tableName);
 
         for (Field field : getDeclaredFields(clazz)) {
             ArrayList<ResultFlag> flags = new ArrayList<ResultFlag>();
@@ -84,8 +104,8 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             if (field.getAnnotation(Id.class) != null) {
                 Id idAnnotation = field.getAnnotation(Id.class);
                 columnName = idAnnotation.value();
-                if (StringUtils.isBlank(className)) {
-                    className = field.getName();
+                if (StringUtils.isBlank(columnName)) {
+                    columnName = field.getName();
                 }
                 jdbcType = idAnnotation.jdbcType();
                 javaType = field.getType();
@@ -96,8 +116,8 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
             } else if (field.getAnnotation(Column.class) != null) {
                 Column columnAnnotation = field.getAnnotation(Column.class);
                 columnName = columnAnnotation.value();
-                if (StringUtils.isBlank(className)) {
-                    className = field.getName();
+                if (StringUtils.isBlank(columnName)) {
+                    columnName = field.getName();
                 }
                 jdbcType = columnAnnotation.jdbcType();
                 javaType = field.getType();

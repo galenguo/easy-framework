@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface UserMapper extends BaseMapper<User, String> {
 
-    @DataSource("read")
+    /*@DataSource("read")
     @Select("select * from t_user where id = #{id}")
-    User findById(@Param("id") String id);
+    User findById(@Param("id") String id);*/
 
     @Select("select * from t_user where id = #{id}")
     User findOne(@Param("id") String id);
