@@ -45,14 +45,19 @@ public class DateConverter implements ConditionalGenericConverter {
             return null;
         }
         try {
-            Date date = DateFormatUtils.parseAll(sourceValue);
+            Date date = null;
+            if (sourceValue.matches("^\\d+$")) {
+                date = new Date(Long.parseLong(sourceValue));
+            } else {
+                date = DateFormatUtils.parseAll(sourceValue);
 
-            if (Timestamp.class == typeDescriptor1.getType()) {
-                return new Timestamp(date.getTime());
-            } else if (java.sql.Date.class == typeDescriptor1.getType()) {
-                return new java.sql.Date(date.getTime());
-            } else if (Time.class == typeDescriptor1.getType()) {
-                return new Time(date.getTime());
+                if (Timestamp.class == typeDescriptor1.getType()) {
+                    return new Timestamp(date.getTime());
+                } else if (java.sql.Date.class == typeDescriptor1.getType()) {
+                    return new java.sql.Date(date.getTime());
+                } else if (Time.class == typeDescriptor1.getType()) {
+                    return new Time(date.getTime());
+                }
             }
             return date;
         } catch (ParseException e) {

@@ -5,6 +5,8 @@ import com.efun.core.mapper.annotation.Column;
 import com.efun.core.mapper.annotation.Table;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * User
  *
@@ -20,6 +22,7 @@ public class User extends BaseEntity<String> {
     private String name;
 
     @Column("phone_number")
+    @NotNull(message = "不能为空！")
     private String phoneNumber;
 
     public String getName() {

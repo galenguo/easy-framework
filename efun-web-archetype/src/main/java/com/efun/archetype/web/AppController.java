@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -131,5 +132,17 @@ public class AppController extends BaseController {
         userMapper.queryList(new Query(Criteria.where("creation_time").lte("NOW()").and("name").is("galen")));
         //userMapper.update(user,null);
         return "success";
+    }
+
+    //http://localhost:8000/app/getDate?importDate=1467547667441
+    @RequestMapping("getDate")
+    public Date getDate(@ModelAttribute("importDate")Date date) {
+        return date;
+    }
+
+    //http://localhost:8000/app/validUser?user.id=1&user.name=echo
+    @RequestMapping("validUser")
+    public User validUser(@Valid @ModelParam("user")User user) {
+        return user;
     }
 }
