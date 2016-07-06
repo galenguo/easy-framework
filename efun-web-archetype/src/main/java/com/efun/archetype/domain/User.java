@@ -22,7 +22,7 @@ public class User extends BaseEntity<String> {
     private String name;
 
     @Column("phone_number")
-    @NotNull(message = "不能为空！")
+    @NotNull(message = "{phone.not.null}")
     private String phoneNumber;
 
     public String getName() {
