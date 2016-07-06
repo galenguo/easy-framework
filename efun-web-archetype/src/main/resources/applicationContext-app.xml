@@ -10,6 +10,7 @@
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>
+                <value>i18n/validation</value>
                 <value>i18n/messages-efun-web</value>
             </list>
         </property>

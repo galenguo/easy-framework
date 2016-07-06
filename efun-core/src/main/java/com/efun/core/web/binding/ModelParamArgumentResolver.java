@@ -7,6 +7,7 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestParameterPropertyValues;
 import org.springframework.web.bind.WebDataBinder;
@@ -127,6 +128,9 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                     nativeWebRequest.setAttribute(BINDING_RESULT_LIST_NAME, list, 0);
                 }
                 list.add(bindingResult);
+                if (bindingResult.getErrorCount() > 0) {
+                    throw new BindException(bindingResult);
+                }
             }
         }
 
@@ -167,6 +171,9 @@ public class ModelParamArgumentResolver implements HandlerMethodArgumentResolver
                         nativeWebRequest.setAttribute(BINDING_RESULT_LIST_NAME, list, 0);
                     }
                     list.add(bindingResult);
+                    if (bindingResult.getErrorCount() > 0) {
+                        throw new BindException(bindingResult);
+                    }
                 }
             } else {
                 Map<String, Object> paramValues = WebUtils.getParametersStartingWith(servletRequest, key);

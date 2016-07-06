@@ -26,6 +26,8 @@
         </property>
     </bean>
 
+    <bean id="exceptionResolver" class="com.efun.core.exception.HandlerExceptionResolver"/>
+
     <mvc:annotation-driven conversion-service="conversionService" validator="validator">
         <mvc:argument-resolvers>
             <bean class="com.efun.core.web.binding.PageableMethodArgumentResolver"/>
@@ -53,20 +55,8 @@
     </mvc:annotation-driven>
 
     <mvc:interceptors>
-
-        <!--<mvc:interceptor>
-
-            <mvc:mapping path="/**" />
-            <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
-                <property name="entityManagerFactory" ref="entityManagerFactory" />
-            </bean>
-
-
-        </mvc:interceptor>-->
-
         <!-- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de -->
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
-
     </mvc:interceptors>
 
     <!--
