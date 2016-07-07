@@ -114,7 +114,7 @@ public class AppController extends BaseController {
     //http://localhost:8000/app/queryUser
     @RequestMapping("queryUser")
     public List<User> queryUser() {
-        Query query = new Query(Criteria.where("creation_time").gte(new Date()));
+        Query query = new Query(Criteria.where("created_date").gte(new Date()));
         return userMapper.queryList(query);
     }
 
@@ -125,12 +125,19 @@ public class AppController extends BaseController {
         user.setName("galenecho");
         user.setId("4");
         user.setPhoneNumber("12345678");
-        user.setCreationTime(new Date());
-        user.setModificationTime(new Date());
         userMapper.insert(user);
 
-        userMapper.queryList(new Query(Criteria.where("creation_time").lte("NOW()").and("name").is("galen")));
+        //userMapper.queryList(new Query(Criteria.where("creation_time").lte("NOW()").and("name").is("galen")));
         //userMapper.update(user,null);
+        return "success";
+    }
+
+    //http://localhost:8000/app/update
+    @RequestMapping("update")
+    public String update() {
+        User user = new User();
+        user.setId("4");
+        userMapper.update(user,true);
         return "success";
     }
 

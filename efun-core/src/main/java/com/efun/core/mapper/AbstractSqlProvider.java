@@ -267,7 +267,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getSets(Class<?> entityClass) {
-        String sets = "<choose>";
+        String sets = "<trim prefix=\"SET\" suffixOverrides=\",\"><choose>";
         sets += "<when test=\"ignoreNull == false\">";
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
@@ -275,21 +275,16 @@ public abstract class AbstractSqlProvider {
         sets.substring(0, sets.length() - 1);
         sets += "</when>";
         sets += "<otherwise>";
-        int i = 0;
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             if (mapping.getProperty() == "id") {
                 continue;
             }
             sets += "<if test=\"entity." + mapping.getProperty() + " != null\">";
-            if (i != 0) {
-                sets += Constants.SEPARATOR_COMMA + " ";
-            }
-            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}";
+            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA + " ";
             sets += "</if>";
-            i++;
         }
         sets += "</otherwise>";
-        sets += "</choose>";
+        sets += "</choose></trim>";
         return sets;
     }
 
