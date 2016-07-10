@@ -245,7 +245,7 @@ public abstract class AbstractSqlProvider {
     }
 
     /**
-     * 获取inser语句的字段占位符语句
+     * 获取insert语句的字段占位符语句
      * <p>#{column0}, #{column1}, #{column2}, ...</p>
      *
      * @param entityClass
@@ -257,6 +257,23 @@ public abstract class AbstractSqlProvider {
             values += "#{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
         }
         return values.substring(0, values.length() - 1);
+    }
+
+    /**
+     * 获取insertBatch语句的字段占位符语句
+     * <p>(#{column0}, #{column1}, #{column2}, ...), ...</p>
+     * @param entityClass
+     * @return
+     */
+    protected String getBatchValues(Class<?> entityClass) {
+        String values = "";
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            values += "#{" + "item." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+        }
+        values = "<foreach collection=\"collection\" item=\"item\" index=\"index\" separator=\",\" >" +
+                "(" + values.substring(0, values.length() - 1) + ")" +
+                "</foreach>";
+        return values;
     }
 
     /**

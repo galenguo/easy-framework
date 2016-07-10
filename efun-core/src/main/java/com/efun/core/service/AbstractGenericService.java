@@ -9,6 +9,7 @@ import com.efun.core.mapper.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,6 +59,11 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     @Override
     public void inerst(E entity) {
         this.mapper.insert(entity);
+    }
+
+    @Override
+    public void insertBatch(Collection<E> entities) {
+        this.mapper.insertBatch(entities);
     }
 
     @Override

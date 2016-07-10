@@ -132,6 +132,25 @@ public class AppController extends BaseController {
         return "success";
     }
 
+    //http://localhost:8000/app/insertBatch
+    @RequestMapping("insertBatch")
+    public String insertBatch() {
+        User user = new User();
+        user.setName("galenecho");
+        user.setId("4");
+        user.setPhoneNumber("12345678");
+
+        User user1 = new User();
+        user1.setName("galenecho");
+        user1.setId("5");
+        user1.setPhoneNumber("12345678");
+        List<User> list = new ArrayList<User>();
+        list.add(user);
+        list.add(user1);
+        userMapper.insertBatch(list);
+        return "success";
+    }
+
     //http://localhost:8000/app/update
     @RequestMapping("update")
     public String update() {

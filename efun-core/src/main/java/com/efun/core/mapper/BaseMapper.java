@@ -35,10 +35,11 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     <E extends BaseEntity> void insert(@Param("entity")E entity);
 
     /**
-     * 批量插入，未开发
+     * 批量插入
      * @param collection
      * @param <E>
      */
+    @InsertProvider(type = BaseSqlProvider.class, method = "insertBatch")
     <E extends BaseEntity> void insertBatch(@Param("collection")Collection<E> collection);
 
     /**

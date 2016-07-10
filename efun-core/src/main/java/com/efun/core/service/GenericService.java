@@ -6,6 +6,7 @@ import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.BaseMapper;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -57,6 +58,12 @@ public interface GenericService<M extends BaseMapper<E, ID>, E extends BaseEntit
      * @param entity
      */
     void inerst(E entity);
+
+    /**
+     * 批量插入实体记录
+     * @param entities
+     */
+    void insertBatch(Collection<E> entities);
 
     /**
      * 更新一个实体记录，不更新为null的属性
