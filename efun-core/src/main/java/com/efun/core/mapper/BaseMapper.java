@@ -67,7 +67,7 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     long count();
 
     /**
-     * 根据条件计算记录条数
+     * 根据条件计算记录条数(嵌套查询只支持两层)
      * @param query
      * @return
      */
@@ -75,7 +75,7 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     long countByQuery(@Param("query")Query query);
 
     /**
-     * 根据条件查询列表(未完成)
+     * 根据条件查询列表(嵌套查询只支持两层)
      * @param query
      * @param <E>
      * @return

@@ -71,7 +71,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                     }
                 }
                 result.put("message", message);
-                logger.info("Bean validate message: " + message);
+                logger.warn("Bean validate message: " + message);
             }
         } else {
             result.put("message", e.toString());
