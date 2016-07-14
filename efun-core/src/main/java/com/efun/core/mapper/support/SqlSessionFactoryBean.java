@@ -124,7 +124,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
                             classes.add(Class.forName(metadataReader
                                     .getClassMetadata().getClassName()));
                         } catch (ClassNotFoundException e) {
-                            logger.error("error", e);
+                            logger.error(e.getMessage(), e);
                         }
 
                     }

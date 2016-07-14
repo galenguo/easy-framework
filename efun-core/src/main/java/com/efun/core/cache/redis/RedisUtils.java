@@ -1,4 +1,4 @@
-package com.efun.core.cache;
+package com.efun.core.cache.redis;
 
 /**
  * RedisUtils

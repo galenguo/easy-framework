@@ -1,6 +1,7 @@
 package com.efun.core.cache;
 
 import com.efun.core.service.AbstractBaseService;
+import org.springframework.stereotype.Service;
 
 /**
  * CacheService
@@ -9,5 +10,6 @@ import com.efun.core.service.AbstractBaseService;
  * @author Galen
  * @since 2016/6/15
  */
+@Service
 public class CacheService extends AbstractBaseService {
 }

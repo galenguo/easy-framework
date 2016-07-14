@@ -75,7 +75,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             }
         } else {
             result.put("message", e.toString());
-            logger.error("error:", e);
+            logger.error(e.getMessage(), e);
         }
         String jsonString = JSON.toJSONString(result);
         if (StringUtils.isNotBlank(callback)) {
@@ -89,7 +89,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             outputStream.flush();
             outputStream.close();
         } catch (IOException e1) {
-            logger.error("error:", e1);
+            logger.error(e1.getMessage(), e1);
         }
         return null;
     }

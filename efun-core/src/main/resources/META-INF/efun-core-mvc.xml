@@ -31,4 +31,6 @@
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
     </mvc:interceptors>
 
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
 </beans>

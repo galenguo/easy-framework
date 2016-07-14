@@ -148,7 +148,7 @@ public class HttpUtils {
             response.close();
             return result;
         } catch (Exception e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -234,7 +234,7 @@ public class HttpUtils {
             response.close();
             return result;
         } catch (Exception e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }
@@ -280,7 +280,7 @@ public class HttpUtils {
                 return EntityUtils.toString(new UrlEncodedFormEntity(pairs, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING));
             } catch (Exception e) {
                 logger.debug("map to queryStr failed !");
-                logger.error("error", e);
+                logger.error(e.getMessage(), e);
             }
         }
         return null;

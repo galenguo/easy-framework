@@ -50,9 +50,9 @@ public class ContextListener implements ServletContextListener {
                     appVersion = manifestVersion;
                 }
             } catch (NullPointerException e) {
-                logger.error("error", e);
+                logger.error(e.getMessage(), e);
             } catch (IOException e) {
-                logger.error("error", e);
+                logger.error(e.getMessage(), e);
             }
             Configuration.putProperty(Configuration.APP_VERSION, appVersion);
         }
