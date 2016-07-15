@@ -1,8 +1,11 @@
 package com.efun.archetype.web;
 
 import com.efun.archetype.domain.User;
+import com.efun.archetype.mapper.UserMapper;
 import com.efun.archetype.service.UserService;
 import com.efun.core.context.ApplicationContext;
+import com.efun.core.mapper.query.Criteria;
+import com.efun.core.mapper.query.Query;
 import com.efun.core.web.binding.MapWapper;
 import com.efun.core.web.binding.ModelParam;
 import com.efun.core.web.controller.BaseController;
@@ -29,6 +32,9 @@ public class AppController extends BaseController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserMapper userMapper;
 
     //http://localhost:8000/app/helloworld?user.id=1&user.name=echo
     @RequestMapping("helloworld")
@@ -102,5 +108,12 @@ public class AppController extends BaseController {
     @RequestMapping("findById")
     public String findById() {
         return userService.findById("1").getName();
+    }
+
+    //http://localhost:8000/app/queryUser
+    @RequestMapping("queryUser")
+    public List<User> queryUser() {
+        Query query = new Query(Criteria.where("id").is("1"));
+        return userMapper.queryList(query);
     }
 }

@@ -114,24 +114,24 @@ public class MapperRegistry {
         Method[] methods = mapperClass.getDeclaredMethods();
         Class<?> providerClass = null;
         Class<?> tempClass = null;
-        Set<String> methodSet = new HashSet<String>();
+        Map<String, String> methodMap = new HashMap<String, String>();
         for (Method method : methods) {
             if (method.isAnnotationPresent(SelectProvider.class)) {
                 SelectProvider provider = method.getAnnotation(SelectProvider.class);
                 tempClass = provider.type();
-                methodSet.add(method.getName());
+                methodMap.put(method.getName(), provider.method());
             } else if (method.isAnnotationPresent(InsertProvider.class)) {
                 InsertProvider provider = method.getAnnotation(InsertProvider.class);
                 tempClass = provider.type();
-                methodSet.add(method.getName());
+                methodMap.put(method.getName(), provider.method());
             } else if (method.isAnnotationPresent(DeleteProvider.class)) {
                 DeleteProvider provider = method.getAnnotation(DeleteProvider.class);
                 tempClass = provider.type();
-                methodSet.add(method.getName());
+                methodMap.put(method.getName(), provider.method());
             } else if (method.isAnnotationPresent(UpdateProvider.class)) {
                 UpdateProvider provider = method.getAnnotation(UpdateProvider.class);
                 tempClass = provider.type();
-                methodSet.add(method.getName());
+                methodMap.put(method.getName(), provider.method());
             }
             if (providerClass == null) {
                 providerClass = tempClass;
@@ -149,11 +149,11 @@ public class MapperRegistry {
             throw new RuntimeException("sqlProvider new instance error: " + e.getMessage());
         }
         //注册方法
-        for (String methodName : methodSet) {
+        for (Map.Entry<String, String> methodEntry : methodMap.entrySet()) {
             try {
-                sqlProvider.addMethod(methodName, providerClass.getMethod(methodName, MappedStatement.class));
+                sqlProvider.addMethod(methodEntry.getKey(), providerClass.getMethod(methodEntry.getValue(), MappedStatement.class));
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(providerClass.getCanonicalName() + "lack method:" + methodName + "!");
+                throw new RuntimeException(providerClass.getCanonicalName() + " lack method:" + methodEntry.getValue() + "!");
             }
         }
         sqlProvider.setRegister(this);

@@ -58,12 +58,27 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     <E extends BaseEntity> void delete(@Param("id")Object id);
 
     /**
+     * 计算记录条数
+     * @return
+     */
+    @SelectProvider(type = BaseSqlProvider.class, method = "count")
+    long count();
+
+    /**
+     * 根据条件计算记录条数
+     * @param query
+     * @return
+     */
+    @SelectProvider(type = BaseSqlProvider.class, method = "countByQuery")
+    long countByQuery(@Param("query")Query query);
+
+    /**
      * 根据条件查询列表(未完成)
      * @param query
      * @param <E>
      * @return
      */
-    /*@SelectProvider(type = BaseSqlProvider.class, method = "")*/
+    @SelectProvider(type = BaseSqlProvider.class, method = "query")
     <E extends BaseEntity> List<E> queryList(@Param("query")Query query);
 
 }
