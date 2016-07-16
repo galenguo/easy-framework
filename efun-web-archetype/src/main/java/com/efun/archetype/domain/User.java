@@ -1,5 +1,6 @@
 package com.efun.archetype.domain;
 
+import com.efun.core.domain.BaseAuditEntity;
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.mapper.annotation.Column;
 import com.efun.core.mapper.annotation.Table;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Table(name = "t_user")
-public class User extends BaseEntity<String> {
+public class User extends BaseAuditEntity<String> {
 
     @Length(min = 10, max = 15, message = "")
     @Column("name")

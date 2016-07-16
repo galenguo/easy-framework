@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!-- 应用层组件 -->
+    <!-- 应用层组件配置 -->
     <import resource="classpath*:/META-INF/efun-core-service.xml" />
     <import resource="applicationContext-service.xml"/>
 

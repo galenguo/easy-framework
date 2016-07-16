@@ -50,14 +50,12 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
-        String sets = getSets(entityClass);
         String idField = getId(entityClass);
-        String sql = new SQL() {{
-            UPDATE(tableName);
-            SET(sets);
-            WHERE(idField + "= #{entity.id}");
-        }}.toString();
-        return sql;
+        StringBuilder sql = new StringBuilder();
+        sql.append("update " + tableName);
+        sql.append(getSets(entityClass));
+        sql.append(" where " + idField + " = #{entity.id}");
+        return sql.toString();
     }
 
 

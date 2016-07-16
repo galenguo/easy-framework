@@ -18,4 +18,8 @@
         <!-- 批量扫描设置别名 -->
         <package name="com.efun.archetype.domain"/>
     </typeAliases>
+    
+    <plugins>
+        <plugin interceptor="com.efun.core.mapper.support.AuditingInterceptor"></plugin>
+    </plugins>
 </configuration>
