@@ -1,7 +1,9 @@
 package com.efun.core.context;
 
 import com.efun.core.utils.AssertUtils;
+import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.FileUtils;
+import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -114,7 +116,10 @@ public class ApplicationContext {
     }
 
     public static String getMessage(String code, Object[] args, String defaultMessage) {
-        Locale locale = getCurrentUserLocale();
+        Locale locale = getLanguageLocal();
+        if (null == locale) {
+            locale = getCurrentUserLocale();
+        }
         if (null == locale) {
             locale = Locale.getDefault();
         }
@@ -149,6 +154,25 @@ public class ApplicationContext {
             return null;
         }
         return RequestContextUtils.getLocale(request);
+    }
+
+    /**
+     * get language local
+     * @return
+     */
+    public static Locale getLanguageLocal() {
+        HttpServletRequest request = getHttpRequest();
+        Locale locale = null;
+        if (request != null) {
+            String language = request.getParameter("language");
+            if (StringUtils.isNotBlank(language)) {
+                String[] languageArea = language.split("_");
+                if (languageArea != null && languageArea.length > 0) {
+                    locale = new Locale(languageArea[0], languageArea[1]);
+                }
+            }
+        }
+        return locale;
     }
 
     /**

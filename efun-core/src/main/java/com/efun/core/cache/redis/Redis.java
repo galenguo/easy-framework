@@ -1,11 +1,8 @@
 package com.efun.core.cache.redis;
 
-import com.efun.mainland.util.CacheUtil;
-import com.efun.mainland.util.CommonUtil;
-import com.efun.mainland.util.PropertiesCacheUtil;
-import com.efun.mainland.util.PropertiesFileLoader;
-import com.efun.mainland.util.cache.CacheEntityUtil;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.*;
 
 import java.io.UnsupportedEncodingException;
@@ -34,7 +31,7 @@ public final class Redis {
 	 */
 	public static final String REDIS_CONFIG_FILE = "redis.properties";
 
-	private static final Logger log = Logger.getLogger(Redis.class);
+	protected static final Logger logger = LogManager.getLogger(Redis.class);
 	private static ShardedJedisSentinelPool2 pool = null;
 	private static AtomicBoolean poolState = new AtomicBoolean(false);
 	/**
@@ -44,15 +41,15 @@ public final class Redis {
 	private static byte[] CACHE_KEYS_QUEUE_BYTE;
 
 	static {
-		CACHE_KEYS_QUEUE_STRING = CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_STRING";
+		/*CACHE_KEYS_QUEUE_STRING = CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_STRING";
 
 		try {
 			CACHE_KEYS_QUEUE_BYTE = (CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_BYTE").getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			log.error("UTF-8 UnsupportedEncoding", e);
+			logger.error("UTF-8 UnsupportedEncoding", e);
 		}
-		CacheEntityUtil.containsKey("init");
+		CacheEntityUtil.containsKey("init");*/
 
 		initPool();
 	}
@@ -74,15 +71,16 @@ public final class Redis {
 	synchronized protected final static boolean initPool() {
 		if (Charset.isSupported("UTF-8")) {
 			System.out.println("UTF-8 Charset SupportedEncoding");
-			log.info("UTF-8 Charset SupportedEncoding");
+			logger.info("UTF-8 Charset SupportedEncoding");
 		} else {
 			System.out.println("UTF-8 Charset UnsupportedEncoding");
-			log.error("UTF-8 Charset UnsupportedEncoding");
+			logger.error("UTF-8 Charset UnsupportedEncoding");
 			return false;
 		}
 		if (poolState.getAndSet(true)) {
 			return true;
 		}
+/*
 		try {
 			destroyPool();
 
@@ -117,7 +115,7 @@ public final class Redis {
 				}
 
 				Cluster.initCluster(nodesSet, timeout, poolConfig);
-				log.info(new StringBuilder().append("cluster.nodes(config)>>>").append(nodes).toString());
+				logger.info(new StringBuilder().append("cluster.nodes(config)>>>").append(nodes).toString());
 				System.out.println(new StringBuilder().append("cluster.nodes(config)>>>").append(nodes).toString());
 				
 				StringBuilder clusterBuilder=new StringBuilder("cluster.nodes>>>");
@@ -126,7 +124,7 @@ public final class Redis {
 				clusterBuilder.append(loadCluster().getClusterNodes().keySet()).append(" message:\n").append(jedis.clusterNodes());
 				jedis.close();
 				
-				log.info(new StringBuilder().append("cluster.nodes>>>").append(clusterBuilder.toString()).toString());
+				logger.info(new StringBuilder().append("cluster.nodes>>>").append(clusterBuilder.toString()).toString());
 				System.out.println(new StringBuilder().append("cluster.nodes>>>").append(clusterBuilder.toString()).toString());
 			} else {
 				//客户端集群初始化
@@ -151,18 +149,18 @@ public final class Redis {
 						sentinelSet.add(str);
 					}
 				}
-				log.info(new StringBuilder().append("redis.serverNames>>>").append(servers).toString());
-				log.info(new StringBuilder().append("redis.sentinels>>>").append(sentinels).toString());
+				logger.info(new StringBuilder().append("redis.serverNames>>>").append(servers).toString());
+				logger.info(new StringBuilder().append("redis.sentinels>>>").append(sentinels).toString());
 				System.out.println(new StringBuilder().append("redis.serverNames>>>").append(servers).toString());
 				System.out.println(new StringBuilder().append("redis.sentinels>>>").append(sentinels).toString());
 
 				Set<String> nameSet = new LinkedHashSet<String>(serverNameList);
 				pool = new ShardedJedisSentinelPool2(nameSet, sentinelSet, poolConfig, timeout);
 				if (pool == null) {
-					log.error("ShardedJedisSentinelPool init fail");
+					logger.error("ShardedJedisSentinelPool init fail");
 					System.out.println("ShardedJedisSentinelPool init fail");
 				} else {
-					log.info("ShardedJedisSentinelPool init success:" + pool.toString());
+					logger.info("ShardedJedisSentinelPool init success:" + pool.toString());
 					System.out.println("ShardedJedisSentinelPool init success:" + pool.toString());
 					return true;
 				}
@@ -170,12 +168,13 @@ public final class Redis {
 		} catch (Exception e) {
 			System.out.println(
 					"[redis.properties]{" + PropertiesFileLoader.getClassPath() + "} 属性文件中属性配置错误!" + e.getMessage());
-			log.error("[redis.properties]{" + PropertiesFileLoader.getClassPath() + "} 属性文件中属性配置错误!" + e.getMessage(),
+			logger.error("[redis.properties]{" + PropertiesFileLoader.getClassPath() + "} 属性文件中属性配置错误!" + e.getMessage(),
 					e);
 		} finally {
-			log.info(new StringBuilder().append("isCluster>>>").append(isCluster()).toString());
+			logger.info(new StringBuilder().append("isCluster>>>").append(isCluster()).toString());
 			System.out.println(new StringBuilder().append("isCluster>>>").append(isCluster()).toString());
 		}
+*/
 		return false;
 	}
 
@@ -184,19 +183,19 @@ public final class Redis {
 			if (isCluster()) {
 				Cluster.close();
 				System.out.println("Cluster.SimpleCluster.REDIS_CLUSTER destroy success");
-				log.info("Cluster.SimpleCluster.REDIS_CLUSTER destroy success");
+				logger.info("Cluster.SimpleCluster.REDIS_CLUSTER destroy success");
 			} else {
 				if (pool != null) {
 					pool.destroy();
 					System.out.println("ShardedJedisSentinelPool destroy success");
-					log.info("ShardedJedisSentinelPool destroy success");
+					logger.info("ShardedJedisSentinelPool destroy success");
 				}
 			}
 		} catch (Exception e) {
 			if (isCluster()) {
-				log.error("Cluster.SimpleCluster.REDIS_CLUSTER destroy error:" + e.getMessage(), e);
+				logger.error("Cluster.SimpleCluster.REDIS_CLUSTER destroy error:" + e.getMessage(), e);
 			} else {
-				log.error("ShardedJedisSentinelPool destroy error:" + e.getMessage(), e);
+				logger.error("ShardedJedisSentinelPool destroy error:" + e.getMessage(), e);
 			}
 		} finally {
 			pool = null;
@@ -240,13 +239,13 @@ public final class Redis {
 
 	protected final static void returnRedis(ShardedJedis redis) {
 		if (redis == null) {
-			log.error("releaseRedis error:redis is null");
+			logger.error("releaseRedis error:redis is null");
 			return;
 		}
 		try {
 			redis.close();
 		} catch (Exception e) {
-			log.error("releaseRedis exception:" + e.getMessage(), e);
+			logger.error("releaseRedis exception:" + e.getMessage(), e);
 		}
 	}
 }

@@ -1,8 +1,7 @@
 package com.efun.core.cache.redis;
 
-import com.efun.mainland.util.cache.TimeUnitSeconds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.SortingParams;
 import redis.clients.jedis.Tuple;
@@ -20,7 +19,7 @@ import java.util.Set;
  */
 public final class RedisService implements IRedisService {
 	private static final boolean IS_CLUSTER = Redis.isCluster();
-	private static final Logger log = LoggerFactory.getLogger(RedisService.class);
+	protected static final Logger logger = LogManager.getLogger(RedisPoolManager.class);
 
 	protected RedisService() {
 	}
@@ -32,7 +31,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.append(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -46,7 +45,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.append(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -60,7 +59,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.bitcount(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -74,7 +73,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.bitcount(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -88,7 +87,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.bitcount(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -102,7 +101,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.bitcount(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -116,7 +115,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.blpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -133,7 +132,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.del(key);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -146,7 +145,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.blpop(timeout, key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -163,7 +162,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.del(key);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -176,7 +175,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.blpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -190,7 +189,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.brpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -204,7 +203,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.brpop(timeout, key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -218,7 +217,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.brpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -232,7 +231,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.decr(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -246,7 +245,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.decr(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -260,7 +259,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.decrBy(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -274,7 +273,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.decrBy(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -292,7 +291,7 @@ public final class RedisService implements IRedisService {
 				redis.zadd(Redis.getCacheQueueKeyByte(), System.currentTimeMillis(), key);
 			}
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -310,7 +309,7 @@ public final class RedisService implements IRedisService {
 				redis.zadd(Redis.getCacheQueueKeyString(), System.currentTimeMillis(), key);
 			}
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -324,7 +323,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.exists(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -338,7 +337,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.exists(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -352,7 +351,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.expire(key, seconds);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -366,7 +365,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.expire(key, seconds);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -380,7 +379,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.expireAt(key, unixTime);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -394,7 +393,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.expireAt(key, unixTime);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -408,7 +407,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.get(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -422,7 +421,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.get(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -436,7 +435,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.getrange(key, startOffset, endOffset);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -450,7 +449,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.getrange(key, startOffset, endOffset);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -464,7 +463,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.getSet(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -478,7 +477,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.getSet(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -492,7 +491,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hdel(key, fields);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -506,7 +505,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hdel(key, fields);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -520,7 +519,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hexists(key, field);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -534,7 +533,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hexists(key, field);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -548,7 +547,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hget(key, field);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -562,7 +561,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hget(key, field);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -576,7 +575,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hgetAll(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -590,7 +589,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hgetAll(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -604,7 +603,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hincrBy(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -618,7 +617,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hincrBy(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -636,7 +635,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.keys(pattern);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -650,7 +649,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.keys(pattern);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -663,7 +662,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hincrByFloat(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -677,7 +676,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hincrByFloat(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -691,7 +690,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hkeys(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -705,7 +704,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hkeys(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -719,7 +718,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hlen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -733,7 +732,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hlen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -747,7 +746,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hmget(key, fields);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -761,7 +760,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hmget(key, fields);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -775,7 +774,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hmset(key, hash);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -789,7 +788,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hmset(key, hash);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -803,7 +802,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hset(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -817,7 +816,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hset(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -831,7 +830,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hsetnx(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -845,7 +844,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.hsetnx(key, field, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -859,7 +858,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hvals(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -873,7 +872,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.hvals(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -887,7 +886,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incr(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -901,7 +900,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incr(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -919,7 +918,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.mget(keys);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -935,7 +934,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.mget(keys);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -948,7 +947,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incrBy(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -962,7 +961,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incrBy(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -980,7 +979,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pexpire(key, milliseconds);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -996,7 +995,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pexpire(key, milliseconds);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1012,7 +1011,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pexpireAt(key, milliseconds);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1028,7 +1027,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pexpireAt(key, milliseconds);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1045,7 +1044,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.rename(oldkey, newkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1061,7 +1060,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.rename(oldkey, newkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1077,7 +1076,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.renamenx(oldkey, newkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1093,7 +1092,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.renamenx(oldkey, newkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1106,7 +1105,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incrByFloat(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1120,7 +1119,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.incrByFloat(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1138,7 +1137,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.rpoplpush(srckey, dstkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1154,7 +1153,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.rpoplpush(srckey, dstkey);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1167,7 +1166,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.lindex(key, index);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1181,7 +1180,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.lindex(key, index);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1195,7 +1194,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.llen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1209,7 +1208,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.llen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1223,7 +1222,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1237,7 +1236,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1251,7 +1250,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpush(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1265,7 +1264,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpush(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1279,7 +1278,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpushx(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1293,7 +1292,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lpushx(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1307,7 +1306,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.lrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1321,7 +1320,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.lrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1335,7 +1334,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lrem(key, count, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1349,7 +1348,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lrem(key, count, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1363,7 +1362,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lset(key, index, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1377,7 +1376,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.lset(key, index, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1391,7 +1390,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.ltrim(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1405,7 +1404,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.ltrim(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1419,7 +1418,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.persist(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1433,7 +1432,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.persist(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1451,7 +1450,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.sunion(keys);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1467,7 +1466,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.sunion(keys);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1480,7 +1479,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.pfadd(key, elements);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1494,7 +1493,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.pfadd(key, elements);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1508,7 +1507,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.pfcount(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1522,7 +1521,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.pfcount(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1536,7 +1535,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1550,7 +1549,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1564,7 +1563,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpush(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1578,7 +1577,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpush(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1592,7 +1591,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpushx(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1606,7 +1605,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.rpushx(key, strings);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1620,7 +1619,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.sadd(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1634,7 +1633,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.sadd(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1648,7 +1647,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.scard(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1662,7 +1661,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.scard(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1676,7 +1675,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.set(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1690,7 +1689,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.set(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1704,7 +1703,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.set(key, value, nxxx, expx, time);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1718,7 +1717,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.set(key, value, nxxx, expx, time);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1732,7 +1731,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setex(key, seconds, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1746,7 +1745,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setex(key, seconds, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1760,7 +1759,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setnx(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1774,7 +1773,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setnx(key, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1788,7 +1787,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setrange(key, offset, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1802,7 +1801,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.setrange(key, offset, value);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1816,7 +1815,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sismember(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1830,7 +1829,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sismember(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1844,7 +1843,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.smembers(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1858,7 +1857,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.smembers(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1872,7 +1871,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sort(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1886,7 +1885,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sort(key, sortingParameters);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1900,7 +1899,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sort(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1914,7 +1913,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.sort(key, sortingParameters);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1932,7 +1931,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pttl(key);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1948,7 +1947,7 @@ public final class RedisService implements IRedisService {
 	// result = redis.pttl(key);
 	// } catch (Exception e) { //
 	//
-	// log.error("pool or redis object or command exception:"+e.getMessage(),e);
+	// logger.error("pool or redis object or command exception:"+e.getMessage(),e);
 	// } finally { // Redis.returnRedis(redis,isBroken);
 	// }
 	// return result;
@@ -1961,7 +1960,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.spop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1975,7 +1974,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.spop(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -1989,7 +1988,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.srem(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2003,7 +2002,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.srem(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2017,7 +2016,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.strlen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2031,7 +2030,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.strlen(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2045,7 +2044,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.ttl(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2059,7 +2058,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.ttl(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2073,7 +2072,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.type(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2087,7 +2086,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.type(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2101,7 +2100,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zadd(key, score, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2115,7 +2114,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zadd(key, scoreMembers);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2129,7 +2128,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zadd(key, score, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2143,7 +2142,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zadd(key, scoreMembers);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2157,7 +2156,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcard(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2171,7 +2170,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcard(key);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2185,7 +2184,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2199,7 +2198,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2213,7 +2212,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2227,7 +2226,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2241,7 +2240,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zincrby(key, score, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2255,7 +2254,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zincrby(key, score, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2269,7 +2268,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zlexcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2283,7 +2282,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zlexcount(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2297,7 +2296,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2311,7 +2310,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2325,7 +2324,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByLex(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2339,7 +2338,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByLex(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2353,7 +2352,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByLex(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2367,7 +2366,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByLex(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2381,7 +2380,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2395,7 +2394,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2409,7 +2408,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2423,7 +2422,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2437,7 +2436,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2451,7 +2450,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2465,7 +2464,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2479,7 +2478,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScore(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2493,7 +2492,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2507,7 +2506,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2521,7 +2520,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2535,7 +2534,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2549,7 +2548,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2563,7 +2562,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2577,7 +2576,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2591,7 +2590,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeByScoreWithScores(key, min, max, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2605,7 +2604,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeWithScores(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2619,7 +2618,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrangeWithScores(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2633,7 +2632,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrank(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2647,7 +2646,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrank(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2661,7 +2660,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zrem(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2675,7 +2674,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zrem(key, members);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2689,7 +2688,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByLex(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2703,7 +2702,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByLex(key, min, max);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2717,7 +2716,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByRank(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2731,7 +2730,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByRank(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2745,7 +2744,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByScore(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2759,7 +2758,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByScore(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2773,7 +2772,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByScore(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2787,7 +2786,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis();
 			result = redis.zremrangeByScore(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2801,7 +2800,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2815,7 +2814,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrange(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2829,7 +2828,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByLex(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2843,7 +2842,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByLex(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2857,7 +2856,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByLex(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2871,7 +2870,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByLex(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2885,7 +2884,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2899,7 +2898,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2913,7 +2912,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2927,7 +2926,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2941,7 +2940,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2955,7 +2954,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2969,7 +2968,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2983,7 +2982,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScore(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -2997,7 +2996,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3011,7 +3010,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3025,7 +3024,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3039,7 +3038,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3053,7 +3052,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3067,7 +3066,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3081,7 +3080,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3095,7 +3094,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeByScoreWithScores(key, max, min, offset, count);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3109,7 +3108,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeWithScores(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3123,7 +3122,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrangeWithScores(key, start, end);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3137,7 +3136,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrank(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3151,7 +3150,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zrevrank(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3165,7 +3164,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zscore(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3179,7 +3178,7 @@ public final class RedisService implements IRedisService {
 			redis = Redis.loadRedis(true);
 			result = redis.zscore(key, member);
 		} catch (Exception e) {
-			log.error("pool or redis object or command exception:" + e.getMessage(), e);
+			logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 		} finally {
 			Redis.returnRedis(redis);
 		}
@@ -3202,7 +3201,7 @@ public final class RedisService implements IRedisService {
 						result = "OK".equals(temp);
 					}
 				} catch (Exception e) {
-					log.error("pool or redis object or command exception:" + e.getMessage(), e);
+					logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 				}
 			}
 		} else {
@@ -3220,7 +3219,7 @@ public final class RedisService implements IRedisService {
 						result = "OK".equals(temp);
 					}
 				} catch (Exception e) {
-					log.error("pool or redis object or command exception:" + e.getMessage(), e);
+					logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 				} finally {
 					Redis.returnRedis(redis);
 				}
@@ -3244,7 +3243,7 @@ public final class RedisService implements IRedisService {
 								TimeUnitSeconds.CACHE_1_HOUR);
 						result = "OK".equals(temp);
 					} catch (Exception e) {
-						log.error("pool or redis object or command exception:" + e.getMessage(), e);
+						logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 					} finally {
 						currentTime = System.currentTimeMillis();
 					}
@@ -3259,7 +3258,7 @@ public final class RedisService implements IRedisService {
 						String temp = redis.set(key, "1", Redis.NX, Redis.EX, TimeUnitSeconds.CACHE_1_HOUR);
 						result = "OK".equals(temp);
 					} catch (Exception e) {
-						log.error("pool or redis object or command exception:" + e.getMessage(), e);
+						logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 					} finally {
 						Redis.returnRedis(redis);
 						currentTime = System.currentTimeMillis();
@@ -3285,7 +3284,7 @@ public final class RedisService implements IRedisService {
 								seconds > 0 ? seconds : TimeUnitSeconds.CACHE_1_HOUR);
 						result = "OK".equals(temp);
 					} catch (Exception e) {
-						log.error("pool or redis object or command exception:" + e.getMessage(), e);
+						logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 					} finally {
 						currentTime = System.currentTimeMillis();
 					}
@@ -3301,7 +3300,7 @@ public final class RedisService implements IRedisService {
 								seconds > 0 ? seconds : TimeUnitSeconds.CACHE_1_HOUR);
 						result = "OK".equals(temp);
 					} catch (Exception e) {
-						log.error("pool or redis object or command exception:" + e.getMessage(), e);
+						logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 					} finally {
 						Redis.returnRedis(redis);
 						currentTime = System.currentTimeMillis();
@@ -3328,7 +3327,7 @@ public final class RedisService implements IRedisService {
 					result = "OK".equals(temp);
 				}
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			}
 		} else {
 			ShardedJedis redis = null;
@@ -3344,7 +3343,7 @@ public final class RedisService implements IRedisService {
 					result = "OK".equals(temp);
 				}
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			} finally {
 				Redis.returnRedis(redis);
 			}
@@ -3360,7 +3359,7 @@ public final class RedisService implements IRedisService {
 				String temp = Cluster.getInstance().set(key, "1", Redis.NX, Redis.EX, seconds > 0 ? seconds : TimeUnitSeconds.CACHE_1_HOUR);
 				result = "OK".equals(temp);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			}
 		} else {
 			ShardedJedis redis = null;
@@ -3369,7 +3368,7 @@ public final class RedisService implements IRedisService {
 				String temp = redis.set(key, "1", Redis.NX, Redis.EX, seconds > 0 ? seconds : TimeUnitSeconds.CACHE_1_HOUR);
 				result = "OK".equals(temp);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			} finally {
 				Redis.returnRedis(redis);
 			}
@@ -3383,7 +3382,7 @@ public final class RedisService implements IRedisService {
 			try {
 				return Cluster.getInstance().exists(key);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			}
 		} else {
 			ShardedJedis redis = null;
@@ -3391,7 +3390,7 @@ public final class RedisService implements IRedisService {
 				redis = Redis.loadRedis();
 				return redis.exists(key);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			} finally {
 				Redis.returnRedis(redis);
 			}
@@ -3406,7 +3405,7 @@ public final class RedisService implements IRedisService {
 			try {
 				result = Cluster.getInstance().del(key);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			}
 		} else {
 			ShardedJedis redis = null;
@@ -3414,7 +3413,7 @@ public final class RedisService implements IRedisService {
 				redis = Redis.loadRedis();
 				result = redis.del(key);
 			} catch (Exception e) {
-				log.error("pool or redis object or command exception:" + e.getMessage(), e);
+				logger.error("pool or redis object or command exception:" + e.getMessage(), e);
 			} finally {
 				Redis.returnRedis(redis);
 			}

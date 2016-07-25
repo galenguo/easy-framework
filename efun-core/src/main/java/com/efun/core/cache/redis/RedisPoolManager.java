@@ -1,7 +1,8 @@
 package com.efun.core.cache.redis;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,7 +12,7 @@ public class RedisPoolManager extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -2073786379363537242L;
-	private static final Logger log = Logger.getLogger(RedisPoolManager.class);
+	protected static final Logger logger = LogManager.getLogger(RedisPoolManager.class);
 
 	public RedisPoolManager() {
 		super();
@@ -20,12 +21,12 @@ public class RedisPoolManager extends HttpServlet {
 	public void destroy() {
 		super.destroy();
 		Redis.destroyPool();
-		log.info("destroy redis pool");
+		logger.info("destroy redis pool");
 	}
 
 	public void init() throws ServletException {
 		Redis.initPool();
-		log.info("init redis pool");
+		logger.info("init redis pool");
 	}
 
 }
