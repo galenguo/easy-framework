@@ -47,6 +47,8 @@
         <fastjson.version>1.2.12</fastjson.version>
         <druid.version>1.0.20</druid.version>
         <disruptor.version>3.3.4</disruptor.version>
+        <httpclient.version>4.5.2</httpclient.version>
+        <antisamy.version>1.5.3</antisamy.version>
     </properties>
 
     <dependencies>
@@ -185,6 +187,11 @@
         <dependency>
             <groupId>org.owasp.antisamy</groupId>
             <artifactId>antisamy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
 
     </dependencies>
@@ -444,9 +451,15 @@
             <dependency>
                 <groupId>org.owasp.antisamy</groupId>
                 <artifactId>antisamy</artifactId>
-                <version>1.5.3</version>
+                <version>${antisamy.version}</version>
             </dependency>
 
+            <!-- http client -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

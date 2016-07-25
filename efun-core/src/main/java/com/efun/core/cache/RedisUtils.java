@@ -8,4 +8,5 @@ package com.efun.core.cache;
  * @since 2016/7/7
  */
 public class RedisUtils {
+
 }

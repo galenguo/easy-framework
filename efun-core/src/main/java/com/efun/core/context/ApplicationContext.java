@@ -200,7 +200,7 @@ public class ApplicationContext {
                 dirName = context.getResource("/").getFile();
                 logger.debug("context.getResource:" + dirName);
             } catch (MalformedURLException ex) {
-                ex.printStackTrace();
+                logger.error("error", ex);
             }
 
         }

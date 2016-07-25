@@ -6,6 +6,8 @@ import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.executor.ExecutorException;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -26,6 +28,8 @@ import java.util.*;
  * @since 2016/6/27
  */
 public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryBean {
+
+    protected final Logger logger = LogManager.getLogger(this.getClass());
 
     /**
      * mybatis默认的类型
@@ -120,7 +124,7 @@ public class SqlSessionFactoryBean extends org.mybatis.spring.SqlSessionFactoryB
                             classes.add(Class.forName(metadataReader
                                     .getClassMetadata().getClassName()));
                         } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
+                            logger.error("error", e);
                         }
 
                     }
