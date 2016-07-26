@@ -101,7 +101,7 @@
     <!-- log -->
     <context-param>
         <param-name>log4jConfiguration</param-name>
-        <param-value>classpath:/log4j.xml</param-value>
+        <param-value>classpath:/log4j2.xml</param-value>
     </context-param>
     <!-- servlet3.0，一下不需要配置 -->
     <listener>

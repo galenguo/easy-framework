@@ -76,9 +76,9 @@ public class AppController extends BaseController {
         return list;
     }
 
-    //http://localhost:8000/app/helloworld4?date=1464689100000
+    //http://localhost:8000/app/helloworld4?createDate=1464689100000
     @RequestMapping("helloworld4")
-    public List<String> helloworld4(@ModelAttribute("date")Date date) {
+    public List<String> helloworld4(@ModelAttribute("createDate")Date date) {
         logger.debug("helloworld4");
         List<String> list = new ArrayList<String>();
         list.add("hello world again again again!");
