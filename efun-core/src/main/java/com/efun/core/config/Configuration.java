@@ -4,10 +4,7 @@ import com.efun.core.context.Constants;
 import com.efun.core.exception.EfunException;
 import com.efun.core.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Configuration
@@ -34,7 +31,7 @@ public class Configuration {
 
     public static final String LOG_LEVEL = "log.level";
 
-    private static Map<String, Object> properties = new HashMap<String, Object>();
+    private static Map<String, Object> properties = new LinkedHashMap<String, Object>();
 
     private static String patternTime;
 

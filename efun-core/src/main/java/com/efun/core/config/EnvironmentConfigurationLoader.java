@@ -36,9 +36,15 @@ public class EnvironmentConfigurationLoader implements ConfigurationLoader {
                         value = Configuration.getDefaultConfigValue(key);
                     }
                     if (StringUtils.isNotEmpty(value)) {
+                        //导入配置
                         Configuration.putProperty(key, value);
+                        //导入log4j2上下文
                         ThreadContext.put((String) key, value);
-                        logger.info("putProperty {}:{} to EchoConfiguration", key, value);
+                        //刷新log4j2配置
+                        if (key.startsWith("log")) {
+                            ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
+                        }
+                        logger.info("putProperty {}={}", key, value);
                     }
                 }
             }

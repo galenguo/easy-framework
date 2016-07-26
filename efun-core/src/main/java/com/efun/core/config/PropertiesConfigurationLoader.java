@@ -9,10 +9,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * properties file loader.
@@ -55,17 +52,24 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
         for (String fileName : fileNameList) {
             String resourceName =  FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) + fileName;
             logger.info("loading properties from {} ", resourceName);
-            Properties properties = PropertiesLoaderUtils.loadProperties(new FileSystemResource(resourceName));
+            LinkedProperties properties = new LinkedProperties();
+            PropertiesLoaderUtils.fillProperties(properties, new FileSystemResource(resourceName));
 
 
             if (null != properties) {
 
-                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                    Object key = entry.getKey();
-                    String value = (String) entry.getValue();
+                for (Object item : properties.keySet()) {
+                    String key = (String) item;
+                    String value = (String) properties.get(key);
+                    //导入配置
                     Configuration.putProperty((String) key, value);
+                    //导入log4j2上下文
                     ThreadContext.put((String) key, value);
-                    logger.info("putProperty {}:{} to Configuration", key, value);
+                    //刷新log4j2配置
+                    if (((String) key).startsWith("log")) {
+                        ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
+                    }
+                    logger.info("putProperty {}={}", key, value);
                 }
             } else {
                 logger.error("Loading Error from file: {}", resourceName);
@@ -80,5 +84,26 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    static class LinkedProperties extends Properties {
+        private final HashSet<Object> keys = new LinkedHashSet<Object>();
+
+        public LinkedProperties() {
+        }
+
+        public Enumeration<Object> keys() {
+            return Collections.<Object>enumeration(keys);
+        }
+
+        @Override
+        public Set<Object> keySet() {
+            return keys;
+        }
+
+        public Object put(Object key, Object value) {
+            keys.add(key);
+            return super.put(key, value);
+        }
     }
 }
