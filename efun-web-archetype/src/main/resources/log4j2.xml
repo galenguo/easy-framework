@@ -25,7 +25,7 @@
         <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="${ctx:log.level}" includeLocation="true"/>
         <AsyncLogger name="com.efun" level="${ctx:log.level}" includeLocation="true"/>
 
-        <AsyncRoot level="debug" includeLocation="true">
+        <AsyncRoot level="info" includeLocation="true">
             <AppenderRef ref="log" />
             <AppenderRef ref="console" />
         </AsyncRoot>
