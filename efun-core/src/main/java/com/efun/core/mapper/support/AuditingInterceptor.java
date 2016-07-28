@@ -8,6 +8,8 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -22,8 +24,12 @@ import java.util.*;
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class AuditingInterceptor implements Interceptor {
 
+    protected final Logger logger = LogManager.getLogger(this.getClass());
+
     private static final Map<Class<?>, Object> lastModifiedDateFieldMap = new HashMap<Class<?>, Object>();
     private static final Map<Class<?>, Object> createdDateFieldMap = new HashMap<Class<?>, Object>();
+
+    private static final Map<String, Class<?>> statementClassMap = new HashMap<String, Class<?>>();
 
     @Override
 
@@ -31,20 +37,34 @@ public class AuditingInterceptor implements Interceptor {
         MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
         Object parameter = invocation.getArgs()[1];
-        Class<?> clazz = null;
-        if (parameter instanceof MapperMethod.ParamMap) {
-            MapperMethod.ParamMap paramMap = (MapperMethod.ParamMap) parameter;
-            parameter = paramMap.get("entity");
-            clazz = parameter.getClass();
-            if (parameter == null) {
-                // TODO: 2016/7/7 批量插入需要未完成
-                parameter = paramMap.get("collection");
-                //parameter
+        Class<?> clazz = statementClassMap.get(mappedStatement.getId());
+        if (clazz == null) {
+            if (parameter instanceof MapperMethod.ParamMap) {
+                MapperMethod.ParamMap paramMap = (MapperMethod.ParamMap) parameter;
+                Set<Map.Entry<String, Object>> entrySet = paramMap.entrySet();
+                for (Map.Entry<String, Object> entry : entrySet) {
+                    if (entry.getKey().equals("entity")) {
+                        parameter = paramMap.get("entity");
+                        clazz = parameter.getClass();
+                        break;
+                    } else if (entry.getKey().equals("collection")) {
+                        parameter = paramMap.get("collection");
+                        Iterator<Object> iterator = ((Collection) parameter).iterator();
+                        if (iterator.hasNext()) {
+                            clazz = iterator.next().getClass();
+                        } else {
+                            logger.error("parameter collection can not be null");
+                        }
+                    }
+                }
+            } else {
+                clazz = parameter.getClass();
             }
-        } else {
-            clazz = parameter.getClass();
+
+            statementClassMap.put(mappedStatement.getId(), clazz);
         }
 
+        //非基础entit参数类型语句不处理
         if (!EntityInterface.class.isAssignableFrom(clazz)) {
             return invocation.proceed();
         }
@@ -111,12 +131,9 @@ public class AuditingInterceptor implements Interceptor {
             }
         }
         if (field != null) {
-            Object lastModifiedDate = field.get(parameter);
-            if (lastModifiedDate == null) {
-                field.setAccessible(true);
-                field.set(parameter, currentDate);
-                field.setAccessible(false);
-            }
+            field.setAccessible(true);
+            field.set(parameter, currentDate);
+            field.setAccessible(false);
         } else {
             lastModifiedDateFieldMap.put(clazz, new NoField());
         }
@@ -134,12 +151,9 @@ public class AuditingInterceptor implements Interceptor {
             }
         }
         if (field != null) {
-            Object createdDate = field.get(parameter);
-            if (createdDate == null) {
-                field.setAccessible(true);
-                field.set(parameter, currentDate);
-                field.setAccessible(false);
-            }
+            field.setAccessible(true);
+            field.set(parameter, currentDate);
+            field.setAccessible(false);
         } else {
             createdDateFieldMap.put(clazz, new NoField());
         }

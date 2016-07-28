@@ -46,6 +46,19 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         return sql;
     }
 
+    public String insertBatch(MappedStatement mappedStatement) {
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
+        String tableName = getTableName(entityClass);
+        String columns = getColumns(entityClass);
+        String values = getBatchValues(entityClass);
+        StringBuilder sql = new StringBuilder();
+        sql.append("insert " + tableName);
+        sql.append(" (" + columns + ")");
+        sql.append(" values " + values);
+        return sql.toString();
+    }
+
     public String update(MappedStatement mappedStatement) {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
