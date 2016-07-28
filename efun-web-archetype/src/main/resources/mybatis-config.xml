@@ -18,6 +18,14 @@
         <!-- 批量扫描设置别名 -->
         <package name="com.efun.archetype.domain"/>
     </typeAliases>
+
+    <!-- 配置类型转换处理，例如枚举要映射为数字，还是字符串，默认情况下所有的枚举都转换为字符串 -->
+    <typeHandlers>
+        <!-- 枚举映射为数字 -->
+        <!--<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.efun.enum.Status"/>-->
+        <!-- 枚举映射为字符串 -->
+        <!--<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.efun.enum.Status"/>-->
+    </typeHandlers>
     
     <plugins>
         <plugin interceptor="com.efun.core.mapper.support.AuditingInterceptor"></plugin>
