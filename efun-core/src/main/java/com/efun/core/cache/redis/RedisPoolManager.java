@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 
 public class RedisPoolManager extends HttpServlet {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2073786379363537242L;
 	protected static final Logger logger = LogManager.getLogger(RedisPoolManager.class);

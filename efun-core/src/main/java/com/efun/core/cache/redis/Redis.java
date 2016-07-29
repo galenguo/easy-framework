@@ -41,7 +41,7 @@ public final class Redis {
 	private static byte[] CACHE_KEYS_QUEUE_BYTE;
 
 	static {
-		/*CACHE_KEYS_QUEUE_STRING = CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_STRING";
+		CACHE_KEYS_QUEUE_STRING = CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_STRING";
 
 		try {
 			CACHE_KEYS_QUEUE_BYTE = (CacheUtil.getCachePrefix() + "_CACHE_KEYS_QUEUE_BYTE").getBytes("UTF-8");
@@ -49,7 +49,7 @@ public final class Redis {
 			// TODO Auto-generated catch block
 			logger.error("UTF-8 UnsupportedEncoding", e);
 		}
-		CacheEntityUtil.containsKey("init");*/
+		CacheEntityUtil.containsKey("init");
 
 		initPool();
 	}
@@ -80,7 +80,6 @@ public final class Redis {
 		if (poolState.getAndSet(true)) {
 			return true;
 		}
-/*
 		try {
 			destroyPool();
 
@@ -174,7 +173,6 @@ public final class Redis {
 			logger.info(new StringBuilder().append("isCluster>>>").append(isCluster()).toString());
 			System.out.println(new StringBuilder().append("isCluster>>>").append(isCluster()).toString());
 		}
-*/
 		return false;
 	}
 
