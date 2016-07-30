@@ -1,10 +1,11 @@
 package com.efun.core.cache.redis;
 
 /**
- * 常用缓存时间值（单位秒）
- * 
- * @author Administrator
+ * TimeUnitSeconds
+ * 缓存时间常量
  *
+ * @author Galen
+ * @since 2016/7/29
  */
 public class TimeUnitSeconds {
 	/**

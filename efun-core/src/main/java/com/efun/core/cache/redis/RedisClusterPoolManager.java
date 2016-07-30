@@ -11,7 +11,9 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -26,9 +28,7 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    private ShardedJedisSentinelPool2 pool;
-
-    private AtomicBoolean poolState = new AtomicBoolean(false);
+    private ShardedJedisSentinelPool pool;
 
     //服务节点名称，多个以英文逗号隔开,请勿重复
     private String serverNames;
@@ -101,10 +101,7 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
             logger.error("UTF-8 Charset UnsupportedEncoding");
             return;
         }
-        if (poolState.getAndSet(true)) {
-            logger.info("redis pool has init");
-            return;
-        }
+
         //初始化redis连接池
         try {
             JedisPoolConfig poolConfig = createPoolConfig();
@@ -148,7 +145,7 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
 
                 logger.info("redis.serverNames >>> " + serverNames);
                 logger.info("redis.sentinels >>> " + sentinels);
-                pool = new ShardedJedisSentinelPool2(serverNameSet, sentinelSet, poolConfig, timeout);
+                pool = new ShardedJedisSentinelPool(serverNameSet, sentinelSet, poolConfig, timeout);
                 if (pool == null) {
                     logger.error("ShardedJedisSentinelPool init fail");
                     throw new RuntimeException();
