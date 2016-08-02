@@ -1,4 +1,4 @@
-package com.efun.core.cache.redis;
+package com.efun.core.cache.redis.copy;
 
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -595,7 +595,7 @@ public class ShardedJedisSentinelPool2 extends Pool<ShardedJedis> {
 		}
 
 		public void activateObject(PooledObject<ShardedJedis> p) throws Exception {
-
+			super..a
 		}
 
 		public void passivateObject(PooledObject<ShardedJedis> p) throws Exception {

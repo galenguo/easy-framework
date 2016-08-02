@@ -1,20 +1,17 @@
 package com.efun.core.cache.redis;
 
+import com.efun.core.cache.redis.copy.Cluster;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * RedisClusterPoolManager
@@ -28,7 +25,13 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    private ShardedJedisSentinelPool pool;
+    //客户端集群
+    private static RedisClientCluster clientCluster;
+
+    //服务端集群
+    private static RedisServerCluster serverCluster;
+
+    private static boolean isServerCluster;
 
     //服务节点名称，多个以英文逗号隔开,请勿重复
     private String serverNames;
@@ -113,13 +116,16 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
                     String[] hostAndPort = node.trim().split("\\:");
                     nodes.add(new HostAndPort(hostAndPort[0].trim(), Integer.parseInt(hostAndPort[1].trim())));
                 }
-                Cluster.initCluster(nodes, timeout, poolConfig);
+                JedisCluster cluster = new JedisCluster(nodes, timeout, poolConfig);
                 logger.info("cluster.nodes(config) >>> " + clusterNodes);
 
-                JedisPool tempPool=Cluster.getInstance().getClusterNodes().values().iterator().next();
+                JedisPool tempPool=cluster.getClusterNodes().values().iterator().next();
                 Jedis jedis=tempPool.getResource();
                 jedis.close();
-                logger.info("cluster.nodes >>> " + Cluster.getInstance().getClusterNodes().keySet() + " message:\n" + jedis.clusterNodes());
+                logger.info("cluster.nodes >>> " + cluster.getClusterNodes().keySet() + " message:\n" + jedis.clusterNodes());
+                //jedis集群对象注入服务端集群对象
+                serverCluster = new RedisServerCluster(cluster);
+                isServerCluster = true;
 
             //客服端分布式
             } else if (StringUtils.isNotBlank(sentinels)) {
@@ -145,14 +151,16 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
 
                 logger.info("redis.serverNames >>> " + serverNames);
                 logger.info("redis.sentinels >>> " + sentinels);
-                pool = new ShardedJedisSentinelPool(serverNameSet, sentinelSet, poolConfig, timeout);
+                ShardedJedisSentinelPool pool = new ShardedJedisSentinelPool(serverNameSet, sentinelSet, poolConfig, timeout);
                 if (pool == null) {
                     logger.error("ShardedJedisSentinelPool init fail");
                     throw new RuntimeException();
                 } else {
                     logger.info("ShardedJedisSentinelPool init success:" + pool.toString());
-                    return;
                 }
+
+                //连接池注入客户端集群对象
+                clientCluster = new RedisClientCluster(pool);
 
             } else {
                 throw new RuntimeException();
@@ -161,7 +169,7 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
             logger.error("RedisClusterPoolManager配置错误!" + ex.getMessage(), ex);
             throw ex;
         } finally {
-            logger.info("isCluster >>> " + Cluster.isCluster());
+            logger.info("isServerCluster >>> " + isServerCluster);
         }
     }
 
@@ -177,23 +185,29 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
 
     public void destroyPool() {
         try {
-            if (Cluster.isCluster()) {
-                Cluster.close();
+            if (isServerCluster) {
+                serverCluster.destroy();
                 logger.info("Cluster.SimpleCluster.REDIS_CLUSTER destroy success");
             } else {
-                if (pool != null) {
-                    pool.destroy();
+                if (clientCluster != null) {
+                    clientCluster.destroy();
                     logger.info("ShardedJedisSentinelPool destroy success");
                 }
             }
         } catch (Exception e) {
-            if (Cluster.isCluster()) {
+            if (isServerCluster) {
                 logger.error("Cluster.SimpleCluster.REDIS_CLUSTER destroy error:" + e.getMessage(), e);
             } else {
                 logger.error("ShardedJedisSentinelPool destroy error:" + e.getMessage(), e);
             }
-        } finally {
-            pool = null;
+        }
+    }
+
+    public final static CommonRedisCommands getInstance() {
+        if (isServerCluster) {
+            return serverCluster;
+        } else {
+            return clientCluster;
         }
     }
 

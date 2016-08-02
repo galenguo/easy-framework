@@ -43,7 +43,7 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
 
     private Set<ShardedJedisSentinelPool.ShardedMasterListener> ShardedMasterListeners = new HashSet<ShardedJedisSentinelPool.ShardedMasterListener>();
 
-    private volatile ShardedJedisSentinelPool.ShardedMasterJedisFactory factory;
+    private ShardedJedisSentinelPool.ShardedMasterJedisFactory factory;
 
     private int sentinelRetry = 0;
 
@@ -228,7 +228,7 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
         }
     }
 
-    private synchronized void initPool(Set<ShardedJedisSentinelPool.MasterHostAndPort> hostAndPorts) {
+    private void initPool(Set<ShardedJedisSentinelPool.MasterHostAndPort> hostAndPorts) {
         if (hostAndPorts != null && !hostAndPorts.equals(currentHostMasters)) {
             currentHostMasters = hostAndPorts;
 
@@ -262,22 +262,6 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
         return shard;
     }
 
-    public void returnResourceObject(final ShardedJedis resource) {
-        try {
-            internalPool.returnObject(resource);
-        } catch (Exception e) {
-            throw new JedisException("Could not return the resource to the pool", e);
-        }
-    }
-
-    public void returnBrokenResource(final ShardedJedis resource) {
-        returnBrokenResourceObject(resource);
-    }
-
-    public void returnResource(final ShardedJedis resource) {
-        returnResourceObject(resource);
-    }
-
     public void destroy() {
         for (ShardedJedisSentinelPool.ShardedMasterListener m : ShardedMasterListeners) {
             m.shutdown();
@@ -294,7 +278,6 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
     }
 
     public String toString() {
-        //return currentHostMasters == null ? "NULL" : CommonUtil.objectConvertString(currentHostMasters.toArray());
         return currentHostMasters == null ? "NULL" : currentHostMasters.toArray().toString();
     }
 

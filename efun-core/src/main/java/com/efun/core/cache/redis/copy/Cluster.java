@@ -1,4 +1,4 @@
-package com.efun.core.cache.redis;
+package com.efun.core.cache.redis.copy;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.HostAndPort;

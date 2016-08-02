@@ -1,4 +1,4 @@
-package com.efun.core.cache.redis;
+package com.efun.core.cache.redis.copy;
 
 import redis.clients.jedis.SortingParams;
 import redis.clients.jedis.Tuple;
