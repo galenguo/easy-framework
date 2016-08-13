@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Table(name = "t_user")
-public class User extends BaseAuditEntity<String> {
+public class User extends BaseAuditEntity<Long> {
 
     @Length(min = 10, max = 15, message = "")
     @Column("name")

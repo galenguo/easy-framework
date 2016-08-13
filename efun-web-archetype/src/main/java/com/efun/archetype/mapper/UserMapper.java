@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.*;
  * @author Galen
  * @since 2016/6/1
  */
-public interface UserMapper extends BaseMapper<User, String> {
+public interface UserMapper extends BaseMapper<User, Long> {
 
     /*@DataSource("read")
     @Select("select * from t_user where id = #{id}")
@@ -21,7 +21,7 @@ public interface UserMapper extends BaseMapper<User, String> {
     @Select("select * from t_user where id = #{id}")
     User findOne(@Param("id") String id);
 
-    void insertUser(User user);
+    Long insertUser(User user);
 
     /*@Select("select * from t_user where name = #{name}")*/
     User getUser(/*@Param("name") */String name);

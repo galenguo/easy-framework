@@ -11,8 +11,8 @@
     </resultMap>-->
 
     <!-- 这里namespace必须是UserMapper接口的路径” -->
-    <insert id="insertUser" parameterType="com.efun.archetype.domain.User">
-        insert into t_user(id,name) values(#{id},#{name})
+    <insert id="insertUser" parameterType="com.efun.archetype.domain.User" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user(name) values(#{name})
         <!-- 这里sql结尾不能加分号，否则报“ORA-00911”的错误 -->
     </insert>
 

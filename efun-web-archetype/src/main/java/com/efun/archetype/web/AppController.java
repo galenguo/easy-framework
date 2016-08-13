@@ -122,14 +122,13 @@ public class AppController extends BaseController {
     @RequestMapping("insert")
     public String insert() {
         User user = new User();
-        user.setName("galenecho");
-        user.setId("4");
+        user.setName("test");
         user.setPhoneNumber("12345678");
-        userMapper.insert(user);
+        int id = userMapper.insert(user);
 
         //userMapper.queryList(new Query(Criteria.where("creation_time").lte("NOW()").and("name").is("galen")));
         //userMapper.update(user,null);
-        return "success";
+        return id + user.getId().toString();
     }
 
     //http://localhost:8000/app/insertBatch
@@ -137,17 +136,15 @@ public class AppController extends BaseController {
     public String insertBatch() {
         User user = new User();
         user.setName("galenecho");
-        user.setId("4");
         user.setPhoneNumber("12345678");
 
         User user1 = new User();
         user1.setName("galenecho");
-        user1.setId("5");
         user1.setPhoneNumber("12345678");
         List<User> list = new ArrayList<User>();
         list.add(user);
         list.add(user1);
-        userMapper.insertBatch(list);
+        int rows = userMapper.insertBatch(list);
         return "success";
     }
 
@@ -155,7 +152,7 @@ public class AppController extends BaseController {
     @RequestMapping("update")
     public String update() {
         User user = new User();
-        user.setId("4");
+        user.setId(4L);
         userMapper.update(user,true);
         return "success";
     }

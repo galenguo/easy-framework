@@ -31,33 +31,40 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
      * @param entity
      * @param <E>
      */
+    //插入keyProperty和@Param entity对应
+    @Options(useGeneratedKeys = true, keyProperty = "entity.id")
     @InsertProvider(type = BaseSqlProvider.class, method = "insert")
-    <E extends BaseEntity> void insert(@Param("entity")E entity);
+    <E extends BaseEntity> int insert(@Param("entity")E entity);
 
     /**
      * 批量插入
      * @param collection
      * @param <E>
+     * @return
      */
+    //批量插入keyProperty只能为id，因为Jdbc3KeyGenerator默认批量插入的参数名称只能够 collection、list、array
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     @InsertProvider(type = BaseSqlProvider.class, method = "insertBatch")
-    <E extends BaseEntity> void insertBatch(@Param("collection")Collection<E> collection);
+    <E extends BaseEntity> int insertBatch(@Param("collection")Collection<E> collection);
 
     /**
      * 更新一条记录，默认ignoreNull为true
      * @param entity
-     * @param ignoreNull 默认为true
+     * @param ignoreNull 不保存null字段，默认为true
      * @param <E>
+     * @return
      */
     @UpdateProvider(type = BaseSqlProvider.class, method = "update")
-    <E extends BaseEntity> void update(@Param("entity")E entity, @Param("ignoreNull")Boolean ignoreNull);
+    <E extends BaseEntity> int update(@Param("entity")E entity, @Param("ignoreNull")Boolean ignoreNull);
 
     /**
      * 根据id删除一条记录
      * @param id
      * @param <E>
+     * @return
      */
     @DeleteProvider(type = BaseSqlProvider.class, method = "delete")
-    <E extends BaseEntity> void delete(@Param("id")Object id);
+    <E extends BaseEntity> int delete(@Param("id")Object id);
 
     /**
      * 计算记录条数
@@ -67,7 +74,7 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     long count();
 
     /**
-     * 根据条件计算记录条数(嵌套查询只支持两层)
+     * 根据条件查询记录条数(嵌套查询只支持两层)
      * @param query
      * @return
      */

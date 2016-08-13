@@ -4,6 +4,7 @@ import com.efun.core.context.Constants;
 import com.efun.core.mapper.support.MapperRegistry;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.ibatis.cache.Cache;
+import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -145,7 +146,7 @@ public abstract class AbstractSqlProvider {
     }
 
     /**
-     * 重新设置SqlSource，同时判断如果是Jdbc3KeyGenerator，就设置为MultipleJdbc3KeyGenerator
+     * 重新设置SqlSource
      *
      * @param mappedStatement
      * @param sqlSource
@@ -155,6 +156,11 @@ public abstract class AbstractSqlProvider {
         metaObject.setValue("sqlSource", sqlSource);
     }
 
+    /**
+     * 设置返回类型
+     * @param mappedStatement
+     * @param entityClass
+     */
     protected void setResultType(MappedStatement mappedStatement, Class<?> entityClass) {
         List<ResultMap> resultMaps = new ArrayList<ResultMap>();
         resultMaps.add(register.getResultMapFromEntity(entityClass));
