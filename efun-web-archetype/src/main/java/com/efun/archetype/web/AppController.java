@@ -3,7 +3,12 @@ package com.efun.archetype.web;
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
 import com.efun.archetype.service.UserService;
+import com.efun.core.cache.CacheUtils;
 import com.efun.core.context.ApplicationContext;
+import com.efun.core.domain.page.Page;
+import com.efun.core.domain.page.PageImpl;
+import com.efun.core.domain.page.PageRequest;
+import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.query.Criteria;
 import com.efun.core.mapper.query.Query;
 import com.efun.core.web.binding.MapWapper;
@@ -118,10 +123,20 @@ public class AppController extends BaseController {
         return userMapper.queryList(query);
     }
 
+    //http://localhost:8000/app/queryUserPage?pageNumber=0&pageSize=5
+    @RequestMapping("queryUserPage")
+    public Page<User> queryUserPage(Pageable pageable) {
+        Query query = new Query();
+        query.with(pageable);
+        List<User> users = userMapper.queryList(query);
+        return new PageImpl<User>(users, pageable, 10);
+    }
+
     //http://localhost:8000/app/insert
     @RequestMapping("insert")
     public String insert() {
         User user = new User();
+        user.setId(100L);
         user.setName("test");
         user.setPhoneNumber("12345678");
         int id = userMapper.insert(user);

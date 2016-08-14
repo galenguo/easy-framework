@@ -71,13 +71,15 @@ public class Query {
     }
 
     public Query with(Sort sort) {
-        String orderBy = null;
-        Iterator<Sort.Order> iterator = sort.iterator();
-        while (iterator.hasNext()) {
-            Sort.Order order = iterator.next();
-            orderBy += order.getProperty() + " " + order.getDirection() + ", ";
+        if (sort != null) {
+            String orderBy = null;
+            Iterator<Sort.Order> iterator = sort.iterator();
+            while (iterator.hasNext()) {
+                Sort.Order order = iterator.next();
+                orderBy += order.getProperty() + " " + order.getDirection() + ", ";
+            }
+            this.oderByClause = orderBy.substring(0, orderBy.length() - 2);
         }
-        this.oderByClause = orderBy.substring(0, orderBy.length() - 2);
         return this;
     }
 

@@ -1,5 +1,7 @@
 package com.efun.core.cache.redis;
 
+import com.efun.core.config.Configuration;
+import com.efun.core.utils.StringUtils;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 import redis.clients.jedis.params.sortedset.ZAddParams;
@@ -19,8 +21,26 @@ import java.util.Set;
  */
 public class RedisUtils {
 
+    private static volatile CommonRedisCommands instance = null;
+
+    /**
+     * 获取redis实例，开关控制。
+     * @return
+     */
     public static CommonRedisCommands getInstance() {
-        return RedisClusterPoolManager.getInstance();
+        if (instance == null) {
+            synchronized(RedisUtils.class) {
+                if (instance == null) {
+                    String openSwitch = Configuration.getProperty("redisUtils.open.switch");
+                    if (StringUtils.isBlank(openSwitch) || Boolean.parseBoolean(openSwitch)) {
+                        instance = RedisClusterPoolManager.getInstance();
+                    } else {
+                        instance = new RedisEmptyCluster();
+                    }
+                }
+            }
+        }
+        return instance;
     }
 
     

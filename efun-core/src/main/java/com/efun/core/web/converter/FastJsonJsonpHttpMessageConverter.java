@@ -20,7 +20,7 @@ import java.io.IOException;
  */
 public class FastJsonJsonpHttpMessageConverter extends FastJsonHttpMessageConverter {
 
-    protected String[] jsonpParameterNames = new String[]{"jsoncallback","jsonpcallback", "jsonp", "callback"};
+    protected static String[] jsonpParameterNames = new String[]{"jsoncallback","jsonpcallback", "jsonp", "callback"};
 
     @Override
     protected void writeInternal(Object obj, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {

@@ -12,4 +12,5 @@ import redis.clients.jedis.JedisCommands;
  * @since 2016/8/2
  */
 public interface CommonRedisCommands extends JedisCommands, BinaryJedisCommands, BinaryJedisClusterCommands {
+
 }
