@@ -56,38 +56,44 @@ public interface GenericService<M extends BaseMapper<E, ID>, E extends BaseEntit
     /**
      * 插入一个实体记录
      * @param entity
+     * @return
      */
-    void inerst(E entity);
+    int insert(E entity);
 
     /**
      * 批量插入实体记录
      * @param entities
+     * @return
      */
-    void insertBatch(Collection<E> entities);
+    int insertBatch(Collection<E> entities);
 
     /**
      * 更新一个实体记录，不更新为null的属性
      * @param entity
+     * @return
      */
-    void update(E entity);
+    int update(E entity);
 
     /**
      * 保存一个实体记录，如果记录id存在，则更新记录，否则当做新记录插入
      * @param entity
+     * @return
      */
-    void save(E entity);
+    int save(E entity);
 
     /**
      * 删除一个实体记录
      * @param entity
+     * @return
      */
-    void delete(E entity);
+    int delete(E entity);
 
     /**
      * 根据id删除一个实体记录
      * @param id
+     * @return
      */
-    void delete(ID id);
+    int delete(ID id);
 
     /**
      * 计算记录数量

@@ -119,8 +119,16 @@ public class AppController extends BaseController {
     //http://localhost:8000/app/queryUser
     @RequestMapping("queryUser")
     public List<User> queryUser() {
-        Query query = new Query(Criteria.where("created_date").gte(new Date()));
+        Query query = new Query(Criteria.where("created_date").lte(new Date()));
         return userMapper.queryList(query);
+    }
+
+    //http://localhost:8000/app/queryUserMap
+    @RequestMapping("queryUserMap")
+    public List<Map<String, Object>> queryUserMap() {
+        Query query = new Query(Criteria.where("created_date").lte(new Date())).fields("id, name, last_modified_date as lastModifiedDate, phone_number as phoneNumber");
+        List<Map<String, Object>> list = userMapper.queryMapList(query);
+        return list;
     }
 
     //http://localhost:8000/app/queryUserPage?pageNumber=0&pageSize=5
