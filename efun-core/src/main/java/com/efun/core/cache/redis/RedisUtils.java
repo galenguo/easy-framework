@@ -21,6 +21,26 @@ import java.util.Set;
  */
 public class RedisUtils {
 
+    /**
+     * 只在键不存在时，才对键进行设置操作。
+     */
+    public static final String NX = "NX";
+
+    /**
+     * 只在键已经存在时，才对键进行设置操作。
+     */
+    public static final String XX = "XX";
+
+    /**
+     * 设置键的过期时间为 millisecond 毫秒。
+     */
+    public static final String PX = "PX";
+
+    /**
+     * 设置键的过期时间为 second 秒.
+     */
+    public static final String EX = "EX";
+
     private static volatile CommonRedisCommands instance = null;
 
     /**
