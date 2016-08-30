@@ -3,6 +3,8 @@ package com.efun.core.mapper;
 import org.apache.ibatis.jdbc.SQL;
 import org.apache.ibatis.mapping.MappedStatement;
 
+import java.util.Map;
+
 /**
  * BaseSqlProvider
  * 支持baseMapper接口扩展的sqlProvider；
@@ -107,9 +109,23 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         return sql.toString();
     }
 
-    public String query(MappedStatement mappedStatement) {
+    public String queryList(MappedStatement mappedStatement) {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
+        String tableName = getTableName(entityClass);
+        StringBuilder sql = new StringBuilder();
+        sql.append(selectByQuery());
+        sql.append(from(tableName));
+        sql.append(whereByQuery());
+        sql.append(groupByQuery());
+        sql.append(orderByQuery());
+        sql.append(limitByQuery());
+        return sql.toString();
+    }
+
+    public String queryMapList(MappedStatement mappedStatement) {
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, Map.class);
         String tableName = getTableName(entityClass);
         StringBuilder sql = new StringBuilder();
         sql.append(selectByQuery());

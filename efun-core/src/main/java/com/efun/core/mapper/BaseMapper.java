@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * BaseMapper
@@ -87,7 +88,15 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
      * @param <E>
      * @return
      */
-    @SelectProvider(type = BaseSqlProvider.class, method = "query")
+    @SelectProvider(type = BaseSqlProvider.class, method = "queryList")
     <E extends BaseEntity> List<E> queryList(@Param("query")Query query);
+
+    /**
+     * 根据条件查询列表(嵌套查询只支持两层)
+     * @param query
+     * @return
+     */
+    @SelectProvider(type = BaseSqlProvider.class, method = "queryMapList")
+    List<Map<String, Object>> queryMapList(@Param("query")Query query);
 
 }

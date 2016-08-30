@@ -57,37 +57,42 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     }
 
     @Override
-    public void inerst(E entity) {
-        this.mapper.insert(entity);
+    public int insert(E entity) {
+        return this.mapper.insert(entity);
     }
 
     @Override
-    public void insertBatch(Collection<E> entities) {
-        this.mapper.insertBatch(entities);
+    public int insertBatch(Collection<E> entities) {
+        return this.mapper.insertBatch(entities);
     }
 
     @Override
-    public void update(E entity) {
-        this.mapper.update(entity, null);
+    public int update(E entity) {
+        return this.mapper.update(entity, null);
     }
 
     @Override
-    public void save(E entity) {
-        if (this.count() > 0) {
-            this.update(entity);
+    public int save(E entity) {
+        int result = 0;
+        if (entity.getId() != null && !entity.getId().toString().equals("")) {
+            if ((result = this.mapper.update(entity, null)) == 0) {
+                result = this.mapper.insert(entity);
+            }
+            return result;
         } else {
-            this.inerst(entity);
+            result = this.mapper.insert(entity);
         }
+        return result;
     }
 
     @Override
-    public void delete(E entity) {
-        this.mapper.delete(entity.getId());
+    public int delete(E entity) {
+        return this.mapper.delete(entity.getId());
     }
 
     @Override
-    public void delete(ID id) {
-        this.mapper.delete(id);
+    public int delete(ID id) {
+        return this.mapper.delete(id);
     }
 
     @Override

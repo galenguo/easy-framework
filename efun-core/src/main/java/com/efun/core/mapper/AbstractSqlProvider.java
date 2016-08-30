@@ -1,6 +1,7 @@
 package com.efun.core.mapper;
 
 import com.efun.core.context.Constants;
+import com.efun.core.domain.BaseEntity;
 import com.efun.core.mapper.support.MapperRegistry;
 import org.apache.commons.collections4.map.LinkedMap;
 import org.apache.ibatis.cache.Cache;
@@ -159,14 +160,18 @@ public abstract class AbstractSqlProvider {
     /**
      * 设置返回类型
      * @param mappedStatement
-     * @param entityClass
+     * @param returnClass
      */
-    protected void setResultType(MappedStatement mappedStatement, Class<?> entityClass) {
-        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
-        resultMaps.add(register.getResultMapFromEntity(entityClass));
+    protected void setResultType(MappedStatement mappedStatement, Class<?> returnClass) {
         MetaObject metaObject = SystemMetaObject.forObject(mappedStatement);
-        metaObject.setValue("resultMaps", Collections.unmodifiableList(resultMaps));
-        metaObject.setValue("resultSetType", null);
+        if (BaseEntity.class.isAssignableFrom(returnClass)) {
+            List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+            resultMaps.add(register.getResultMapFromEntity(returnClass));
+            metaObject.setValue("resultMaps", Collections.unmodifiableList(resultMaps));
+            metaObject.setValue("resultSetType", null);
+        } else if (Map.class.isAssignableFrom(returnClass)) {
+            metaObject.setValue("resultSetType", null);
+        }
     }
 
     /**
