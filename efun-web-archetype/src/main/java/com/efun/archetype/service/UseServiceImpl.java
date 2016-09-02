@@ -2,6 +2,7 @@ package com.efun.archetype.service;
 
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
+import com.efun.core.mapper.annotation.DSType;
 import com.efun.core.mapper.annotation.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,13 +31,13 @@ public class UseServiceImpl implements UserService {
 
     @Override
     @Transactional
-    @DataSource("read")
+    @DataSource(DSType.READ)
     public User findById1(String id) {
         return mapper.findById(id);
     }
     @Override
     @Transactional
-    @DataSource("write")
+    @DataSource(DSType.WRITE)
     public User findById2(String id) {
         return mapper.findOne(id);
     }
@@ -47,7 +48,7 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
-    @DataSource("write")
+    @DataSource(DSType.WRITE)
     public void inserUsers() {
         //测试回滚
         /*User user1 = new User();
