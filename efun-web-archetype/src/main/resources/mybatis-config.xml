@@ -25,8 +25,11 @@
         <!--<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.efun.enum.Status"/>-->
         <!-- 枚举映射为字符串 -->
         <!--<typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.efun.enum.Status"/>-->
+
+        <typeHandler handler="org.apache.ibatis.type.EnumTypeHandler" javaType="com.efun.archetype.domain.User$Gender"/>
     </typeHandlers>
-    
+
+    <!-- entity审计信息更新拦截器 -->
     <plugins>
         <plugin interceptor="com.efun.core.mapper.support.AuditingInterceptor"></plugin>
     </plugins>

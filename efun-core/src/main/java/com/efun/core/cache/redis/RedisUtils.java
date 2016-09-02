@@ -2,11 +2,14 @@ package com.efun.core.cache.redis;
 
 import com.efun.core.config.Configuration;
 import com.efun.core.utils.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 import redis.clients.jedis.params.sortedset.ZIncrByParams;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,8 @@ import java.util.Set;
  * @since 2016/7/7
  */
 public class RedisUtils {
+
+    private static final Logger logger = LogManager.getLogger(RedisUtils.class);
 
     private static volatile CommonRedisCommands instance = null;
 
@@ -1407,4 +1412,87 @@ public class RedisUtils {
     public static List<GeoRadiusResponse> georadiusByMember(String key, String member, double radius, GeoUnit unit, GeoRadiusParam param) {
         return getInstance().georadiusByMember(key, member, radius, unit, param);
     }
+
+
+    /*---- 值得序列化与反序列化 ---*/
+    public static <T extends Serializable> byte[] serialize(T object) {
+        byte[] result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> T deserialize(byte[] bytes) {
+        T result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> Map<byte[], byte[]> serialize(Map<String, T> map) {
+        Map<byte[], byte[]> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> Map<String, T>  deserialize(Map<byte[], byte[]> map) {
+        Map<String, T> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> Set<byte[]> serialize(Set<T> set) {
+        Set<byte[]> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> Set<T>  deserialize(Set<byte[]> set) {
+        Set<T> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> List<byte[]> serialize(List<T> list) {
+        List<byte[]> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static <T extends Serializable> List<T>  deserialize(List<byte[]> list) {
+        List<T> result = null;
+        try {
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
 }

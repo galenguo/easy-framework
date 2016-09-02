@@ -26,6 +26,9 @@ public class User extends BaseAuditEntity<Long> {
     @NotNull(message = "{phone.not.null}")
     private String phoneNumber;
 
+    @Column("gender")
+    private Gender gender;
+
     public String getName() {
         return name;
     }
@@ -40,5 +43,18 @@ public class User extends BaseAuditEntity<Long> {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public enum Gender {
+        MAN,
+        WOMAN
     }
 }

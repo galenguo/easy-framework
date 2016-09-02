@@ -160,10 +160,12 @@ public class AppController extends BaseController {
         User user = new User();
         user.setName("galenecho");
         user.setPhoneNumber("12345678");
+        user.setGender(User.Gender.WOMAN);
 
         User user1 = new User();
         user1.setName("galenecho");
         user1.setPhoneNumber("12345678");
+        user1.setGender(User.Gender.WOMAN);
         List<User> list = new ArrayList<User>();
         list.add(user);
         list.add(user1);

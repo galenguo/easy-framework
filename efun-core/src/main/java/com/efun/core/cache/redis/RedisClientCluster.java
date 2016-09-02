@@ -37,7 +37,7 @@ public class RedisClientCluster implements CommonRedisCommands {
         this.pool.destroy();
     }
 
-    public <T> T execute(RedisCallBack<T> redisCallBack) {
+    private <T> T execute(RedisCallBack<T> redisCallBack) {
         ShardedJedis shardedJedis = null;
         T result = null;
         try {
@@ -51,7 +51,7 @@ public class RedisClientCluster implements CommonRedisCommands {
         return result;
     }
 
-    public static interface RedisCallBack<T> {
+    private interface RedisCallBack<T> {
         T callBack(ShardedJedis shardedJedis);
     }
 
