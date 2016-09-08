@@ -1,4 +1,4 @@
-package com.efun.core.mapper.support;
+package com.efun.core.db.support;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 

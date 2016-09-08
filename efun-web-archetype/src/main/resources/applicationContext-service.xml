@@ -9,9 +9,9 @@
     <!-- 路由数据源 -->
     <bean id="dataSource" class="com.efun.core.mapper.support.RoutingDataSource">
         <property name="targetDataSources">
-            <map key-type="java.lang.String">
-                <entry key="read" value-ref="readDataSource"/>
-                <entry key="write" value-ref="writeDataSource"/>
+            <map key-type="com.efun.core.mapper.annotation.DSType">
+                <entry key="READ" value-ref="readDataSource"/>
+                <entry key="WRITE" value-ref="writeDataSource"/>
             </map>
         </property>
         <property name="defaultTargetDataSource" ref="readDataSource"/>

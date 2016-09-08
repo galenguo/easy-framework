@@ -1,8 +1,8 @@
-package com.efun.core.mapper.support;
+package com.efun.core.db.support;
 
 import com.efun.core.exception.EfunException;
+import com.efun.core.db.annotation.DSType;
 import com.efun.core.utils.CollectionUtils;
-import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,29 +22,29 @@ public class DataSourceContext {
     /**
      * 使用threadLocal保证线程安全，使用栈保证数据源嵌套情况下的查询。
      */
-    private static final ThreadLocal<LinkedList<String>> dataSourceHolder = new ThreadLocal<LinkedList<String>>();
+    private static final ThreadLocal<LinkedList<DSType>> dataSourceHolder = new ThreadLocal<LinkedList<DSType>>();
 
-    public static void setDataSourceKey(String dataSourceKey) {
-        LinkedList<String> stack = dataSourceHolder.get();
+    public static void setDataSourceKey(DSType dataSourceKey) {
+        LinkedList<DSType> stack = dataSourceHolder.get();
         if (stack == null) {
-            stack = new LinkedList<String>();
+            stack = new LinkedList<DSType>();
             dataSourceHolder.set(stack);
         }
         stack.addFirst(dataSourceKey);
     }
 
-    public static String getDataSourceKey() {
-        LinkedList<String> stack = dataSourceHolder.get();
+    public static DSType getDataSourceKey() {
+        LinkedList<DSType> stack = dataSourceHolder.get();
         if (CollectionUtils.isEmpty(stack)) {
             return null;
         }
         return stack.getFirst();
     }
 
-    public static void cleanDataSourceKey(String dataSourceKey) {
-        LinkedList<String> stack = dataSourceHolder.get();
-        String key = stack.getFirst();
-        if (StringUtils.equals(key, dataSourceKey)) {
+    public static void cleanDataSourceKey(DSType dataSourceKey) {
+        LinkedList<DSType> stack = dataSourceHolder.get();
+        DSType key = stack.getFirst();
+        if (key.equals(dataSourceKey)) {
             stack.removeFirst();
             if (stack.size() == 0) {
                 dataSourceHolder.remove();

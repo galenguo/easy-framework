@@ -2,14 +2,11 @@ package com.efun.core.cache.redis;
 
 import com.efun.core.config.Configuration;
 import com.efun.core.utils.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.*;
 import redis.clients.jedis.params.geo.GeoRadiusParam;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 import redis.clients.jedis.params.sortedset.ZIncrByParams;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +20,26 @@ import java.util.Set;
  * @since 2016/7/7
  */
 public class RedisUtils {
+
+    /**
+     * 只在键不存在时，才对键进行设置操作。
+     */
+    public static final String NX = "NX";
+
+    /**
+     * 只在键已经存在时，才对键进行设置操作。
+     */
+    public static final String XX = "XX";
+
+    /**
+     * 设置键的过期时间为 millisecond 毫秒。
+     */
+    public static final String PX = "PX";
+
+    /**
+     * 设置键的过期时间为 second 秒.
+     */
+    public static final String EX = "EX";
 
     private static final Logger logger = LogManager.getLogger(RedisUtils.class);
 

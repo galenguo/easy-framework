@@ -47,22 +47,50 @@ public class CacheUtils {
 
     public interface Getter<T> {
 
+        /**
+         * 操作对象名称
+         * @return
+         */
         String objectName();
 
+        /**
+         * 从cache中获取数据
+         * @return
+         */
         T getFromCache();
 
+        /**
+         * cache找不到数据，则从db中获取数据
+         * @return
+         */
         T getFromDb();
 
+        /**
+         * 缓存数据到cache
+         * @param object
+         */
         void setToCache(T object);
 
     }
 
     public interface Setter<T> {
 
+        /**
+         * 操作对象名称
+         * @return
+         */
         String objectName();
 
+        /**
+         * 将数据写入db
+         * @return
+         */
         T setToDB();
 
+        /**
+         * 写入db成功后，缓存数据到cache
+         * @param object
+         */
         void setToCache(T object);
     }
 
