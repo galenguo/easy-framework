@@ -2,8 +2,8 @@ package com.efun.archetype.service;
 
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
-import com.efun.core.mapper.annotation.DSType;
-import com.efun.core.mapper.annotation.DataSource;
+import com.efun.core.db.annotation.DSType;
+import com.efun.core.db.annotation.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

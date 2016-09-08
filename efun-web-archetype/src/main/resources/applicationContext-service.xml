@@ -7,14 +7,30 @@
     <!-- 服务组件配置 -->
     
     <!-- 路由数据源 -->
-    <bean id="dataSource" class="com.efun.core.mapper.support.RoutingDataSource">
+    <bean id="readDataSources" class="com.efun.core.db.support.DataSourceWapper">
+        <property name="dataSources">
+            <list>
+                <ref bean="readDataSource"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="writeDataSources" class="com.efun.core.db.support.DataSourceWapper">
+        <property name="dataSources">
+            <list>
+                <ref bean="writeDataSource"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="com.efun.core.db.support.RoutingDataSource">
         <property name="targetDataSources">
-            <map key-type="com.efun.core.mapper.annotation.DSType">
-                <entry key="READ" value-ref="readDataSource"/>
-                <entry key="WRITE" value-ref="writeDataSource"/>
+            <map key-type="com.efun.core.db.annotation.DSType">
+                <entry key="READ" value-ref="readDataSources"/>
+                <entry key="WRITE" value-ref="writeDataSources"/>
             </map>
         </property>
-        <property name="defaultTargetDataSource" ref="readDataSource"/>
+        <property name="defaultTargetDataSource" ref="readDataSources"/>
     </bean>
 
     <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
@@ -49,10 +65,10 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!-- 配置数据库注解aop -->
-    <bean id="dataSourceInterceptor" class="com.efun.core.mapper.support.DataSourceInterceptor" />
+    <bean id="dataSourceInterceptor" class="com.efun.core.db.support.DataSourceInterceptor" />
     <aop:config>
         <aop:aspect id="dataSourceAspect" ref="dataSourceInterceptor" order="0">
-            <aop:pointcut id="pointCut" expression="execution(* com.efun..*.service..*.*(..)) or execution(* com.efun..*.mapper..*.*(..))"/>
+            <aop:pointcut id="pointCut" expression="execution(* com.efun..*.service..*.*(..))"/>
             <aop:around pointcut-ref="pointCut" method="invoke"/>
         </aop:aspect>
     </aop:config>
