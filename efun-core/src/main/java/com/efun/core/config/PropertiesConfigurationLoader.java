@@ -1,12 +1,13 @@
 package com.efun.core.config;
 
-import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.FileUtils;
 import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.util.*;
@@ -22,14 +23,30 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
 
     protected Logger logger = LogManager.getLogger(this.getClass());
 
-    protected static final String DEFAULT_CONFIG_NAME = "efun.properties";
+    /**
+     * 使用系统环境变量配置路径
+     */
+    protected boolean useEvnConfigPath = false;
 
+    /**
+     * 默认配置文件名称
+     */
+    protected String defaultConfigFileName = "efun.properties";
+
+    /**
+     * 其余配置文件名称
+     */
     protected String[] fileNames;
 
     protected int order = 1;
 
-    public String[] getFileNames() {
-        return fileNames;
+    public void setUseEvnConfigPath(boolean useEvnConfigPath) {
+        this.useEvnConfigPath = useEvnConfigPath;
+    }
+
+
+    public void setDefaultConfigFileName(String defaultConfigFileName) {
+        this.defaultConfigFileName = defaultConfigFileName;
     }
 
     public void setFileNames(String... fileNames) {
@@ -39,7 +56,7 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
     @Override
     public void setProperties() throws Exception {
         List<String> fileNameList = new ArrayList<String>();
-        fileNameList.add(DEFAULT_CONFIG_NAME);
+        fileNameList.add(defaultConfigFileName);
         if (fileNames != null) {
             for (String fileName : fileNames) {
                 if (StringUtils.isNotBlank(fileName)) {
@@ -49,12 +66,17 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
             }
         }
 
+        /**
+         * 区分使用绝对路径方式，还是classpath方式读取，默认是classpath方式读取配置文件。
+         */
+        String prePath = useEvnConfigPath ? FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) : "";
         for (String fileName : fileNameList) {
-            String resourceName =  FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) + fileName;
+            String resourceName =  prePath + fileName;
             logger.info("loading properties from {} ", resourceName);
             LinkedProperties properties = new LinkedProperties();
-            PropertiesLoaderUtils.fillProperties(properties, new FileSystemResource(resourceName));
+            Resource resource = useEvnConfigPath ? new FileSystemResource(resourceName) : new ClassPathResource(resourceName);
 
+            PropertiesLoaderUtils.fillProperties(properties, resource);
 
             if (null != properties) {
 

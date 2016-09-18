@@ -8,11 +8,12 @@
     <!-- 加载系统运行环境依赖的配置，例如：系统设置的变量、数据源等等 -->
 
     <bean class="com.efun.core.config.PropertiesConfigurationLoader">
-        <!--<property name="fileNames">
+        <property name="defaultConfigFileName" value="evn/efun.properties"/>
+        <property name="fileNames">
             <list>
-                <value>echo-demo.properties</value>
+                <value>evn/efun-web.properties</value>
             </list>
-        </property>-->
+        </property>
     </bean>
 
     <context:component-scan base-package="com.efun.core.config"/>
