@@ -54,9 +54,8 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                 break;
             }
         }
-        Map<String, String> result = new HashMap<String, String>();
-        result.put("exception", "1");
-        result.put("code", "-1");
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("exception", Boolean.TRUE);
         if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
@@ -71,8 +70,11 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                     }
                 }
                 result.put("message", message);
+                result.put("code", "-1000");
                 logger.warn("Bean validate message: " + message);
             }
+        } else if (tryCacheException(httpServletRequest, e, result)) {
+
         } else {
             result.put("message", e.toString());
             logger.error(e.getMessage(), e);
@@ -92,5 +94,16 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             logger.error(e1.getMessage(), e1);
         }
         return null;
+    }
+
+    /**
+     * 子类覆盖，实现自定义异常拦截。
+     * @param httpServletRequest
+     * @param e
+     * @param result
+     * @return
+     */
+    protected boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
+        return false;
     }
 }

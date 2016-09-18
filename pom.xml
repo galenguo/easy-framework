@@ -631,6 +631,11 @@
 
     <repositories>
         <repository>
+            <id>nexus-public</id>
+            <name>Nexus Public Repository</name>
+            <url>http://172.16.5.120:8081/nexus/content/groups/public</url>
+        </repository>
+        <repository>
             <id>oschina-public</id>
             <name>oschina Public Repository</name>
             <url>http://maven.oschina.net/content/groups/public/</url>
@@ -639,11 +644,6 @@
             <id>repo2-public</id>
             <name>repo2 Public Repository</name>
             <url>http://repo2.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>nexus-public</id>
-            <name>Nexus Public Repository</name>
-            <url>http://172.16.5.120:8081/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
