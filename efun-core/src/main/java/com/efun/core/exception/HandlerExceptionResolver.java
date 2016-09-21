@@ -103,7 +103,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
      * @param result
      * @return
      */
-    protected boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
+    public boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
         return false;
     }
 }

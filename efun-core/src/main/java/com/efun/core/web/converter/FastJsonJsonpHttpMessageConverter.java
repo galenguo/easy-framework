@@ -2,6 +2,7 @@ package com.efun.core.web.converter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.efun.core.context.ApplicationContext;
 import com.efun.core.utils.StringUtils;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -25,7 +26,7 @@ public class FastJsonJsonpHttpMessageConverter extends FastJsonHttpMessageConver
     @Override
     protected void writeInternal(Object obj, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = ApplicationContext.getHttpRequest();
 
         String callback = null;
         for (int i = 0; i< jsonpParameterNames.length; i++){
@@ -36,7 +37,7 @@ public class FastJsonJsonpHttpMessageConverter extends FastJsonHttpMessageConver
         }
         if (StringUtils.isNotBlank(callback)) {
             String jsonString = JSON.toJSONString(obj, getFastJsonConfig().getSerializeFilters());
-            jsonString = new StringBuilder(callback).append("(").append(jsonString).append(")").toString();
+            jsonString = jsonpFormat(request, callback, jsonString);
             outputMessage.getBody().write(jsonString.getBytes(getFastJsonConfig().getCharset()));
         } else {
             super.writeInternal(obj, outputMessage);
@@ -46,5 +47,16 @@ public class FastJsonJsonpHttpMessageConverter extends FastJsonHttpMessageConver
 
     public void setJsonpParameterNames(String[] jsonpParameterNames) {
         this.jsonpParameterNames = jsonpParameterNames;
+    }
+
+    /**
+     * 可以覆盖，自定义结构，平滑过渡平台重构。
+     * @param request
+     * @param callback
+     * @param jsonString
+     * @return
+     */
+    public String jsonpFormat(HttpServletRequest request, String callback, String  jsonString) {
+        return new StringBuilder(callback).append("(").append(jsonString).append(")").toString();
     }
 }
