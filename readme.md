@@ -94,3 +94,9 @@
     4）@ModelParam注解支持，Map、List、Set和entity的参数注入
     5）默认情况下只要url中带有"jsoncallback","jsonpcallback", "jsonp", "callback"等参数就会自动返回数据格式就是jsonp格式。
     6）分页参数可以直接使用Pageable 定义一个参数，如果请求中带有"pageNumber", "pageSize", "pageOder", "pageDirection"参数，就会自动注入到pageable参数中
+
+##7.核心组件
+    1）com.efun.core.config.Configuration
+        提供获取配置文件的配置接口，properties可以通过PropertiesConfigurationLoader组件注册
+    2）com.efun.core.context.ApplicationContext
+        提供应用上下文和应用公共服务接口，例如获取spring bean、request、国际化信息、http相关其他服务。
