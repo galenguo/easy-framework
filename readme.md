@@ -91,6 +91,7 @@
         实际上就是@RestController = @Controller + @ResponseBody
     2）controller的类和方法上可以使用@RequestMapping定义方法的资源路径url
     3）方法的参数可以使用@RequestParam、@PathVariable、@ModleAttrubite、@ModelParam等注解获取参数，也可以直接通过HttpServletRequest获取request中的参数。
+        参数也可以使用@Valid注解实现jrs303规范的bean验证。
     4）@ModelParam注解支持，Map、List、Set和entity的参数注入
     5）默认情况下只要url中带有"jsoncallback","jsonpcallback", "jsonp", "callback"等参数就会自动返回数据格式就是jsonp格式。
     6）分页参数可以直接使用Pageable 定义一个参数，如果请求中带有"pageNumber", "pageSize", "pageOder", "pageDirection"参数，就会自动注入到pageable参数中

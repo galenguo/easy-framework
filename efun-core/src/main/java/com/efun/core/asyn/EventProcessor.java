@@ -65,7 +65,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
         threadFactory = Executors.defaultThreadFactory();
         EventWapperFactory factory = new EventWapperFactory();
         disruptor = new Disruptor<EventWapper>(factory, bufferSize, threadFactory);
-        disruptor.handleEventsWith(new EventHandlerSwitch());
+        disruptor.handleEventsWithWorkerPool(new EventHandlerSwitch());
         disruptor.start();
         RingBuffer<EventWapper> ringBuffer = disruptor.getRingBuffer();
         EventWapperProducer producer = new EventWapperProducer(ringBuffer);
@@ -124,7 +124,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
     /**
      * 事件处理handler选择
      */
-    public class EventHandlerSwitch implements com.lmax.disruptor.EventHandler<EventWapper> {
+    public class EventHandlerSwitch implements com.lmax.disruptor.WorkHandler<EventWapper> {
 
         /**
          * 事件处理handler的Map
@@ -142,14 +142,14 @@ public class EventProcessor implements InitializingBean, DisposableBean {
         }
 
         @Override
-        public void onEvent(EventWapper eventWapper, long sequence, boolean endOfBatch) throws Exception {
+        public void onEvent(EventWapper eventWapper) throws Exception {
             Event event = eventWapper.getActualEvent();
             EventHandler handler = handlerMap.get(event.getClass());
             if (handler == null) {
                 throw new EfunException("eventType :" + event.getClass().getName() + "'s handler can not find");
             }
             try {
-                handler.onEvent(event, sequence, endOfBatch);
+                handler.onEvent(event);
             } catch (Exception ex) {
                 logger.error(ex.getMessage(), ex);
                 publisher.publish(event);

@@ -193,4 +193,11 @@ public class AppController extends BaseController {
     public User validUser(@Valid @ModelParam("user")User user) {
         return user;
     }
+
+    //http://localhost:8000/app/validUserNext?id=1&name=echo
+    @RequestMapping("validUserNext")
+    public User validUserNext(@Valid User user) {
+        return user;
+    }
+
 }

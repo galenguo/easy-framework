@@ -2,8 +2,9 @@ package com.efun.archetype.mapper;
 
 import com.efun.archetype.domain.User;
 import com.efun.core.mapper.BaseMapper;
-import com.efun.core.mapper.BaseSqlProvider;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * UserMapper
