@@ -1,9 +1,13 @@
 package com.efun.core.asyn;
 
+import com.efun.core.config.Configuration;
 import com.efun.core.exception.EfunException;
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.WorkHandler;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
@@ -15,8 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 
 /**
  * EventProcessor
@@ -42,15 +45,17 @@ public class EventProcessor implements InitializingBean, DisposableBean {
     private Thread thread;
 
     /**
-     * 线程工厂
+     * 线程池
      */
-    private ThreadFactory threadFactory;
+    ExecutorService executor;
 
     Disruptor<EventWapper> disruptor;
 
     private int bufferSize = 1024;
 
     private volatile boolean flag = true;
+
+    private EventWapperProducer producer;
 
     public void setEventHandlers(List<EventHandler> eventHandlers) {
         this.eventHandlers = eventHandlers;
@@ -62,16 +67,31 @@ public class EventProcessor implements InitializingBean, DisposableBean {
 
     protected void initProcesser() {
         //初始化disruptor相关对象
-        threadFactory = Executors.defaultThreadFactory();
+        int threadCount;
+        try {
+            threadCount = Integer.parseInt(Configuration.getProperty("asyn.thred.count"));
+        } catch (Exception ex) {
+            throw new EfunException("can not found \"asyn.thred.count\" setting");
+        }
+        executor = Executors.newFixedThreadPool(threadCount);
         EventWapperFactory factory = new EventWapperFactory();
-        disruptor = new Disruptor<EventWapper>(factory, bufferSize, threadFactory);
-        disruptor.handleEventsWithWorkerPool(new EventHandlerSwitch());
+        disruptor = new Disruptor<EventWapper>(factory, bufferSize, executor, ProducerType.SINGLE, new YieldingWaitStrategy());
+
+        //启动多个handler，与线程一一对应
+        EventHandlerSwitch handlerSwitch1 = new EventHandlerSwitch();
+        EventHandlerSwitch handlerSwitch2 = new EventHandlerSwitch();
+        for (EventHandler item : eventHandlers) {
+            handlerSwitch1.register(item);
+            handlerSwitch2.register(item);
+        }
+        disruptor.handleEventsWithWorkerPool(handlerSwitch1,handlerSwitch2);
         disruptor.start();
         RingBuffer<EventWapper> ringBuffer = disruptor.getRingBuffer();
-        EventWapperProducer producer = new EventWapperProducer(ringBuffer);
+        producer = new EventWapperProducer(ringBuffer);
 
         //监听时间发布队列，再发布到disruptor。
-        Runnable runnable = new Runnable() {
+        // TODO: 2016/9/27 监听策略待优化
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (flag) {
@@ -82,8 +102,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
                 }
                 flag = true;
             }
-        };
-        thread = new Thread(runnable);
+        });
         thread.start();
     }
 
@@ -96,6 +115,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
         }
         //关闭disruptor相关对象。
         disruptor.shutdown();
+        executor.shutdown();
     }
 
 
@@ -124,7 +144,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
     /**
      * 事件处理handler选择
      */
-    public class EventHandlerSwitch implements com.lmax.disruptor.WorkHandler<EventWapper> {
+    public class EventHandlerSwitch implements WorkHandler<EventWapper> {
 
         /**
          * 事件处理handler的Map
@@ -136,8 +156,8 @@ public class EventProcessor implements InitializingBean, DisposableBean {
          * @param eventHandler
          */
         public void register(EventHandler eventHandler) {
-            Type[] types = eventHandler.getClass().getGenericInterfaces();
-            Class<?> clazz = (Class<?>) ((ParameterizedType)types[0]).getActualTypeArguments()[0];
+            Type type = eventHandler.getClass().getGenericSuperclass();
+            Class<?> clazz = (Class<?>) ((ParameterizedType)type).getActualTypeArguments()[0];
             handlerMap.put(clazz, eventHandler);
         }
 
@@ -169,7 +189,7 @@ public class EventProcessor implements InitializingBean, DisposableBean {
     }
 
     /**
-     * 生产者
+     * 事件wapper生产者
      */
     public class EventWapperProducer {
 
@@ -195,5 +215,34 @@ public class EventProcessor implements InitializingBean, DisposableBean {
             }
         }
     }
+
+    /*public static void main(String[] args) throws Exception {
+        EventProcessor processor = new EventProcessor();
+        List<EventHandler> list = new ArrayList<>();
+        list.add(new TestEventHandler());
+        processor.setEventHandlers(list);
+        processor.afterPropertiesSet();
+        for (int i = 0; i < 10; i++) {
+            Event event = new TestEvent();
+            processor.producer.publishEvent(event);
+        }
+        processor.destoryProcesser();
+    }
+
+    public static class TestEvent implements Event {
+        @Override
+        public String toString() {
+            return "#####" + Thread.currentThread().getName();
+        }
+    }
+
+    public static class TestEventHandler extends EventHandler<TestEvent> {
+
+        @Override
+        void onEvent(TestEvent event) {
+            System.out.println(event.toString());
+        }
+    }*/
+
 
 }
