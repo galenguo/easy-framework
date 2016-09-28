@@ -57,6 +57,8 @@ public class EventProcessor implements InitializingBean, DisposableBean {
 
     private EventWapperProducer producer;
 
+    private Integer threadCount;
+
     public void setEventHandlers(List<EventHandler> eventHandlers) {
         this.eventHandlers = eventHandlers;
     }
@@ -65,26 +67,30 @@ public class EventProcessor implements InitializingBean, DisposableBean {
         this.publisher = publisher;
     }
 
+    public void setThreadCount(Integer threadCount) {
+        this.threadCount = threadCount;
+    }
+
     protected void initProcesser() {
         //初始化disruptor相关对象
-        int threadCount;
-        try {
-            threadCount = Integer.parseInt(Configuration.getProperty("asyn.thred.count"));
-        } catch (Exception ex) {
-            throw new EfunException("can not found \"asyn.thred.count\" setting");
+        if (threadCount == null) {
+            throw new EfunException("EventProcessor: feild threadCount must be setted");
         }
         executor = Executors.newFixedThreadPool(threadCount);
         EventWapperFactory factory = new EventWapperFactory();
         disruptor = new Disruptor<EventWapper>(factory, bufferSize, executor, ProducerType.SINGLE, new YieldingWaitStrategy());
 
         //启动多个handler，与线程一一对应
-        EventHandlerSwitch handlerSwitch1 = new EventHandlerSwitch();
-        EventHandlerSwitch handlerSwitch2 = new EventHandlerSwitch();
-        for (EventHandler item : eventHandlers) {
-            handlerSwitch1.register(item);
-            handlerSwitch2.register(item);
+        EventHandlerSwitch[] handlerSwitches = new EventHandlerSwitch[threadCount];
+        for (int i = 0; i < threadCount; i++) {
+            EventHandlerSwitch handlerSwitch = new EventHandlerSwitch();
+            for (EventHandler item : eventHandlers) {
+                //注册实际的eventHandler
+                handlerSwitch.register(item);
+            }
+            handlerSwitches[i] = handlerSwitch;
         }
-        disruptor.handleEventsWithWorkerPool(handlerSwitch1,handlerSwitch2);
+        disruptor.handleEventsWithWorkerPool(handlerSwitches);
         disruptor.start();
         RingBuffer<EventWapper> ringBuffer = disruptor.getRingBuffer();
         producer = new EventWapperProducer(ringBuffer);

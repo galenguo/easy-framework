@@ -1,5 +1,6 @@
 package com.efun.archetype.domain;
 
+import com.efun.core.asyn.Event;
 import com.efun.core.domain.BaseAuditEntity;
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.mapper.annotation.Column;
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Table(name = "t_user")
-public class User extends BaseAuditEntity<Long> {
+public class User extends BaseAuditEntity<Long> implements Event {
 
     @Length(min = 10, max = 15, message = "")
     @Column("name")

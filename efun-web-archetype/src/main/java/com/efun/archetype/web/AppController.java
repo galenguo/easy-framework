@@ -3,6 +3,7 @@ package com.efun.archetype.web;
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
 import com.efun.archetype.service.UserService;
+import com.efun.core.asyn.EventPublisher;
 import com.efun.core.cache.CacheUtils;
 import com.efun.core.context.ApplicationContext;
 import com.efun.core.domain.page.Page;
@@ -41,6 +42,9 @@ public class AppController extends BaseController {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    EventPublisher eventPublisher;
 
     //http://localhost:8000/app/helloworld?user.id=1&user.name=echo
     @RequestMapping("helloworld")
@@ -200,4 +204,19 @@ public class AppController extends BaseController {
         return user;
     }
 
+    //http://localhost:8000/app/eventPublish
+    @RequestMapping("eventPublish")
+    public String eventPublish() {
+        long start = System.currentTimeMillis();
+        User user = new User();
+        user.setName("galenecho");
+        user.setPhoneNumber("12345678");
+        user.setGender(User.Gender.WOMAN);
+        eventPublisher.publish(user);
+        eventPublisher.publish(user);
+        eventPublisher.publish(user);
+        logger.info(System.currentTimeMillis() - start);
+        return "success";
+
+    }
 }

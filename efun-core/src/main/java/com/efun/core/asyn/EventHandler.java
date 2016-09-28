@@ -13,5 +13,5 @@ public abstract class EventHandler<T extends Event> {
 
     protected Logger logger = LogManager.getLogger(this.getClass());
 
-    abstract void onEvent(T event);
+    protected abstract void onEvent(T event);
 }
