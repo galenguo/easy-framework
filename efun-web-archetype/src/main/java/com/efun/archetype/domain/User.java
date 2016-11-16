@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "t_user")
 public class User extends BaseAuditEntity<Long> implements Event {
 
-    @Length(min = 10, max = 15, message = "")
+    @Length(min = 10, max = 15, message = "长度10~15")
     @Column("name")
     private String name;
 

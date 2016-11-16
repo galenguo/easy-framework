@@ -645,7 +645,7 @@
         <pluginRepository>
             <id>nexus-public</id>
             <name>Nexus Public Repository</name>
-            <url>http://172.16.5.120:8081/nexus/content/groups/public</url>
+            <url>http://172.16.5.117:8081/nexus/content/groups/public</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -653,12 +653,12 @@
         <repository>
             <id>nexus-releases</id>
             <name>Nexus Release Repository</name>
-            <url>http://172.16.5.120:8081/nexus/content/repositories/releases</url>
+            <url>http://172.16.5.117:8081/nexus/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Nexus Snapshots Repository</name>
-            <url>http://172.16.5.120:8081/nexus/content/repositories/snapshots</url>
+            <url>http://172.16.5.117:8081/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 

@@ -64,14 +64,14 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                 for (ObjectError error : errorList) {
                     if (error instanceof FieldError) {
                         FieldError fieldError = (FieldError) error;
-                        message += fieldError.getObjectName() + ": " + fieldError.getField() + " [" + fieldError.getDefaultMessage() + "]" + "; ";
+                        message += fieldError.getField() + " [" + fieldError.getDefaultMessage() + "]" + ", ";
                     } else {
                         message += error.toString() + "; ";
                     }
                 }
                 result.put("message", message);
                 result.put("code", "-1000");
-                logger.warn("Bean validate message: " + message);
+                logger.warn("bean valid error: [" + httpServletRequest.getServletPath() + "] " + message);
             }
         } else if (tryCacheException(httpServletRequest, e, result)) {
 
@@ -93,7 +93,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         } catch (IOException e1) {
             logger.error(e1.getMessage(), e1);
         }
-        return null;
+        return new ModelAndView();
     }
 
     /**

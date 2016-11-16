@@ -1,7 +1,7 @@
 package com.efun.core.utils;
 
-import com.google.common.collect.Maps;
-import org.apache.http.Header;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -13,11 +13,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -25,7 +22,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,11 +31,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +113,7 @@ public class HttpUtils {
      * @param url
      * @return
      */
-    public static Response doGet(String url) {
+    public static String doGet(String url) {
         return doGet(url, new HashMap<String, String>(), DEFAULT_ENCODING);
     }
 
@@ -130,7 +123,7 @@ public class HttpUtils {
      * @param encoding
      * @return
      */
-    public static Response doGet(String url, String encoding) {
+    public static String doGet(String url, String encoding) {
         return doGet(url, new HashMap<String, String>(), encoding);
     }
 
@@ -141,7 +134,7 @@ public class HttpUtils {
      * @param encoding 编码类型
      * @return
      */
-    public static Response doGet(String url, String queryString, String encoding) {
+    public static String doGet(String url, String queryString, String encoding) {
         return doGet(url, queryStrTOMap(queryString), encoding);
     }
 
@@ -152,7 +145,7 @@ public class HttpUtils {
      * @param encoding 编码类型
      * @return
      */
-    public static Response doGet(String url, Map<String, String> params, String encoding) {
+    public static String doGet(String url, Map<String, String> params, String encoding) {
         if(StringUtils.isBlank(url)){
             return null;
         }
@@ -177,10 +170,7 @@ public class HttpUtils {
 
 
             HttpEntity entity = response.getEntity();
-            Response result = new Response();
-            if (entity != null){
-                result.setBody(EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING));
-            }
+            String result = EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
             EntityUtils.consume(entity);
             response.close();
             return result;
@@ -197,7 +187,7 @@ public class HttpUtils {
      * @param encoding 编码类型
      * @return
      */
-	/*public static HttpResult doPost(String url, Map<String, String> bodyParams, String encoding) {
+	public static String doPost(String url, Map<String, String> bodyParams, String encoding) {
 		List<NameValuePair> pairs = null;
         if(bodyParams != null && !bodyParams.isEmpty()){
             pairs = new ArrayList<NameValuePair>(bodyParams.size());
@@ -211,20 +201,20 @@ public class HttpUtils {
         try {
 			return doPost(url, new UrlEncodedFormEntity(pairs, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING), encoding);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
-	}*/
+	}
 
     /**
      * post请求
      * @param url 请求url
-     * @param reqeustBody 请求requestbody字符串
+     * @param reqeustBody 请求json格式的requestbody字符串
      * @param encoding 编码类型
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static Response doPost(String url, String reqeustBody, String encoding) throws UnsupportedEncodingException {
+    public static String doPost(String url, String reqeustBody, String encoding) throws UnsupportedEncodingException {
         if(StringUtils.isNotBlank(reqeustBody)) {
             StringEntity stringEntity = new StringEntity(reqeustBody, ContentType.APPLICATION_JSON);
             stringEntity.setChunked(true);
@@ -242,7 +232,7 @@ public class HttpUtils {
      * @param encoding 编码类型
      * @return
      */
-    public static Response doPost(String url, HttpEntity httpEntity, String encoding) {
+    public static String doPost(String url, HttpEntity httpEntity, String encoding) {
         if(StringUtils.isBlank(url)){
             return null;
         }
@@ -262,10 +252,7 @@ public class HttpUtils {
                 throw new RuntimeException("HttpClient,error status code :" + statusCode);
             }
             HttpEntity entity = response.getEntity();
-            Response result = new Response();
-            if (entity != null){
-                result.setBody(EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING));
-            }
+            String result = EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
             EntityUtils.consume(entity);
             response.close();
             return result;
@@ -320,28 +307,4 @@ public class HttpUtils {
         return null;
     }
 
-    public static class Response {
-
-        private String body;
-
-        /**
-         * 获取 body
-         * @return body body
-         */
-        public String getBody() {
-            return body;
-        }
-
-        /**
-         * 设置 body
-         * @param body body
-         */
-        public void setBody(String body) {
-            this.body = body;
-        }
-    }
-
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        System.out.println(doGet("http://login.efun.com/pcLogin_login.shtml?crossdomain=false&platForm=web&loginPwd=75E266F182B4FA3625D4A4F4F779AF54&loginName=tink&gameCode=efunseaplatform&area=sea&from=web&ipAddress=10.12.20.21&language=zh_CH", "{}", null).getBody());
-    }
 }

@@ -16,7 +16,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.Locale;
 
 /**
@@ -197,6 +199,35 @@ public class ApplicationContext {
         HttpServletRequest request = getHttpRequest();
         AssertUtils.notNull(request);
         return request.getSession(false);
+    }
+
+    /**
+     * 获取请求的ip地址
+     * @return
+     */
+    public static String getRequestIp() {
+        HttpServletRequest request = getHttpRequest();
+        AssertUtils.notNull(request);
+        String ip = request.getHeader("X-Real-IP");
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            if (ip.equals("127.0.0.1")) {
+                InetAddress inet = null;
+                try {
+                    inet = InetAddress.getLocalHost();
+                } catch (UnknownHostException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                ip = inet.getHostAddress();
+            }
+        }
+        return ip.indexOf(",") > -1 ? ip.substring(0, ip.indexOf(",")) : ip;
     }
 
     /**
