@@ -13,7 +13,8 @@ import com.efun.core.asyn.EventHandler;
 public class UserEventHandler extends EventHandler<User> {
 
     @Override
-    protected void onEvent(User event) {
+    protected boolean onEvent(User event) {
         System.out.println(JSON.toJSON(event));
+        return true;
     }
 }

@@ -13,5 +13,10 @@ public abstract class EventHandler<T extends Event> {
 
     protected Logger logger = LogManager.getLogger(this.getClass());
 
-    protected abstract void onEvent(T event);
+    /**
+     * 处理成功返回true，失败返回false。
+     * @param event
+     * @return
+     */
+    protected abstract boolean onEvent(T event);
 }

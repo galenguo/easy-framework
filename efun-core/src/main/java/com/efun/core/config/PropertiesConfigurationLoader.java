@@ -26,7 +26,7 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
     /**
      * 使用系统环境变量配置路径
      */
-    protected boolean useEvnConfigPath = false;
+    protected Boolean useEvnConfigPath = null;
 
     /**
      * 默认配置文件名称
@@ -42,6 +42,22 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
 
     public void setUseEvnConfigPath(boolean useEvnConfigPath) {
         this.useEvnConfigPath = useEvnConfigPath;
+    }
+
+    /**
+     * 是否使用环境变量配置路径。
+     * 默认规则：如果有配置环境变量默认为true，没有配置默认为false。
+     * @return
+     */
+    public Boolean getUseEvnConfigPath() {
+        if (useEvnConfigPath == null) {
+            if (StringUtils.isNotBlank(Configuration.getConfigPath())) {
+                useEvnConfigPath = true;
+            } else {
+                useEvnConfigPath = false;
+            }
+        }
+        return useEvnConfigPath;
     }
 
 
@@ -61,7 +77,6 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
             for (String fileName : fileNames) {
                 if (StringUtils.isNotBlank(fileName)) {
                     fileNameList.add(fileName);
-
                 }
             }
         }
@@ -69,12 +84,12 @@ public class PropertiesConfigurationLoader implements ConfigurationLoader {
         /**
          * 区分使用绝对路径方式，还是classpath方式读取，默认是classpath方式读取配置文件。
          */
-        String prePath = useEvnConfigPath ? FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) : "";
+        String prePath = getUseEvnConfigPath() ? FileUtils.addSeparatorIfNec(Configuration.getConfigPath()) : "";
         for (String fileName : fileNameList) {
             String resourceName =  prePath + fileName;
             logger.info("loading properties from {} ", resourceName);
             LinkedProperties properties = new LinkedProperties();
-            Resource resource = useEvnConfigPath ? new FileSystemResource(resourceName) : new ClassPathResource(resourceName);
+            Resource resource = getUseEvnConfigPath() ? new FileSystemResource(resourceName) : new ClassPathResource(resourceName);
 
             PropertiesLoaderUtils.fillProperties(properties, resource);
 

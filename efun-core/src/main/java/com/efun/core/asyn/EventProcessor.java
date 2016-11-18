@@ -175,7 +175,10 @@ public class EventProcessor implements InitializingBean, DisposableBean {
                 throw new EfunException("eventType :" + event.getClass().getName() + "'s handler can not find");
             }
             try {
-                handler.onEvent(event);
+                if (!handler.onEvent(event)) {
+                    logger.warn("event: " + event.getClass().getSimpleName() + " republish");
+                    publisher.publish(event);
+                }
             } catch (Exception ex) {
                 logger.error(ex.getMessage(), ex);
                 publisher.publish(event);

@@ -17,7 +17,7 @@ public class EventPublisher {
 
     protected Logger logger = LogManager.getLogger(this.getClass());
 
-    private static final String eventQueueCacheKey =Configuration.getProperty("platform") + "_event_queue";
+    private static final String eventQueueCacheKey =Configuration.getProperty("area") + "_event_queue";
 
     public void publish(Event event) {
         if (event != null) {
