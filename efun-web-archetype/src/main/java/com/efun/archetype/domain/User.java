@@ -8,6 +8,7 @@ import com.efun.core.mapper.annotation.Table;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import java.beans.Transient;
 
 /**
  * User
@@ -46,6 +47,7 @@ public class User extends BaseAuditEntity<Long> implements Event {
         this.phoneNumber = phoneNumber;
     }
 
+    @Transient
     public Gender getGender() {
         return gender;
     }

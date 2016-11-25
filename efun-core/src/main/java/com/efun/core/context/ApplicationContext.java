@@ -7,6 +7,7 @@ import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -118,10 +119,7 @@ public class ApplicationContext {
     }
 
     public static String getMessage(String code, Object[] args, String defaultMessage) {
-        Locale locale = getLanguageLocal();
-        if (null == locale) {
-            locale = getCurrentUserLocale();
-        }
+        Locale locale = getCurrentUserLocale();
         if (null == locale) {
             locale = Locale.getDefault();
         }
@@ -151,6 +149,10 @@ public class ApplicationContext {
      * @return
      */
     public static Locale getCurrentUserLocale() {
+        Locale locale = getLanguageLocal();
+        if (locale != null) {
+            return locale;
+        }
         HttpServletRequest request = getHttpRequest();
         if (request == null) {
             return null;
@@ -162,7 +164,7 @@ public class ApplicationContext {
      * get language local
      * @return
      */
-    public static Locale getLanguageLocal() {
+    private static Locale getLanguageLocal() {
         HttpServletRequest request = getHttpRequest();
         Locale locale = null;
         if (request != null) {
@@ -228,6 +230,14 @@ public class ApplicationContext {
             }
         }
         return ip.indexOf(",") > -1 ? ip.substring(0, ip.indexOf(",")) : ip;
+    }
+
+    /**
+     * 是否跨域
+     * @return
+     */
+    public static boolean isCrossDomain() {
+        return StringUtils.isNotBlank(getHttpRequest().getParameter("jsoncallback"));
     }
 
     /**

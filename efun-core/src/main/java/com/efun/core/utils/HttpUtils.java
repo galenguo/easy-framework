@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -120,6 +121,16 @@ public class HttpUtils {
     /**
      * get请求
      * @param url
+     * @param params
+     * @return
+     */
+    public static String doGet(String url, Map<String, String> params) {
+        return doGet(url, params, DEFAULT_ENCODING);
+    }
+
+    /**
+     * get请求
+     * @param url
      * @param encoding
      * @return
      */
@@ -175,7 +186,7 @@ public class HttpUtils {
             response.close();
             return result;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error(url + "\n" + e.getMessage(), e);
         }
         return null;
     }
@@ -257,7 +268,13 @@ public class HttpUtils {
             response.close();
             return result;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            String content = null;
+            try {
+                content = EntityUtils.toString(httpEntity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
+            } catch (IOException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
+            logger.error(url + "\n" + content + "\n" + e.getMessage(), e);
         }
         return null;
     }
