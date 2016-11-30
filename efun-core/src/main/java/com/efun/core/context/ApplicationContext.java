@@ -144,6 +144,14 @@ public class ApplicationContext {
     }
 
     /**
+     * 获取request的语言
+     * @return
+     */
+    public static String getLanguage() {
+        return getCurrentUserLocale().toString();
+    }
+
+    /**
      * get current user locale
      *
      * @return
