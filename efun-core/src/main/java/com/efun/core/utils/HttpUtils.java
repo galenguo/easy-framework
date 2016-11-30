@@ -195,6 +195,16 @@ public class HttpUtils {
      * post请求
      * @param url 请求url
      * @param bodyParams requestbody的内容map
+     * @return
+     */
+    public static String doPost(String url, Map<String, String> bodyParams) {
+        return doPost(url, bodyParams, DEFAULT_ENCODING);
+    }
+
+    /**
+     * post请求
+     * @param url 请求url
+     * @param bodyParams requestbody的内容map
      * @param encoding 编码类型
      * @return
      */
