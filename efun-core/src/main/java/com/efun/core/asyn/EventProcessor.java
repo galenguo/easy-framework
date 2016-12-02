@@ -57,7 +57,10 @@ public class EventProcessor implements InitializingBean, DisposableBean {
 
     private EventWapperProducer producer;
 
-    private Integer threadCount;
+    /**
+     * 默认3个线程
+     */
+    private Integer threadCount = 3;
 
     public void setEventHandlers(List<EventHandler> eventHandlers) {
         this.eventHandlers = eventHandlers;

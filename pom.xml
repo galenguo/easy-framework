@@ -511,6 +511,10 @@
                         <target>${jdk.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <compilerArgument>-proc:none</compilerArgument>
+                        <compilerArguments>
+                            <verbose />
+                            <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
+                        </compilerArguments>
                         <showWarnings>true</showWarnings>
                         <showDeprecation>false</showDeprecation>
                     </configuration>
