@@ -45,6 +45,12 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         this.contentType = contentType;
     }
 
+    private String validExceptionCode = "1100";
+
+    public void setValidExceptionCode(String validExceptionCode) {
+        this.validExceptionCode = validExceptionCode;
+    }
+
     @Override
     protected ModelAndView doResolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
         String callback = null;
@@ -70,7 +76,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                     }
                 }
                 result.put("message", message);
-                result.put("code", "-1000");
+                result.put("code", validExceptionCode);
                 logger.warn("bean valid error: [" + httpServletRequest.getServletPath() + "] " + message);
             }
         } else if (tryCacheException(httpServletRequest, e, result)) {
