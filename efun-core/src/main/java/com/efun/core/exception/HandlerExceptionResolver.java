@@ -3,6 +3,7 @@ package com.efun.core.exception;
 import com.alibaba.fastjson.JSON;
 import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.validation.BindException;
@@ -45,7 +46,9 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         this.contentType = contentType;
     }
 
-    private String validExceptionCode = "1100";
+    private String validExceptionCode = "0001";
+
+    private String ErrorCode = "0000";
 
     public void setValidExceptionCode(String validExceptionCode) {
         this.validExceptionCode = validExceptionCode;
@@ -61,7 +64,6 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             }
         }
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("exception", Boolean.TRUE);
         if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
@@ -82,7 +84,9 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         } else if (tryCacheException(httpServletRequest, e, result)) {
 
         } else {
-            result.put("message", e.toString());
+            result.put("exception", Boolean.TRUE);
+            result.put("code", ErrorCode);
+            result.put("message", e.toString() + ExceptionUtils.getStackTrace(e));
             logger.error(e.getMessage(), e);
         }
         String jsonString = JSON.toJSONString(result);
