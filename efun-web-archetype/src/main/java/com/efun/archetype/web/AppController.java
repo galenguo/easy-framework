@@ -11,6 +11,7 @@ import com.efun.core.domain.page.PageRequest;
 import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.query.Criteria;
 import com.efun.core.mapper.query.Query;
+import com.efun.core.utils.StringUtils;
 import com.efun.core.web.binding.MapWapper;
 import com.efun.core.web.binding.ModelParam;
 import com.efun.core.web.controller.BaseController;
@@ -21,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * AppController
@@ -191,6 +189,18 @@ public class AppController extends BaseController {
     //http://localhost:8000/app/validUser?user.id=1&user.name=echo
     @RequestMapping("validUser")
     public User validUser(@Valid @ModelParam("user")User user) {
+        return user;
+    }
+
+    @RequestMapping("validUser1")
+    public Object validUser1(@ModelParam("user") User user) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if (StringUtils.isBlank(user.getPhoneNumber())) {
+            result.put("exception", Boolean.TRUE);
+            result.put("message", "user: phoneNumber [" + ApplicationContext.getMessage("phone.not.null") + "]");
+            result.put("code", "-1000");
+            return result;
+        }
         return user;
     }
 }

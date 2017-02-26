@@ -1,5 +1,7 @@
 package com.efun.core.utils;
 
+import com.google.common.collect.Maps;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -20,6 +22,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -28,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -61,7 +66,7 @@ public class HttpUtils {
     private static CloseableHttpClient httpClient;
 
     static {
-        httpClient = createHttpClient();
+        httpClient = createHttpClient2();
     }
 
     /**
@@ -69,35 +74,90 @@ public class HttpUtils {
      * @return
      */
     private static CloseableHttpClient createHttpClient() {
-        RegistryBuilder<ConnectionSocketFactory> registryBuilder = RegistryBuilder.create();
-        ConnectionSocketFactory plainSF = new PlainConnectionSocketFactory();
-        registryBuilder.register("http", plainSF);
-        //指定信任密钥存储对象和连接套接字工厂
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
         try {
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             //信任任何链接
-            TrustStrategy anyTrustStrategy = new TrustStrategy() {
-                public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    return true;
+            X509TrustManager anyTrustManager = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                        String paramString) throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                        String paramString) throws CertificateException {
+                }
+
+                @Override
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
                 }
             };
-            SSLContext sslContext = SSLContexts.custom().useTLS().loadTrustMaterial(trustStore, anyTrustStrategy).build();
-            LayeredConnectionSocketFactory sslSF = new SSLConnectionSocketFactory(sslContext, SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            registryBuilder.register("https", sslSF);
-        } catch (KeyStoreException e) {
-            throw new RuntimeException(e);
-        } catch (KeyManagementException e) {
-            throw new RuntimeException(e);
+            SSLContext sslContext = SSLContext.getInstance("SSLv3");
+            sslContext.init(null, new TrustManager[] {anyTrustManager}, null);
+            // 设置协议http和https对应的处理socket链接工厂的对象
+            socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.INSTANCE)
+                    .register("https", new SSLConnectionSocketFactory(sslContext))
+                    .build();
+
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
         }
-        Registry<ConnectionSocketFactory> registry = registryBuilder.build();
-        //设置连接管理器
-        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(registry);
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
         requestConfig = RequestConfig.custom().setSocketTimeout(TIMEOUT_SECONDS * 1000)
                 .setConnectTimeout(TIMEOUT_SECONDS * 1000).build();
-        return HttpClientBuilder.create().setConnectionManager(connManager).setMaxConnTotal(POOL_SIZE).setMaxConnPerRoute(POOL_SIZE)
+        return HttpClients.custom().setConnectionManager(connManager).setMaxConnTotal(POOL_SIZE).setMaxConnPerRoute(POOL_SIZE)
                 .setDefaultRequestConfig(requestConfig).build();
+    }
+
+    private static CloseableHttpClient createHttpClient2() {
+        //采用绕过验证的方式处理https请求
+        X509TrustManager anyTrustManager = new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(
+                    java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                    String paramString) throws CertificateException {
+            }
+
+            @Override
+            public void checkServerTrusted(
+                    java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
+                    String paramString) throws CertificateException {
+            }
+
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        };
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("SSLv3");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        try {
+            sslContext.init(null, new TrustManager[] {anyTrustManager}, null);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
+        // 设置协议http和https对应的处理socket链接工厂的对象
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.INSTANCE)
+                .register("https", new SSLConnectionSocketFactory(sslContext))
+                .build();
+        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+        HttpClients.custom().setConnectionManager(connManager);
+
+        //创建自定义的httpclient对象
+        CloseableHttpClient client = HttpClients.custom().setConnectionManager(connManager).build();
+        return client;
     }
 
     /**
@@ -125,7 +185,9 @@ public class HttpUtils {
 
         try {
 
-            url += "?" + mapToQueryStr(params, encoding);
+            if (params != null && params.size() != 0) {
+                url += "?" + mapToQueryStr(params, encoding);
+            }
 
             logger.debug("get request url : " + url);
 
@@ -215,7 +277,6 @@ public class HttpUtils {
             HttpPost httpPost = new HttpPost(url);
 
             logger.debug("post request body : " + httpEntity.toString());
-            httpPost.setHeader(HTTP.CONTENT_TYPE, "application/json");
             httpPost.setEntity(httpEntity);
 
             CloseableHttpResponse response = httpClient.execute(httpPost);
@@ -307,4 +368,7 @@ public class HttpUtils {
         }
     }
 
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        System.out.println(doGet("http://login.efun.com/pcLogin_login.shtml?crossdomain=false&platForm=web&loginPwd=75E266F182B4FA3625D4A4F4F779AF54&loginName=tink&gameCode=efunseaplatform&area=sea&from=web&ipAddress=10.12.20.21&language=zh_CH", "{}", null).getBody());
+    }
 }
