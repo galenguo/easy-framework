@@ -48,10 +48,14 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
 
     private String validExceptionCode = "0001";
 
-    private String ErrorCode = "0000";
+    private String errorCode = "0000";
 
     public void setValidExceptionCode(String validExceptionCode) {
         this.validExceptionCode = validExceptionCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     @Override
@@ -85,7 +89,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
 
         } else {
             result.put("exception", Boolean.TRUE);
-            result.put("code", ErrorCode);
+            result.put("code", errorCode);
             result.put("message", e.toString() + ExceptionUtils.getStackTrace(e));
             logger.error(e.getMessage(), e);
         }

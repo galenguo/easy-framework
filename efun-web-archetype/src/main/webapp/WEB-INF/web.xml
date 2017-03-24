@@ -33,6 +33,15 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
+    <filter>
+        <filter-name>encryteFilter</filter-name>
+        <filter-class>com.efun.filter.EncryteFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>encryteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- encoding filter -->
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -111,6 +120,7 @@
     <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
     </listener>
+
     <filter>
         <filter-name>log4jServletFilter</filter-name>
         <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>

@@ -79,7 +79,7 @@
 
     <bean id="eventProcessor" class="com.efun.core.asyn.EventProcessor">
         <property name="publisher" ref="eventPublisher"/>
-        <property name="threadCount" value="#{T(com.efun.core.config.Configuration).getProperty('asyn.thred.count')}"/>
+        <!--<property name="threadCount" value="#{T(com.efun.core.config.Configuration).getProperty('asyn.thred.count')}"/>-->
         <property name="eventHandlers">
             <list>
                 <!-- 异步处理handler注册 -->
