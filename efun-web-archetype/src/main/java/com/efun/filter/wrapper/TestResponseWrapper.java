@@ -49,11 +49,11 @@ public class TestResponseWrapper extends HttpServletResponseWrapper {
 
 	@Override
 	public void flushBuffer() throws IOException {
-		if (writer != null) {
+		/*if (writer != null) {
 			writer.flush();
 		} else if (outputStream != null) {
 			copier.flush();
-		}
+		}*/
 	}
 
 	public byte[] getCopy() {
