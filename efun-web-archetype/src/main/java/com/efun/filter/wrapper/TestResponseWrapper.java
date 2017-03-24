@@ -1,6 +1,7 @@
 package com.efun.filter.wrapper;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -11,56 +12,35 @@ import com.efun.filter.helper.MyWriter;
 
 public class TestResponseWrapper extends HttpServletResponseWrapper {
 
-	private ServletOutputStream outputStream;
-	private PrintWriter writer;
-	private ServletOutputStreamCopier copier;
+	private MyWriter myWriter;
+	private MyOutputStream myOutputStream;
 
-	public TestResponseWrapper(HttpServletResponse response) throws IOException {
+	public TestResponseWrapper(HttpServletResponse response) {
 		super(response);
 	}
 
 	@Override
-	public ServletOutputStream getOutputStream() throws IOException {
-		if (writer != null) {
-			throw new IllegalStateException("getWriter() has already been called on this response.");
-		}
-
-		if (outputStream == null) {
-			outputStream = getResponse().getOutputStream();
-			copier = new ServletOutputStreamCopier(outputStream);
-		}
-
-		return copier;
-	}
-
-	@Override
 	public PrintWriter getWriter() throws IOException {
-		if (outputStream != null) {
-			throw new IllegalStateException("getOutputStream() has already been called on this response.");
+		if (myWriter == null) {
+			myWriter = new MyWriter(super.getWriter());
 		}
-
-		if (writer == null) {
-			copier = new ServletOutputStreamCopier(getResponse().getOutputStream());
-			writer = new PrintWriter(new OutputStreamWriter(copier, getResponse().getCharacterEncoding()), true);
-		}
-
-		return writer;
+		return myWriter;
 	}
 
 	@Override
-	public void flushBuffer() throws IOException {
-		/*if (writer != null) {
-			writer.flush();
-		} else if (outputStream != null) {
-			copier.flush();
-		}*/
+	public ServletOutputStream getOutputStream() throws IOException {
+		if (myOutputStream == null) {
+			myOutputStream = new MyOutputStream(super.getOutputStream());
+		}
+		return myOutputStream;
 	}
 
-	public byte[] getCopy() {
-		if (copier != null) {
-			return copier.getCopy();
-		} else {
-			return new byte[0];
-		}
+	public MyWriter getMyWriter() {
+		return myWriter;
 	}
+
+	public MyOutputStream getMyOutputStream() {
+		return myOutputStream;
+	}
+
 }

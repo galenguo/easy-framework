@@ -61,7 +61,8 @@ public class EncryteFilter implements Filter {
 
 			//加密response
 
-			byte[] data = responseWrapper.getCopy();
+			MyOutputStream myOutputStream = responseWrapper.getMyOutputStream();
+			byte[] data = myOutputStream.getCopy();
 			if (data != null) {
 				String content = new String(data, charset);
 				String md5_String = MD5Util.MD5(content);
@@ -69,10 +70,10 @@ public class EncryteFilter implements Filter {
 				iv = new byte[16];
 				System.arraycopy(md5_key, 0, key, 0, 16);
 				System.arraycopy(md5_key, 16, iv, 0, 16);
-				responseWrapper.getWriter().write(encrypt(content, key, iv));
-				((HttpServletResponse) response).setHeader("responseID", Base64.getEncoder().encodeToString(RSAAlgorithm.encrypt(md5_String.getBytes(charset))));
+				myOutputStream.writeAll(encrypt(content, key, iv).getBytes("utf-8"));
+				responseWrapper.setHeader("responseID", Base64.getEncoder().encodeToString(RSAAlgorithm.encrypt(md5_String.getBytes(charset))));
 			}
-			responseWrapper.flushBuffer();
+			myOutputStream.flush();
 		} else {
 			// 不符合规则可以放行
 			chain.doFilter(request, response);

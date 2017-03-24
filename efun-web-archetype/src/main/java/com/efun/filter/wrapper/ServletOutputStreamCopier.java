@@ -19,17 +19,43 @@ public class ServletOutputStreamCopier extends ServletOutputStream {
 
     public ServletOutputStreamCopier(OutputStream outputStream) {
         this.outputStream = outputStream;
-        this.copy = new ByteArrayOutputStream(1024);
+        this.copy = new ByteArrayOutputStream();
     }
 
     @Override
     public void write(int b) throws IOException {
-        outputStream.write(b);
+        copy.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        copy.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
         copy.write(b);
     }
 
     public byte[] getCopy() {
         return copy.toByteArray();
+    }
+
+    public void writeAll(byte[] b) throws IOException {
+        outputStream.write(b);
+    }
+
+    public void writeClose() throws IOException {
+        outputStream.close();
+    }
+
+    public void writeFlush() throws IOException {
+        outputStream.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
 
     @Override
