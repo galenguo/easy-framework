@@ -4,6 +4,7 @@ import com.efun.core.utils.HttpUtils;
 import redis.clients.jedis.GeoUnit;
 
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * App
@@ -13,20 +14,23 @@ import java.util.HashMap;
  */
 public class App {
     static int threadCount = 8;
-    static int iterateCount = 100000;
+    static int iterateCount = 10000;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         long startTime = System.currentTimeMillis();
+        final CountDownLatch countDownLatch=new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(new Runnable() {
                 public void run() {
                     for (int m = 0; m < iterateCount; m++) {
-                        HttpUtils.doGet("http://localhost:8000/app/validUser1", new HashMap<String, String>(), null);
+                        HttpUtils.doGet("http://localhost:8000/app/validUser2");
                     }
+                    countDownLatch.countDown();
                     System.out.println(Thread.currentThread().getName() + " finish");
                 }
             }, "Thread" + i).start();
         }
-        System.out.println("QPS:" + (threadCount * iterateCount * 1000L / (System.currentTimeMillis()) - startTime));
+        countDownLatch.await();
+        System.out.println("QPS:" + (threadCount * iterateCount * 1000L / (System.currentTimeMillis() - startTime)));
     }
 }

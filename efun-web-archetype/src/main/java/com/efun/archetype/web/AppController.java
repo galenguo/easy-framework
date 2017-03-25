@@ -4,11 +4,9 @@ import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
 import com.efun.archetype.service.UserService;
 import com.efun.core.asyn.EventPublisher;
-import com.efun.core.cache.CacheUtils;
 import com.efun.core.context.ApplicationContext;
 import com.efun.core.domain.page.Page;
 import com.efun.core.domain.page.PageImpl;
-import com.efun.core.domain.page.PageRequest;
 import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.query.Criteria;
 import com.efun.core.mapper.query.Query;
@@ -19,14 +17,11 @@ import com.efun.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * AppController
@@ -209,6 +204,18 @@ public class AppController extends BaseController {
             return result;
         }
         return user;
+    }
+
+    @RequestMapping("validUser2")
+    public Object validUser2(HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if (StringUtils.isBlank(request.getParameter("phoneNumber"))) {
+            result.put("exception", Boolean.TRUE);
+            result.put("message", "user: phoneNumber [" + ApplicationContext.getMessage("phone.not.null") + "]");
+            result.put("code", "-1000");
+            return result;
+        }
+        return null;
     }
 
     //http://localhost:8000/app/validUserNext?id=1&name=echo

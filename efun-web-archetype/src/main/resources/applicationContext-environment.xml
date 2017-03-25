@@ -36,7 +36,7 @@
     </bean>
 
     <!--reids数据源配置-->
-    <bean class="com.efun.core.cache.redis.RedisClusterPoolManager">
+    <!--<bean class="com.efun.core.cache.redis.RedisClusterPoolManager">
         <property name="testOnBorrow" value="#{T(com.efun.core.config.Configuration).getProperty('redis.testOnBorrow')}"/>
         <property name="testOnReturn" value="#{T(com.efun.core.config.Configuration).getProperty('redis.testOnReturn')}"/>
         <property name="timeout" value="#{T(com.efun.core.config.Configuration).getProperty('redis.timeout')}"/>
@@ -45,6 +45,6 @@
         <property name="maxWaitMillis" value="#{T(com.efun.core.config.Configuration).getProperty('redis.maxWaitMillis')}"/>
         <property name="serverNames" value="#{T(com.efun.core.config.Configuration).getProperty('redis.serverNames')}"/>
         <property name="sentinels" value="#{T(com.efun.core.config.Configuration).getProperty('redis.sentinels')}"/>
-    </bean>
+    </bean>-->
 
 </beans>
