@@ -27,7 +27,7 @@ public class CacheUtils {
             result = getter.getFromDb();
             getter.setToCache(result);
         }
-        return null;
+        return result;
     }
 
     /**

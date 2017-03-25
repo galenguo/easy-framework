@@ -120,14 +120,14 @@ public class Configuration {
         return patternDateTimeStamp;
     }
 
+    /**
+     * 获取环境配置
+     * @return
+     */
     public static String getConfigPath() {
         if (StringUtils.isEmpty(configPath)) {
             configPath = getProperty(Configuration.CONFIG_PATH);
         }
-        if (StringUtils.isEmpty(configPath)) {
-            throw new EfunException(String.format("environment variable: %s must be set！", Configuration.CONFIG_PATH));
-        }
-
         return configPath;
     }
 

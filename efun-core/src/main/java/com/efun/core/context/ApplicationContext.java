@@ -7,6 +7,7 @@ import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -16,7 +17,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.Locale;
 
 /**
@@ -116,10 +119,7 @@ public class ApplicationContext {
     }
 
     public static String getMessage(String code, Object[] args, String defaultMessage) {
-        Locale locale = getLanguageLocal();
-        if (null == locale) {
-            locale = getCurrentUserLocale();
-        }
+        Locale locale = getCurrentUserLocale();
         if (null == locale) {
             locale = Locale.getDefault();
         }
@@ -144,11 +144,23 @@ public class ApplicationContext {
     }
 
     /**
+     * 获取request的语言
+     * @return
+     */
+    public static String getLanguage() {
+        return getCurrentUserLocale().toString();
+    }
+
+    /**
      * get current user locale
      *
      * @return
      */
     public static Locale getCurrentUserLocale() {
+        Locale locale = getLanguageLocal();
+        if (locale != null) {
+            return locale;
+        }
         HttpServletRequest request = getHttpRequest();
         if (request == null) {
             return null;
@@ -160,7 +172,7 @@ public class ApplicationContext {
      * get language local
      * @return
      */
-    public static Locale getLanguageLocal() {
+    private static Locale getLanguageLocal() {
         HttpServletRequest request = getHttpRequest();
         Locale locale = null;
         if (request != null) {
@@ -197,6 +209,43 @@ public class ApplicationContext {
         HttpServletRequest request = getHttpRequest();
         AssertUtils.notNull(request);
         return request.getSession(false);
+    }
+
+    /**
+     * 获取请求的ip地址
+     * @return
+     */
+    public static String getRequestIp() {
+        HttpServletRequest request = getHttpRequest();
+        AssertUtils.notNull(request);
+        String ip = request.getHeader("X-Real-IP");
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            if (ip.equals("127.0.0.1")) {
+                InetAddress inet = null;
+                try {
+                    inet = InetAddress.getLocalHost();
+                } catch (UnknownHostException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                ip = inet.getHostAddress();
+            }
+        }
+        return ip.indexOf(",") > -1 ? ip.substring(0, ip.indexOf(",")) : ip;
+    }
+
+    /**
+     * 是否跨域
+     * @return
+     */
+    public static boolean isCrossDomain() {
+        return StringUtils.isNotBlank(getHttpRequest().getParameter("jsoncallback"));
     }
 
     /**

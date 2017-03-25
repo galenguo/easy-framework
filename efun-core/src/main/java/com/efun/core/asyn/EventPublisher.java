@@ -17,13 +17,20 @@ public class EventPublisher {
 
     protected Logger logger = LogManager.getLogger(this.getClass());
 
-    private static final String eventQueueCacheKey =Configuration.getProperty("platform") + "_event_queue";
+    private static final String eventQueueCacheKey =Configuration.getProperty("area") + "_event_queue";
 
     public void publish(Event event) {
-        RedisUtils.rpush(eventQueueCacheKey.getBytes(), SerializationUtils.serialize(event));
+        if (event != null) {
+            RedisUtils.rpush(eventQueueCacheKey.getBytes(), SerializationUtils.serialize(event));
+        }
     }
 
     public Event tryGetEvent() {
-        return SerializationUtils.deserialize(RedisUtils.lpop(eventQueueCacheKey.getBytes()));
+        byte[] bytes = RedisUtils.lpop(eventQueueCacheKey.getBytes());
+        if (bytes != null) {
+            return SerializationUtils.deserialize(bytes);
+        } else {
+            return null;
+        }
     }
 }

@@ -20,7 +20,7 @@ public class SerializationUtils extends org.apache.commons.lang3.SerializationUt
     public static byte[] serialize(Serializable object) {
         byte[] result = null;
         try {
-            org.apache.commons.lang3.SerializationUtils.serialize(object);
+            result = org.apache.commons.lang3.SerializationUtils.serialize(object);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -30,7 +30,7 @@ public class SerializationUtils extends org.apache.commons.lang3.SerializationUt
     public static <T> T deserialize(byte[] bytes) {
         T result = null;
         try {
-            org.apache.commons.lang3.SerializationUtils.deserialize(bytes);
+            result = org.apache.commons.lang3.SerializationUtils.deserialize(bytes);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

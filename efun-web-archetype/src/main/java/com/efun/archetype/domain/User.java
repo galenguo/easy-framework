@@ -1,5 +1,6 @@
 package com.efun.archetype.domain;
 
+import com.efun.core.asyn.Event;
 import com.efun.core.domain.BaseAuditEntity;
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.mapper.annotation.Column;
@@ -7,6 +8,7 @@ import com.efun.core.mapper.annotation.Table;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import java.beans.Transient;
 
 /**
  * User
@@ -16,7 +18,7 @@ import javax.validation.constraints.NotNull;
  */
 
 @Table(name = "t_user")
-public class User extends BaseAuditEntity<Long> {
+public class User extends BaseAuditEntity<Long> implements Event {
 
     //@Length(min = 10, max = 15, message = "")
     @Column("name")
@@ -45,6 +47,7 @@ public class User extends BaseAuditEntity<Long> {
         this.phoneNumber = phoneNumber;
     }
 
+    @Transient
     public Gender getGender() {
         return gender;
     }

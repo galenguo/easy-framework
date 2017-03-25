@@ -3,6 +3,7 @@ package com.efun.core.exception;
 import com.alibaba.fastjson.JSON;
 import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.validation.BindException;
@@ -45,6 +46,14 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         this.contentType = contentType;
     }
 
+    private String validExceptionCode = "0001";
+
+    private String ErrorCode = "0000";
+
+    public void setValidExceptionCode(String validExceptionCode) {
+        this.validExceptionCode = validExceptionCode;
+    }
+
     @Override
     protected ModelAndView doResolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
         String callback = null;
@@ -55,7 +64,6 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             }
         }
         Map<String, Object> result = new HashMap<String, Object>();
-        result.put("exception", Boolean.TRUE);
         if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
@@ -64,19 +72,21 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                 for (ObjectError error : errorList) {
                     if (error instanceof FieldError) {
                         FieldError fieldError = (FieldError) error;
-                        message += fieldError.getObjectName() + ": " + fieldError.getField() + " [" + fieldError.getDefaultMessage() + "]" + "; ";
+                        message += fieldError.getField() + " [" + fieldError.getDefaultMessage() + "]" + ", ";
                     } else {
                         message += error.toString() + "; ";
                     }
                 }
                 result.put("message", message);
-                result.put("code", "-1000");
-                logger.warn("Bean validate message: " + message);
+                result.put("code", validExceptionCode);
+                logger.warn("bean valid error: [" + httpServletRequest.getServletPath() + "] " + message);
             }
         } else if (tryCacheException(httpServletRequest, e, result)) {
 
         } else {
-            result.put("message", e.toString());
+            result.put("exception", Boolean.TRUE);
+            result.put("code", ErrorCode);
+            result.put("message", e.toString() + ExceptionUtils.getStackTrace(e));
             logger.error(e.getMessage(), e);
         }
         String jsonString = JSON.toJSONString(result);
@@ -93,7 +103,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         } catch (IOException e1) {
             logger.error(e1.getMessage(), e1);
         }
-        return null;
+        return new ModelAndView();
     }
 
     /**
@@ -103,7 +113,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
      * @param result
      * @return
      */
-    protected boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
+    public boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
         return false;
     }
 }
