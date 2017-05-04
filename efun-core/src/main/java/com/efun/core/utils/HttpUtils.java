@@ -334,4 +334,12 @@ public class HttpUtils {
         return null;
     }
 
+    public static void main(String[] args) {
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "1");
+        map.put("2", "2");
+        map.put("3", "3");
+        doPost("http://localhost:8000/efun-web-archetype/app/getMessage", map);
+    }
+
 }

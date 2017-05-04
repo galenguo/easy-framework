@@ -17,9 +17,12 @@ import com.efun.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -94,7 +97,8 @@ public class AppController extends BaseController {
     //国际化测试
     //http://localhost:8000/app/getMessage
     @RequestMapping("getMessage")
-    public List<String> testMessage() {
+    public List<String> testMessage(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println(request.getParameterMap().toString());
         List<String> list = new ArrayList<String>();
         list.add(ApplicationContext.getMessage("message"));
         return list;
@@ -238,5 +242,11 @@ public class AppController extends BaseController {
         logger.info(System.currentTimeMillis() - start);
         return "success";
 
+    }
+
+    @RequestMapping("upload")
+    public String upload(@RequestParam("upload")MultipartFile file) {
+        logger.info(file.getOriginalFilename());
+        return file.getOriginalFilename();
     }
 }
