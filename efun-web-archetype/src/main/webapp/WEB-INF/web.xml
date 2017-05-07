@@ -21,7 +21,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/applicationContext-app.xml,</param-value>
+        <param-value>classpath:/applicationContext-service.xml</param-value>
     </context-param>
 
     <context-param>
@@ -32,15 +32,6 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-
-    <filter>
-        <filter-name>encryteFilter</filter-name>
-        <filter-class>com.efun.filter.EncryteFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>encryteFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
 
     <!-- encoding filter -->
     <filter>
@@ -134,7 +125,7 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
-    <filter>
+    <!--<filter>
         <filter-name>requestLoggingFilter</filter-name>
         <filter-class>com.efun.core.filter.RequestLoggingFilter</filter-class>
     </filter>
@@ -142,7 +133,7 @@
     <filter-mapping>
         <filter-name>requestLoggingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
 
 
     <!-- anti XSS -->

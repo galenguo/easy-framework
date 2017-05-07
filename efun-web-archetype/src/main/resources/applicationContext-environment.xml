@@ -7,32 +7,30 @@
 
     <!-- 加载系统运行环境依赖的配置，例如：系统设置的变量、数据源等等 -->
 
-    <bean class="com.efun.core.config.PropertiesConfigurationLoader">
-        <property name="defaultConfigFileName" value="evn/efun.properties"/>
-        <property name="fileNames">
-            <list>
-                <value>evn/efun-web.properties</value>
-            </list>
-        </property>
+    <!-- 导入配置 -->
+    <bean class="com.efun.core.config.PropertyConfigurationLoader">
+        <property name="intervalSeconds" value="30"/>
+        <property name="baseLocation" value="classpath:${efunPlatformRegion}/*.properties"/>
     </bean>
 
+    <!-- 配置管理 -->
     <context:component-scan base-package="com.efun.core.config"/>
 
     <!-- 数据源配置 -->
     <bean id="readDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="driverClassName" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.read.driver')}"/>
-        <property name="url" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.read.url')}" />
-        <property name="username" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.read.username')}" />
-        <property name="password" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.read.password')}" />
+        <property name="driverClassName" value="${datasource.read.driver}"/>
+        <property name="url" value="${datasource.read.url}" />
+        <property name="username" value="${datasource.read.username}" />
+        <property name="password" value="${datasource.read.password}" />
     </bean>
 
     <bean id="writeDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="driverClassName" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.write.driver')}"/>
-        <property name="url" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.write.url')}" />
-        <property name="username" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.write.username')}" />
-        <property name="password" value="#{T(com.efun.core.config.Configuration).getProperty('datasource.write.password')}" />
+        <property name="driverClassName" value="${datasource.write.driver}"/>
+        <property name="url" value="${datasource.write.url}" />
+        <property name="username" value="${datasource.write.username}" />
+        <property name="password" value="${datasource.write.password}" />
     </bean>
 
     <!--reids数据源配置-->

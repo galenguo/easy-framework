@@ -204,7 +204,17 @@ public class HttpUtils {
     /**
      * post请求
      * @param url 请求url
-     * @param bodyParams requestbody的内容map
+     * @param reqeustBody 请求json格式的requestbody字符串
+     * @return
+     */
+    public static String doPost(String url, String reqeustBody) {
+        return doPost(url, reqeustBody, DEFAULT_ENCODING);
+    }
+
+    /**
+     * post请求
+     * @param url 请求url
+     * @param bodyParams requestbody的内容为FormEntity格式
      * @param encoding 编码类型
      * @return
      */
@@ -235,7 +245,7 @@ public class HttpUtils {
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String doPost(String url, String reqeustBody, String encoding) throws UnsupportedEncodingException {
+    public static String doPost(String url, String reqeustBody, String encoding) {
         if(StringUtils.isNotBlank(reqeustBody)) {
             StringEntity stringEntity = new StringEntity(reqeustBody, ContentType.APPLICATION_JSON);
             stringEntity.setChunked(true);

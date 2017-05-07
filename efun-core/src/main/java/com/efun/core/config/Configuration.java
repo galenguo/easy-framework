@@ -47,6 +47,11 @@ public class Configuration {
         return (T) properties.get(key);
     }
 
+    public static <T> T getProperty(String key, T defaultValue) {
+        T value = (T) properties.get(key);
+        return value == null ? defaultValue : value;
+    }
+
     public static Map<String, Object> getProperties() {
         return Configuration.properties;
     }

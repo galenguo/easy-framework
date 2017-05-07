@@ -1,5 +1,7 @@
 package com.efun.archetype.web;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.efun.archetype.domain.User;
 import com.efun.archetype.mapper.UserMapper;
 import com.efun.archetype.service.UserService;
@@ -11,14 +13,14 @@ import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.query.Criteria;
 import com.efun.core.mapper.query.Query;
 import com.efun.core.utils.StringUtils;
+import com.efun.core.web.ParamValidator;
+import com.efun.core.web.ResultBean;
+import com.efun.core.web.ResultCode;
 import com.efun.core.web.binding.MapWapper;
 import com.efun.core.web.binding.ModelParam;
 import com.efun.core.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,7 +100,7 @@ public class AppController extends BaseController {
     //http://localhost:8000/app/getMessage
     @RequestMapping("getMessage")
     public List<String> testMessage(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(request.getParameterMap().toString());
+        System.out.println("####:   " + request.getQueryString());
         List<String> list = new ArrayList<String>();
         list.add(ApplicationContext.getMessage("message"));
         return list;
@@ -248,5 +250,14 @@ public class AppController extends BaseController {
     public String upload(@RequestParam("upload")MultipartFile file) {
         logger.info(file.getOriginalFilename());
         return file.getOriginalFilename();
+    }
+
+    @RequestMapping("fastJson")
+    public ResultBean upload(@RequestBody JSONObject params) {
+        ParamValidator validator = validator(params);
+        Integer a = validator.isInteger("a");
+        Double b = validator.isDouble("b");
+        logger.info("###: " + (a + b));
+        return returnResult(ResultCode.SUCCESS, params);
     }
 }

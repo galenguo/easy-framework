@@ -1,13 +1,11 @@
 package com.efun.core.context;
 
 import com.efun.core.utils.AssertUtils;
-import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.FileUtils;
 import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -110,7 +108,7 @@ public class ApplicationContext {
         return getMessage(code, null, locale);
     }
 
-    public static String getMessage(String code, Object[] args) {
+    public static String getMessage(String code, Object... args) {
         return getMessage(code, args, code);
     }
 

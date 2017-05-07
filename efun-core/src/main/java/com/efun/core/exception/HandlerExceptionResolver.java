@@ -3,6 +3,8 @@ package com.efun.core.exception;
 import com.alibaba.fastjson.JSON;
 import com.efun.core.utils.CollectionUtils;
 import com.efun.core.utils.StringUtils;
+import com.efun.core.web.ResultCode;
+import com.efun.core.web.ResultBean;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,14 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * HandlerExceptionResolver
- * 一场统一处理
+ * 异常统一处理
  *
  * @author Galen
  * @since 2016/7/2
@@ -46,18 +45,6 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
         this.contentType = contentType;
     }
 
-    private String validExceptionCode = "0001";
-
-    private String errorCode = "0000";
-
-    public void setValidExceptionCode(String validExceptionCode) {
-        this.validExceptionCode = validExceptionCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
     @Override
     protected ModelAndView doResolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
         String callback = null;
@@ -67,8 +54,13 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                 break;
             }
         }
-        Map<String, Object> result = new HashMap<String, Object>();
-        if (e instanceof BindException) {
+        ResultBean result = new ResultBean();
+        if (e instanceof EfunParamValidException) {
+            result.setMessage(e.getMessage());
+            result.setCode(ResultCode.PARAM_EXCEPTION);
+            logger.warn("param valid error: [" + httpServletRequest.getServletPath() + "] " + e.getMessage());
+        }
+        else if (e instanceof BindException) {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
             if (!CollectionUtils.isEmpty(errorList)) {
@@ -81,16 +73,16 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
                         message += error.toString() + "; ";
                     }
                 }
-                result.put("message", message);
-                result.put("code", validExceptionCode);
+                result.setMessage(e.getMessage());
+                result.setCode(ResultCode.PARAM_EXCEPTION);
                 logger.warn("bean valid error: [" + httpServletRequest.getServletPath() + "] " + message);
             }
         } else if (tryCacheException(httpServletRequest, e, result)) {
 
         } else {
-            result.put("exception", Boolean.TRUE);
-            result.put("code", errorCode);
-            result.put("message", e.toString() + ExceptionUtils.getStackTrace(e));
+            result.setCode(ResultCode.SYS_EXCEPTION);
+            result.setMessage("[" + httpServletRequest.getServletPath() + "] " + e.toString());
+            result.setData(ExceptionUtils.getStackTrace(e));
             logger.error(e.getMessage(), e);
         }
         String jsonString = JSON.toJSONString(result);
@@ -117,7 +109,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
      * @param result
      * @return
      */
-    public boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, Map<String, Object> result) {
+    public boolean tryCacheException(HttpServletRequest httpServletRequest, Exception e, ResultBean result) {
         return false;
     }
 }

@@ -31,7 +31,7 @@
     1）配置框架使用的环境变量"config_path"指向某一个文件夹，例如config_path=D:\efunConfig\
         此文件夹中存放项目需要存放的properties配置文件。
     2）在applicationContext-environment.xml文件中配置注册properties配置组件，此处注册了一个echo-web-demo.properties文件，可以注册多个。
-        <bean class="com.efun.core.config.PropertiesConfigurationLoader">
+        <bean class="com.efun.core.config.PropertyConfigurationLoader">
             <property name="fileNames">
                 <list>
                     <value>echo-web-demo.properties</value>

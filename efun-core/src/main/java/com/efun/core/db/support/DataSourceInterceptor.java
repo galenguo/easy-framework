@@ -51,7 +51,6 @@ public class DataSourceInterceptor {
                     Class<?> clz = methodSignature.getDeclaringType();
                     dataSource = clz.getAnnotation(DataSource.class);
                 }
-                // TODO: 2016/9/7 可以缓存优化（考虑并发问题）
                 //数据源注解方式优先
                 if (dataSource != null) {
                     dsType = dataSource.value();
@@ -64,7 +63,7 @@ public class DataSourceInterceptor {
                 }
                 methodDSTypeMap.put(globalName, dsType);
             }
-            logger.debug("### rounting to dataSource: " + dsType);
+            logger.debug("rounting to dataSource: {}", dsType);
             DataSourceContext.setDataSourceKey(dsType);
             object = joinPoint.proceed();
         } catch (Throwable throwable) {
@@ -81,20 +80,24 @@ public class DataSourceInterceptor {
      * @return
      */
     private DSType getDataSourceType(String methodName) {
-        String bestNameMatch = null;
-        for (String mappedName : this.readMethodMap.keySet()) {
-            if (PatternMatchUtils.simpleMatch(methodName, mappedName)) {
-                bestNameMatch = mappedName;
-                break;
+        Boolean isForceChoiceRead = null;
+        if (this.readMethodMap.size() > 0) {
+            String bestNameMatch = null;
+            for (String mappedName : this.readMethodMap.keySet()) {
+                if (PatternMatchUtils.simpleMatch(methodName, mappedName)) {
+                    bestNameMatch = mappedName;
+                    break;
+                }
             }
+            isForceChoiceRead = readMethodMap.get(bestNameMatch);
         }
 
-        Boolean isForceChoiceRead = readMethodMap.get(bestNameMatch);
-        //表示强制选择 读 库
+
+        //表示强制选择读库
         if(isForceChoiceRead == Boolean.TRUE) {
             return DSType.READ;
         }
-        //如果之前选择了写库 现在还选择 写库
+        //如果之前选择了写库 现在还选择写库
         if(DataSourceContext.getDataSourceKey() == DSType.WRITE) {
             return DSType.WRITE;
         }

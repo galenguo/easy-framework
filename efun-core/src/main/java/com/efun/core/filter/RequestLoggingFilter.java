@@ -10,9 +10,12 @@ import java.util.Map;
  * RequestLoggingFilter
  * 请参数求日志输出
  *
+ * 只适用于http协议的请求参数规范，暂不适用于请求参数为json格式。
+ *
  * @author Galen
  * @since 2016/7/25
  */
+@Deprecated
 public class RequestLoggingFilter extends AbstractRequestLoggingFilter {
 
     @Override
