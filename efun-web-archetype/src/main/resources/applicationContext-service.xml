@@ -74,6 +74,19 @@
         </aop:aspect>
     </aop:config>
 
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="useCodeAsDefaultMessage" value="true" />
+        <property name="cacheSeconds" value="10"></property>
+        <property name="defaultEncoding" value="utf-8" />
+        <property name="basenames">
+            <list>
+                <!--必须使用classpath，不支持classpath*-->
+                <value>classpath:i18n/validation</value>
+                <value>classpath:i18n/messages-efun-web</value>
+            </list>
+        </property>
+    </bean>
+
     <!-- 异步处理框架 组件 -->
     <bean id="eventPublisher" class="com.efun.core.asyn.EventPublisher" />
 
@@ -88,16 +101,5 @@
         </property>
     </bean>
 
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="useCodeAsDefaultMessage" value="true" />
-        <property name="cacheSeconds" value="10"></property>
-        <property name="defaultEncoding" value="utf-8" />
-        <property name="basenames">
-            <list>
-                <!--必须使用classpath，不支持classpath*-->
-                <value>classpath:i18n/validation</value>
-                <value>classpath:i18n/messages-efun-web</value>
-            </list>
-        </property>
-    </bean>
+
 </beans>

@@ -346,10 +346,15 @@ public class HttpUtils {
 
     public static void main(String[] args) {
         Map<String, String> map = new HashMap<>();
-        map.put("1", "1");
-        map.put("2", "2");
-        map.put("3", "3");
-        doPost("http://localhost:8000/efun-web-archetype/app/getMessage", map);
+        map.put("a", "1");
+        map.put("b", "2");
+        map.put("c", "x");
+        String body = JSON.toJSONString(map);
+        long begin = System.currentTimeMillis();
+        for (int i = 0; i < 2000; i++) {
+            doPost("http://localhost:8000/app/fastJson", body);
+        }
+        System.out.print((System.currentTimeMillis() - begin) / 2000);
     }
 
 }
