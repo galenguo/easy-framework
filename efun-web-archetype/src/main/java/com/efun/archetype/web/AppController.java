@@ -226,7 +226,7 @@ public class AppController extends BaseController {
 
     //http://localhost:8000/app/validUserNext?id=1&name=echo
     @RequestMapping("validUserNext")
-    public User validUserNext(@Valid User user) {
+    public User validUserNext(/*@Valid */User user) {
         return user;
     }
 
@@ -252,12 +252,34 @@ public class AppController extends BaseController {
         return file.getOriginalFilename();
     }
 
-    @RequestMapping("fastJson")
+    @RequestMapping("performence")
     public ResultBean upload(@RequestBody JSONObject params) {
         ParamValidator validator = validator(params);
+        validator.isNotNull("a", Double.class);
+        String phoneNumber = validator.isNotBank("phoneNumber");
+        return returnResult(ResultCode.SUCCESS, params);
+    }
+
+    @RequestMapping("performence1")
+    public ResultBean upload(User user) {
+        logger.info(JSON.toJSONString(user));
+        /*ParamValidator validator = validator(params);
         Integer a = validator.isInteger("a");
         Double b = validator.isDouble("b");
-        logger.info("###: " + (a + b));
-        return returnResult(ResultCode.SUCCESS, params);
+        logger.info("###: " + (a + b));*/
+        return returnResult(ResultCode.SUCCESS, user);
+    }
+
+    @RequestMapping("performence2")
+    public ResultBean upload(HttpServletRequest request) {
+        logger.info(JSON.toJSONString(request.getParameterMap()));
+        if (StringUtils.isBlank(request.getParameter("phoneNumber"))) {
+
+        }
+        /*ParamValidator validator = validator(params);
+        Integer a = validator.isInteger("a");
+        Double b = validator.isDouble("b");
+        logger.info("###: " + (a + b));*/
+        return returnResult(ResultCode.SUCCESS, request.getParameterMap());
     }
 }

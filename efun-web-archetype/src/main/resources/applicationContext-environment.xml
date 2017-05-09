@@ -2,14 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- 加载系统运行环境依赖的配置，例如：系统设置的变量、数据源等等 -->
 
     <!-- 导入配置 -->
-    <bean class="com.efun.core.config.PropertyConfigurationLoader">
+    <bean id="propertyPlaceholderConfigurer" class="com.efun.core.config.PropertyConfigurationLoader">
         <property name="intervalSeconds" value="30"/>
+        <property name="ignoreResourceNotFound" value="true"/>
         <property name="baseLocation" value="classpath:${efunPlatformRegion}/*.properties"/>
     </bean>
 
@@ -35,14 +35,14 @@
 
     <!--reids数据源配置-->
     <!--<bean class="com.efun.core.cache.redis.RedisClusterPoolManager">
-        <property name="testOnBorrow" value="#{T(com.efun.core.config.Configuration).getProperty('redis.testOnBorrow')}"/>
-        <property name="testOnReturn" value="#{T(com.efun.core.config.Configuration).getProperty('redis.testOnReturn')}"/>
-        <property name="timeout" value="#{T(com.efun.core.config.Configuration).getProperty('redis.timeout')}"/>
-        <property name="maxIdle" value="#{T(com.efun.core.config.Configuration).getProperty('redis.maxIdle')}"/>
-        <property name="maxTotal" value="#{T(com.efun.core.config.Configuration).getProperty('redis.maxTotal')}"/>
-        <property name="maxWaitMillis" value="#{T(com.efun.core.config.Configuration).getProperty('redis.maxWaitMillis')}"/>
-        <property name="serverNames" value="#{T(com.efun.core.config.Configuration).getProperty('redis.serverNames')}"/>
-        <property name="sentinels" value="#{T(com.efun.core.config.Configuration).getProperty('redis.sentinels')}"/>
+        <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
+        <property name="testOnReturn" value="${redis.testOnReturn}"/>
+        <property name="timeout" value="${redis.timeout}"/>
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxTotal" value="${redis.maxTotal}"/>
+        <property name="maxWaitMillis" value="${redis.maxWaitMillis}"/>
+        <property name="serverNames" value="${redis.serverNames}"/>
+        <property name="sentinels" value="${redis.sentinels}"/>
     </bean>-->
 
 </beans>

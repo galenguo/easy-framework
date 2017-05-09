@@ -108,8 +108,12 @@ public class ApplicationContext {
         return getMessage(code, null, locale);
     }
 
-    public static String getMessage(String code, Object... args) {
+    public static String getMessage(String code, Object[] args) {
         return getMessage(code, args, code);
+    }
+
+    public static String getMessage(String code, String defaultMessage, Object... args) {
+        return getMessage(code, args, defaultMessage);
     }
 
     public static String getMessage(String code, Object[] args, Locale locale) {

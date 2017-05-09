@@ -650,6 +650,11 @@ public class RedisEmptyCluster implements CommonRedisCommands {
     }
 
     @Override
+    public ScanResult<byte[]> scan(byte[] bytes, ScanParams scanParams) {
+        return null;
+    }
+
+    @Override
     public ScanResult<Map.Entry<byte[], byte[]>> hscan(byte[] key, byte[] cursor) {
         return null;
     }
@@ -676,6 +681,11 @@ public class RedisEmptyCluster implements CommonRedisCommands {
 
     @Override
     public ScanResult<Tuple> zscan(byte[] key, byte[] cursor, ScanParams params) {
+        return null;
+    }
+
+    @Override
+    public List<byte[]> bitfield(byte[] bytes, byte[]... bytes1) {
         return null;
     }
 
@@ -1381,6 +1391,11 @@ public class RedisEmptyCluster implements CommonRedisCommands {
 
     @Override
     public List<GeoRadiusResponse> georadiusByMember(String key, String member, double radius, GeoUnit unit, GeoRadiusParam param) {
+        return null;
+    }
+
+    @Override
+    public List<Long> bitfield(String s, String... strings) {
         return null;
     }
 }

@@ -22,6 +22,7 @@ public class User extends BaseAuditEntity<Long> implements Event {
 
     //@Length(min = 10, max = 15, message = "")
     @Column("name")
+    @NotNull
     private String name;
 
     @Column("phone_number")
@@ -29,6 +30,7 @@ public class User extends BaseAuditEntity<Long> implements Event {
     private String phoneNumber;
 
     @Column("gender")
+    @NotNull
     private Gender gender;
 
     public String getName() {

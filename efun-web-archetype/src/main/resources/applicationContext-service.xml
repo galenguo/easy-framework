@@ -81,8 +81,8 @@
         <property name="basenames">
             <list>
                 <!--必须使用classpath，不支持classpath*-->
-                <value>classpath:i18n/validation</value>
-                <value>classpath:i18n/messages-efun-web</value>
+                <value>classpath:${efunPlatformRegion}/i18n/validation</value>
+                <value>classpath:${efunPlatformRegion}/i18n/messages-efun-web</value>
             </list>
         </property>
     </bean>
@@ -90,16 +90,17 @@
     <!-- 异步处理框架 组件 -->
     <bean id="eventPublisher" class="com.efun.core.asyn.EventPublisher" />
 
-    <bean id="eventProcessor" class="com.efun.core.asyn.EventProcessor">
+    <!--占用cpu资源过高，需要优化-->
+    <!--<bean id="eventProcessor" class="com.efun.core.asyn.EventProcessor">
         <property name="publisher" ref="eventPublisher"/>
-        <!--<property name="threadCount" value="#{T(com.efun.core.config.Configuration).getProperty('asyn.thred.count')}"/>-->
+        <property name="threadCount" value="#{T(com.efun.core.config.Configuration).getProperty('asyn.thred.count')}"/>
         <property name="eventHandlers">
             <list>
-                <!-- 异步处理handler注册 -->
+                &lt;!&ndash; 异步处理handler注册 &ndash;&gt;
                 <bean class="com.efun.archetype.asyn.UserEventHandler"/>
             </list>
         </property>
-    </bean>
+    </bean>-->
 
 
 </beans>

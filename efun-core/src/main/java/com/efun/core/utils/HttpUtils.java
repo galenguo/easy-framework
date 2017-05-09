@@ -346,15 +346,15 @@ public class HttpUtils {
 
     public static void main(String[] args) {
         Map<String, String> map = new HashMap<>();
-        map.put("a", "1");
-        map.put("b", "2");
-        map.put("c", "x");
+        map.put("name", "1");
+        map.put("phoneNumber", "2");
+        map.put("gender", "MAN");
         String body = JSON.toJSONString(map);
         long begin = System.currentTimeMillis();
         for (int i = 0; i < 2000; i++) {
-            doPost("http://localhost:8000/app/fastJson", body);
+            doPost("http://localhost:8000/app/performence", body);
         }
-        System.out.print((System.currentTimeMillis() - begin) / 2000);
+        System.out.print((System.currentTimeMillis() - begin));
     }
 
 }

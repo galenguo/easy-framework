@@ -1289,6 +1289,11 @@ public class RedisServerCluster implements CommonRedisCommands {
     }
 
     @Override
+    public ScanResult<byte[]> scan(byte[] bytes, ScanParams scanParams) {
+        return null;
+    }
+
+    @Override
     public ScanResult<Map.Entry<byte[], byte[]>> hscan(byte[] key, byte[] cursor) {
         return this.execute(new RedisCallBack<ScanResult<Map.Entry<byte[], byte[]>>>() {
             @Override
@@ -1346,6 +1351,11 @@ public class RedisServerCluster implements CommonRedisCommands {
                 return cluster.zscan(key, cursor, params);
             }
         });
+    }
+
+    @Override
+    public List<byte[]> bitfield(byte[] bytes, byte[]... bytes1) {
+        return null;
     }
 
     @Override
@@ -2756,5 +2766,10 @@ public class RedisServerCluster implements CommonRedisCommands {
                 return cluster.georadiusByMember(key, member, radius, unit, param);
             }
         });
+    }
+
+    @Override
+    public List<Long> bitfield(String s, String... strings) {
+        return null;
     }
 }

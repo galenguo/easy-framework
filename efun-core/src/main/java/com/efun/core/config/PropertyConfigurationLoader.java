@@ -1,14 +1,11 @@
 package com.efun.core.config;
 
-import com.efun.core.utils.FileUtils;
-import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -19,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -127,7 +123,10 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
                                 break;
                             }
                             case "ENTRY_MODIFY": {
-                                loadProperties(resourceMap.get(fileName));
+                                Resource resource = resourceMap.get(fileName);
+                                if (resource != null) {
+                                    loadProperties(resource);
+                                }
                                 break;
                             }
                         }

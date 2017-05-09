@@ -39,7 +39,7 @@ public final class ParamValidator {
         try {
             return this.params.getObject(paramName, clazz);
         } catch (Exception e) {
-            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.AssertType.message", paramName, clazz.getSimpleName()));
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.AssertType.message","", paramName, clazz.getSimpleName()));
         }
     }
 
@@ -70,7 +70,22 @@ public final class ParamValidator {
     public String isNotBank(String paramName) {
         String result = isObjectType(paramName, String.class);
         if (StringUtils.isBlank(result)) {
-            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotBlank.message", paramName));
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotBlank.message","", paramName));
+        }
+        return result;
+    }
+
+    /**
+     * 参数不为null
+     * @param paramName
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public <T> T isNotNull(String paramName, Class<T> clazz) {
+        T result = isObjectType(paramName, clazz);
+        if (result == null) {
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotNull.message","", paramName, clazz.getSimpleName()));
         }
         return result;
     }
@@ -86,18 +101,18 @@ public final class ParamValidator {
         T result = isObjectType(paramName, clazz);
         if (result instanceof Collection) {
             if (((Collection) result).size() == 0) {
-                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message", paramName));
+                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message","", paramName));
             }
         } else if (result instanceof Map) {
             if (((Map) result).size() == 0) {
-                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message", paramName));
+                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message","", paramName));
             }
         } else if (result instanceof String) {
             if (StringUtils.isEmpty((String) result)) {
-                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message", paramName));
+                throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message","", paramName));
             }
         }
-        throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotSupport.message", paramName, clazz.getSimpleName()));
+        throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotSupport.message","", paramName, clazz.getSimpleName()));
     }
 
     /**
@@ -159,7 +174,7 @@ public final class ParamValidator {
      */
     public void checkState(boolean expression, String message, Object... MessageObject) {
         if (!expression) {
-            new EfunParamValidException(ApplicationContext.getMessage(message, MessageObject));
+            new EfunParamValidException(ApplicationContext.getMessage(message,"", MessageObject));
         }
     }
 
