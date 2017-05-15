@@ -1,8 +1,10 @@
 package com.efun.core.mapper.support;
 
+import com.efun.core.context.ApplicationContext;
 import com.efun.core.domain.EntityInterface;
 import com.efun.core.mapper.annotation.CreatedDate;
 import com.efun.core.mapper.annotation.LastModifiedDate;
+import com.efun.core.mapper.annotation.LocalDate;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -26,8 +28,9 @@ public class AuditingInterceptor implements Interceptor {
 
     protected final Logger logger = LogManager.getLogger(this.getClass());
 
-    private static final Map<Class<?>, Object> lastModifiedDateFieldMap = new HashMap<Class<?>, Object>();
     private static final Map<Class<?>, Object> createdDateFieldMap = new HashMap<Class<?>, Object>();
+    private static final Map<Class<?>, Object> lastModifiedDateFieldMap = new HashMap<Class<?>, Object>();
+    private static final Map<Class<?>, Object> localDateFieldMap = new HashMap<Class<?>, Object>();
 
     private static final Map<String, Class<?>> statementClassMap = new HashMap<String, Class<?>>();
 
@@ -107,6 +110,11 @@ public class AuditingInterceptor implements Interceptor {
                 injectLastModifiedDate(parameter, clazz, (Field) object, currentDate);
             }
 
+            object = localDateFieldMap.get(clazz);
+            if (!(object instanceof NoField)) {
+                injectLocalDate(parameter, clazz, (Field) object, ApplicationContext.getClientTime());
+            }
+
         } else if (SqlCommandType.INSERT == sqlCommandType) {
             Object object = createdDateFieldMap.get(clazz);
             if (!(object instanceof NoField)) {
@@ -115,6 +123,11 @@ public class AuditingInterceptor implements Interceptor {
             object = lastModifiedDateFieldMap.get(clazz);
             if (!(object instanceof NoField)) {
                 injectLastModifiedDate(parameter, clazz, (Field) object, currentDate);
+            }
+
+            object = localDateFieldMap.get(clazz);
+            if (!(object instanceof NoField)) {
+                injectLocalDate(parameter, clazz, (Field) object, ApplicationContext.getClientTime());
             }
         }
     }
@@ -136,6 +149,26 @@ public class AuditingInterceptor implements Interceptor {
             field.setAccessible(false);
         } else {
             lastModifiedDateFieldMap.put(clazz, new NoField());
+        }
+    }
+
+    private void injectLocalDate(EntityInterface parameter, Class<?> clazz, Field field, Date currentDate) throws Throwable {
+        if (field == null) {
+            List<Field> fields = getDeclaredFields(clazz);
+            for (Field item : fields) {
+                if (item.getAnnotation(LocalDate.class) != null) {
+                    field = item;
+                    localDateFieldMap.put(clazz, field);
+                    break;
+                }
+            }
+        }
+        if (field != null) {
+            field.setAccessible(true);
+            field.set(parameter, currentDate);
+            field.setAccessible(false);
+        } else {
+            localDateFieldMap.put(clazz, new NoField());
         }
     }
 

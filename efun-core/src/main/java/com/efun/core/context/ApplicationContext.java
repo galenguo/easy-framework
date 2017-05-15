@@ -1,5 +1,6 @@
 package com.efun.core.context;
 
+import com.efun.core.exception.EfunException;
 import com.efun.core.utils.AssertUtils;
 import com.efun.core.utils.FileUtils;
 import com.efun.core.utils.StringUtils;
@@ -18,7 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * ApplicationContext
@@ -248,6 +251,37 @@ public class ApplicationContext {
      */
     public static boolean isCrossDomain() {
         return StringUtils.isNotBlank(getHttpRequest().getParameter("jsoncallback"));
+    }
+
+    /**
+     * 获取request header值
+     * @param name
+     * @return
+     */
+    public static String getHeader(String name) {
+        return getHttpRequest().getHeader(name);
+    }
+
+    /**
+     * 获取客户端当前时间
+     * @return
+     */
+    public static Date getClientTime() {
+        return getClientTime(System.currentTimeMillis());
+    }
+
+    /**
+     * 获取客户端时间
+     * @return
+     */
+    public static Date getClientTime(long dateTime) {
+        TimeZone localTimeZone = TimeZone.getDefault();
+        String timeZoneHeader = getHeader("timeZone");
+        if (StringUtils.isBlank(timeZoneHeader)) {
+            throw new EfunException("request not with timeZone header");
+        }
+        TimeZone clientTimeZone = TimeZone.getTimeZone(timeZoneHeader);
+        return new Date(dateTime + (clientTimeZone.getRawOffset() - localTimeZone.getRawOffset()));
     }
 
     /**
