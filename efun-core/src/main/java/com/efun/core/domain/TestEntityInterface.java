@@ -6,9 +6,9 @@ package com.efun.core.domain;
  * @author Galen
  * @since 2017/5/14
  */
-public interface TestInterface {
+public interface TestEntityInterface {
 
-    Boolean getTest();
+    Boolean getIsTest();
 
-    void setTest(Boolean test);
+    void setIsTest(Boolean isTest);
 }
