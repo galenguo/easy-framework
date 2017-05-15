@@ -75,6 +75,20 @@ public final class ParamValidator {
     }
 
     /**
+     * 参数长度范围
+     * @param min
+     * @param max
+     * @return
+     */
+    public String length(String paramName, int min, int max) {
+        String result = isObjectType(paramName, String.class);
+        if (StringUtils.isBlank(result) && result.length() > min && result.length() <= max) {
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.length.message","", paramName, min, max));
+        }
+        return result;
+    }
+
+    /**
      * 参数不为null
      * @param paramName
      * @param clazz

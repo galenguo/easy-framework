@@ -64,13 +64,13 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
             if (!CollectionUtils.isEmpty(errorList)) {
-                String message = "";
+                StringBuilder message = new StringBuilder();
                 for (ObjectError error : errorList) {
                     if (error instanceof FieldError) {
                         FieldError fieldError = (FieldError) error;
-                        message += fieldError.getField() + " [" + fieldError.getDefaultMessage() + "]" + ", ";
+                        message.append(fieldError.getField()).append(" [").append(fieldError.getDefaultMessage()).append("], ");
                     } else {
-                        message += error.toString() + "; ";
+                        message.append(error.toString()).append("; ");
                     }
                 }
                 result.setMessage(e.getMessage());

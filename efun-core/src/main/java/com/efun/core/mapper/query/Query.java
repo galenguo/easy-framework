@@ -38,9 +38,9 @@ public class Query {
     }
 
     public Query fields(String... fields) {
-        String fieldStr = null;
+        StringBuilder fieldStr = new StringBuilder();
         for (String field : fields) {
-            fieldStr += field + ", ";
+            fieldStr.append(field).append(", ");
         }
         this.fields = fieldStr.substring(0, fieldStr.length() - 2);
         return this;
@@ -57,9 +57,9 @@ public class Query {
     }
 
     public Query groupBy(String... fields) {
-        String fieldStr = null;
+        StringBuilder fieldStr = new StringBuilder();
         for (String field : fields) {
-            fieldStr += field + ", ";
+            fieldStr.append(field).append(", ");
         }
         this.groupByClause = fieldStr.substring(0, fieldStr.length() - 2);
         return this;
@@ -72,11 +72,11 @@ public class Query {
 
     public Query with(Sort sort) {
         if (sort != null) {
-            String orderBy = null;
+            StringBuilder orderBy = new StringBuilder();
             Iterator<Sort.Order> iterator = sort.iterator();
             while (iterator.hasNext()) {
                 Sort.Order order = iterator.next();
-                orderBy += order.getProperty() + " " + order.getDirection() + ", ";
+                orderBy.append(order.getProperty()).append(" ").append(order.getDirection()).append(", ");
             }
             this.oderByClause = orderBy.substring(0, orderBy.length() - 2);
         }

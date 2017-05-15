@@ -248,9 +248,9 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getColumns(Class<?> entityClass) {
-        String column = "";
+        StringBuilder column = new StringBuilder();
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            column += mapping.getColumn() + Constants.SEPARATOR_COMMA;
+            column.append("`").append(mapping.getColumn()).append("`").append(Constants.SEPARATOR_COMMA);
         }
         return column.substring(0, column.length() - 1);
     }
@@ -263,9 +263,9 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getValues(Class<?> entityClass) {
-        String values = "";
+        StringBuilder values = new StringBuilder();
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            values += "#{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+            values.append("#{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
         return values.substring(0, values.length() - 1);
     }
@@ -277,14 +277,14 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getBatchValues(Class<?> entityClass) {
-        String values = "";
+        StringBuilder values = new StringBuilder();
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            values += "#{" + "item." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+            values.append("#{item.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
-        values = "<foreach collection=\"collection\" item=\"item\" index=\"index\" separator=\",\" >" +
-                "(" + values.substring(0, values.length() - 1) + ")" +
-                "</foreach>";
-        return values;
+        StringBuilder result = new StringBuilder();
+        result.append("<foreach collection=\"collection\" item=\"item\" index=\"index\" separator=\",\" >")
+                .append("(").append(values.substring(0, values.length() - 1)).append(")").append("</foreach>");
+        return result.toString();
     }
 
     /**
@@ -295,25 +295,25 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getSets(Class<?> entityClass) {
-        String sets = "<trim prefix=\"SET\" suffixOverrides=\",\"><choose>";
-        sets += "<when test=\"ignoreNull == false\">";
+        StringBuilder sets = new StringBuilder("<trim prefix=\"SET\" suffixOverrides=\",\"><choose>");
+        sets.append("<when test=\"ignoreNull == false\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA;
+            sets.append(mapping.getColumn()).append(" = #{" + "entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
-        sets.substring(0, sets.length() - 1);
-        sets += "</when>";
-        sets += "<otherwise>";
+        sets = new StringBuilder(sets.substring(0, sets.length() - 1));
+        sets.append("</when>");
+        sets.append("<otherwise>");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             if (mapping.getProperty() == "id") {
                 continue;
             }
-            sets += "<if test=\"entity." + mapping.getProperty() + " != null\">";
-            sets += mapping.getColumn() + " = #{" + "entity." + mapping.getProperty() + "}" + Constants.SEPARATOR_COMMA + " ";
-            sets += "</if>";
+            sets.append("<if test=\"entity.").append(mapping.getProperty()).append(" != null\">");
+            sets.append(mapping.getColumn()).append(" = #{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA).append(" ");
+            sets.append("</if>");
         }
-        sets += "</otherwise>";
-        sets += "</choose></trim>";
-        return sets;
+        sets.append("</otherwise>");
+        sets.append("</choose></trim>");
+        return sets.toString();
     }
 
     protected String selectByQuery() {

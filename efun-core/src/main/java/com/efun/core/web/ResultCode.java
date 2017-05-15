@@ -8,11 +8,11 @@ package com.efun.core.web;
  */
 public interface ResultCode {
 
-    static String SUCCESS = "e1000";
+    String SUCCESS = "e1000";
 
-    static String FAILURE = "e1000";
+    String FAILURE = "e1000";
 
-    static String PARAM_EXCEPTION = "e1002";
+    String PARAM_EXCEPTION = "e1002";
 
-    static String SYS_EXCEPTION = "e1003";
+    String SYS_EXCEPTION = "e1003";
 }

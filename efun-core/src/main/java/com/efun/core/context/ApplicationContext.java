@@ -275,13 +275,14 @@ public class ApplicationContext {
      * @return
      */
     public static Date getClientTime(long dateTime) {
-        TimeZone localTimeZone = TimeZone.getDefault();
         String timeZoneHeader = getHeader("timeZone");
         if (StringUtils.isBlank(timeZoneHeader)) {
-            throw new EfunException("request not with timeZone header");
+            return new Date();
+        } else {
+            TimeZone localTimeZone = TimeZone.getDefault();
+            TimeZone clientTimeZone = TimeZone.getTimeZone(timeZoneHeader);
+            return new Date(dateTime + (clientTimeZone.getRawOffset() - localTimeZone.getRawOffset()));
         }
-        TimeZone clientTimeZone = TimeZone.getTimeZone(timeZoneHeader);
-        return new Date(dateTime + (clientTimeZone.getRawOffset() - localTimeZone.getRawOffset()));
     }
 
     /**

@@ -256,7 +256,7 @@ public class AppController extends BaseController {
     public ResultBean upload(@RequestBody JSONObject params) {
         ParamValidator validator = validator(params);
         Double a = validator.isNotNull("a", Double.class);
-        String phoneNumber = validator.isNotBank("phoneNumber");
+        String phoneNumber = validator.isNotBlank("phoneNumber");
         return returnResult(ResultCode.SUCCESS, params);
     }
 
