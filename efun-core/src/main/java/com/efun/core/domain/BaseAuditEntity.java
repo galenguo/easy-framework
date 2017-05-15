@@ -23,6 +23,9 @@ public class BaseAuditEntity<ID extends Serializable> extends BaseEntity<ID> {
     @Column(value = "modifiedTime")
     protected Date modifiedTime;
 
+    @Column(value = "deleted")
+    protected Boolean deleted = Boolean.FALSE;
+
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -37,5 +40,13 @@ public class BaseAuditEntity<ID extends Serializable> extends BaseEntity<ID> {
 
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }
