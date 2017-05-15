@@ -3,11 +3,10 @@ package com.efun.core.web;
 import com.alibaba.fastjson.JSONObject;
 import com.efun.core.context.ApplicationContext;
 import com.efun.core.exception.EfunParamValidException;
+import com.efun.core.utils.MD5Utils;
 import com.efun.core.utils.StringUtils;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ParamValidator
@@ -67,7 +66,7 @@ public final class ParamValidator {
      * @param paramName
      * @return
      */
-    public String isNotBank(String paramName) {
+    public String isNotBlank(String paramName) {
         String result = isObjectType(paramName, String.class);
         if (StringUtils.isBlank(result)) {
             throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotBlank.message","", paramName));
@@ -163,6 +162,21 @@ public final class ParamValidator {
      */
     public Double isDouble(String paramName) {
         return isObjectType(paramName, Double.class);
+    }
+
+    public void validSignature() {
+        String signature = (String)params.remove("signature");
+        TreeMap<String, Object> treeMap = new TreeMap<String, Object>(params);
+        Iterator<Map.Entry<String, Object>> iterator = treeMap.entrySet().iterator();
+        Map.Entry<String, Object> entry = null;
+        StringBuilder builder = new StringBuilder();
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            builder.append(entry.getKey()).append(entry.getValue());
+        }
+        if (MD5Utils.MD5(builder.toString()).equals(signature)) {
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.signature.error","", "signature"));
+        }
     }
 
     /**

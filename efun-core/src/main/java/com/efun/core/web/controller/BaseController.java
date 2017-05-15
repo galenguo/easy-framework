@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public abstract class BaseController {
 
-    protected final Logger logger = LogManager.getLogger(this.getClass());
+    protected final Logger logger = LogManager.getLogger(getClass().getName());
 
     protected ParamValidator validator(JSONObject params) {
         logger.info(ApplicationContext.getHttpRequest().getServletPath() + "-params-" + JSON.toJSONString(params));

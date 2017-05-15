@@ -1,4 +1,4 @@
-package com.efun.core.manger;
+package com.efun.core.manager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,5 +10,5 @@ import org.apache.logging.log4j.Logger;
  * @since 2017/5/15
  */
 public abstract class AbstractBaseManager {
-    protected final Logger logger = LogManager.getLogger(this.getClass());
+    protected final Logger logger = LogManager.getLogger(getClass().getName());
 }

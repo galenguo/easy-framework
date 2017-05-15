@@ -12,6 +12,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class AbstractBaseService implements BaseService {
 
-    protected final Logger logger = LogManager.getLogger(this.getClass());
+    protected final Logger logger = LogManager.getLogger(getClass().getName());
 
 }
