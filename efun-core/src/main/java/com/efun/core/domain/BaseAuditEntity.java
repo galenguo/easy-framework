@@ -16,19 +16,19 @@ import java.util.Date;
 public class BaseAuditEntity<ID extends Serializable> extends BaseEntity<ID> {
 
     @CreatedDate
-    @Column(value = "createTime")
-    protected Date createTime;
+    @Column(value = "createdTime")
+    protected Date createdTime;
 
     @LastModifiedDate
     @Column(value = "modifiedTime")
     protected Date modifiedTime;
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
     public Date getModifiedTime() {
