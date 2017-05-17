@@ -1,5 +1,9 @@
 package com.efun.core.utils;
 
+import org.apache.commons.io.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.security.MessageDigest;
 
 /**
@@ -8,7 +12,16 @@ import java.security.MessageDigest;
  * @author Galen
  * @since 2017/5/15
  */
+// TODO: 2017/5/16 待优化 
 public class MD5Utils {
+
+    public final static String getFileMD5String(File file) {
+        try {
+            return MD5(new String(org.apache.commons.io.FileUtils.readFileToByteArray(file)));
+        } catch (IOException e) {
+        }
+        return null;
+    }
 
     public final static String MD5(String s) {
         char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};

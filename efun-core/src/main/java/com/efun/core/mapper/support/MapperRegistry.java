@@ -171,6 +171,9 @@ public class MapperRegistry {
 
     public void injectResultMapByMapper(Configuration configuration, Class<?> mapperInterface) {
         Type[] types = mapperInterface.getGenericInterfaces();
+        if (types == null || types.length == 0) {
+            throw new EfunException(mapperInterface.getName() + " is not extends baseMapper");
+        }
         Class<?> entityClass = (Class<?>) ((ParameterizedType)types[0]).getActualTypeArguments()[0];
         mapperEntityCache.put(mapperInterface.getCanonicalName(), entityClass);
         String id = mapperInterface.getCanonicalName() + Constants.SEPARATOR_DOT + entityClass.getSimpleName();

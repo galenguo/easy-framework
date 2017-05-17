@@ -64,7 +64,7 @@ public class HandlerExceptionResolver extends AbstractHandlerExceptionResolver {
             BindException bindException = (BindException) e;
             List<ObjectError> errorList = bindException.getAllErrors();
             if (!CollectionUtils.isEmpty(errorList)) {
-                StringBuilder message = new StringBuilder();
+                StringBuilder message = new StringBuilder(128);
                 for (ObjectError error : errorList) {
                     if (error instanceof FieldError) {
                         FieldError fieldError = (FieldError) error;

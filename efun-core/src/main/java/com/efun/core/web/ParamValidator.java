@@ -178,18 +178,25 @@ public final class ParamValidator {
         return isObjectType(paramName, Double.class);
     }
 
-    public void validSignature() {
-        String signature = (String)params.remove("signature");
+    /**
+     * 验证时效和签名，时效性为半个小时
+     */
+    public void validEffectiveness() {
+        Long timestamp = isObjectType("timestamp", Long.class);
+        if (timestamp == null || (System.currentTimeMillis() - timestamp > 30 * 60 * 1000)) {
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.request.timeout"));
+        }
+        String signature = (String) params.remove("signature");
         TreeMap<String, Object> treeMap = new TreeMap<String, Object>(params);
         Iterator<Map.Entry<String, Object>> iterator = treeMap.entrySet().iterator();
         Map.Entry<String, Object> entry = null;
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(256);
         while (iterator.hasNext()) {
             entry = iterator.next();
             builder.append(entry.getKey()).append(entry.getValue());
         }
         if (MD5Utils.MD5(builder.toString()).equals(signature)) {
-            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.signature.error","", "signature"));
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.signature.error", "", "signature"));
         }
     }
 

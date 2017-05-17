@@ -248,7 +248,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getColumns(Class<?> entityClass) {
-        StringBuilder column = new StringBuilder();
+        StringBuilder column = new StringBuilder(256);
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             column.append("`").append(mapping.getColumn()).append("`").append(Constants.SEPARATOR_COMMA);
         }
@@ -263,7 +263,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getValues(Class<?> entityClass) {
-        StringBuilder values = new StringBuilder();
+        StringBuilder values = new StringBuilder(256);
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             values.append("#{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
@@ -277,11 +277,11 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getBatchValues(Class<?> entityClass) {
-        StringBuilder values = new StringBuilder();
+        StringBuilder values = new StringBuilder(256);
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             values.append("#{item.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(256);
         result.append("<foreach collection=\"collection\" item=\"item\" index=\"index\" separator=\",\" >")
                 .append("(").append(values.substring(0, values.length() - 1)).append(")").append("</foreach>");
         return result.toString();
@@ -295,7 +295,7 @@ public abstract class AbstractSqlProvider {
      * @return
      */
     protected String getSets(Class<?> entityClass) {
-        StringBuilder sets = new StringBuilder("<trim prefix=\"SET\" suffixOverrides=\",\"><choose>");
+        StringBuilder sets = new StringBuilder(256).append("<trim prefix=\"SET\" suffixOverrides=\",\"><choose>");
         sets.append("<when test=\"ignoreNull == false\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
             sets.append(mapping.getColumn()).append(" = #{" + "entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
