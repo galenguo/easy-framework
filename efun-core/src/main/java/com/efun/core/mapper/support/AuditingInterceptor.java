@@ -67,11 +67,17 @@ public class AuditingInterceptor implements Interceptor {
             statementClassMap.put(mappedStatement.getId(), clazz);
         }
 
-        //非基础entit参数类型语句不处理
+        //非基础entity参数类型语句不处理
         if (!EntityInterface.class.isAssignableFrom(clazz)) {
             return invocation.proceed();
         }
 
+        if (parameter instanceof Map) {
+            //预防多个mybatis自动生成多个参数，例如entity、param1
+            Map map = (Map) parameter;
+            Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
+            parameter = entry.getValue();
+        }
         if (parameter instanceof Collection) {
             updatePre(sqlCommandType, (Collection<EntityInterface>) parameter, clazz);
         } else if (parameter instanceof EntityInterface) {
