@@ -22,28 +22,31 @@ import java.util.Map;
  */
 public abstract class BaseController {
 
-    protected final Logger logger = LogManager.getLogger(getClass().getName());
+    protected final Logger logger = LogManager.getLogger(getClass());
 
     protected ParamValidator validator(JSONObject params) {
-        logger.info(ApplicationContext.getHttpRequest().getServletPath() + "-params-" + JSON.toJSONString(params));
+        StringBuilder builder = new StringBuilder(256);
+        builder.append(ApplicationContext.getHttpRequest().getServletPath()).append("-ip:").append(ApplicationContext.getRequestIp())
+                .append("-params-").append(JSON.toJSONString(params));
+        logger.info(builder);
         return ParamValidator.creatValidator(params);
     }
 
     protected ResultBean returnResult(String code, String message) {
         message = ApplicationContext.getMessage(message);
-        return returnResult(code, message, null);
+        return returnResult(code, null, message);
     }
 
     protected ResultBean returnResult(String code, Object data) {
-        return returnResult(code, null, data);
+        return returnResult(code, data, null);
     }
 
     protected ResultBean returnResult(String code, String message, String... args) {
         message = ApplicationContext.getMessage(message, args);
-        return returnResult(code, message, null);
+        return returnResult(code, null, message);
     }
 
-    protected ResultBean returnResult(String code, String message, Object data) {
+    protected ResultBean returnResult(String code, Object data, String message) {
         ResultBean resultBean = new ResultBean(code, message, data);
         logger.info(ApplicationContext.getHttpRequest().getServletPath() + "-result-" + JSON.toJSONString(resultBean));
         return resultBean;

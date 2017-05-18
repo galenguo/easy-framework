@@ -249,25 +249,33 @@ public abstract class AbstractSqlProvider {
      */
     protected String getColumns(Class<?> entityClass) {
         StringBuilder column = new StringBuilder(256);
+        column.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            column.append("<if test=\"entity.").append(mapping.getProperty()).append(" != null\">");
             column.append("`").append(mapping.getColumn()).append("`").append(Constants.SEPARATOR_COMMA);
+            column.append("</if>");
         }
-        return column.substring(0, column.length() - 1);
+        column.append("</trim>");
+        return column.toString();
     }
 
     /**
      * 获取insert语句的字段占位符语句
-     * <p>#{column0}, #{column1}, #{column2}, ...</p>
+     * <p>(#{column0}, #{column1}, #{column2}, ...)</p>
      *
      * @param entityClass
      * @return
      */
     protected String getValues(Class<?> entityClass) {
         StringBuilder values = new StringBuilder(256);
+        values.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            values.append("<if test=\"entity.").append(mapping.getProperty()).append(" != null\">");
             values.append("#{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
+            values.append("</if>");
         }
-        return values.substring(0, values.length() - 1);
+        values.append("</trim>");
+        return values.toString();
     }
 
     /**
@@ -298,7 +306,7 @@ public abstract class AbstractSqlProvider {
         StringBuilder sets = new StringBuilder(256).append("<trim prefix=\"SET\" suffixOverrides=\",\"><choose>");
         sets.append("<when test=\"ignoreNull == false\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
-            sets.append(mapping.getColumn()).append(" = #{" + "entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
+            sets.append("`").append(mapping.getColumn()).append("`").append(" = #{" + "entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA);
         }
         sets = new StringBuilder(sets.substring(0, sets.length() - 1));
         sets.append("</when>");
@@ -308,7 +316,7 @@ public abstract class AbstractSqlProvider {
                 continue;
             }
             sets.append("<if test=\"entity.").append(mapping.getProperty()).append(" != null\">");
-            sets.append(mapping.getColumn()).append(" = #{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA).append(" ");
+            sets.append("`").append(mapping.getColumn()).append("`").append(" = #{entity.").append(mapping.getProperty()).append("}").append(Constants.SEPARATOR_COMMA).append(" ");
             sets.append("</if>");
         }
         sets.append("</otherwise>");

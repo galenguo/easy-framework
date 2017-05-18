@@ -41,11 +41,11 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         String tableName = getTableName(entityClass);
         String columns = getColumns(entityClass);
         String values = getValues(entityClass);
-        String sql = new SQL() {{
-            INSERT_INTO(tableName);
-            VALUES(columns, values);
-        }}.toString();
-        return sql;
+        StringBuilder sql = new StringBuilder();
+        sql.append("insert " + tableName);
+        sql.append(columns);
+        sql.append(" values " + values);
+        return sql.toString();
     }
 
     public String insertBatch(MappedStatement mappedStatement) {
@@ -56,7 +56,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         String values = getBatchValues(entityClass);
         StringBuilder sql = new StringBuilder();
         sql.append("insert " + tableName);
-        sql.append(" (" + columns + ")");
+        sql.append(columns);
         sql.append(" values " + values);
         return sql.toString();
     }
