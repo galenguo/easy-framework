@@ -7,11 +7,6 @@ import com.efun.core.web.ParamValidator;
 import com.efun.core.web.ResultBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * BaseController
