@@ -195,7 +195,7 @@ public final class ParamValidator {
             entry = iterator.next();
             builder.append(entry.getKey()).append(entry.getValue());
         }
-        if (MD5Utils.MD5(builder.toString()).equals(signature)) {
+        if (!MD5Utils.MD5(builder.toString()).equals(signature)) {
             throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.signature.error", "", "signature"));
         }
     }
