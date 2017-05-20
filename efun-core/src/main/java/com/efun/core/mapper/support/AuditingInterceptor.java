@@ -60,6 +60,9 @@ public class AuditingInterceptor implements Interceptor {
                         }
                     }
                 }
+                if (clazz == null) {
+                    clazz = parameter.getClass();
+                }
             } else {
                 clazz = parameter.getClass();
             }

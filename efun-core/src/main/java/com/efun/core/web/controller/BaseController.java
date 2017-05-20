@@ -28,7 +28,6 @@ public abstract class BaseController {
     }
 
     protected ResultBean returnResult(String code, String message) {
-        message = ApplicationContext.getMessage(message);
         return returnResult(code, null, message);
     }
 
@@ -37,11 +36,12 @@ public abstract class BaseController {
     }
 
     protected ResultBean returnResult(String code, String message, String... args) {
-        message = ApplicationContext.getMessage(message, args);
-        return returnResult(code, null, message);
+
+        return returnResult(code, null, message, args);
     }
 
-    protected ResultBean returnResult(String code, Object data, String message) {
+    protected ResultBean returnResult(String code, Object data, String message, String... args) {
+        message = ApplicationContext.getMessage(message, args);
         ResultBean resultBean = new ResultBean(code, message, data);
         logger.info(ApplicationContext.getHttpRequest().getServletPath() + "-result-" + JSON.toJSONString(resultBean));
         return resultBean;
