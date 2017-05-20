@@ -15,6 +15,8 @@ import java.security.MessageDigest;
 // TODO: 2017/5/16 待优化 
 public class MD5Utils {
 
+    public final static int MD5_STRING_LENGTH = 32;
+
     public final static String getFileMD5String(File file) {
         try {
             return MD5(new String(org.apache.commons.io.FileUtils.readFileToByteArray(file)));
