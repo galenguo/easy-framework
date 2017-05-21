@@ -4,6 +4,7 @@ import com.efun.core.exception.EfunException;
 import com.efun.core.utils.AssertUtils;
 import com.efun.core.utils.FileUtils;
 import com.efun.core.utils.StringUtils;
+import org.apache.http.HttpRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -255,11 +256,16 @@ public class ApplicationContext {
 
     /**
      * 获取request header值
+     *
      * @param name
      * @return
      */
     public static String getHeader(String name) {
-        return getHttpRequest().getHeader(name);
+        HttpServletRequest request = getHttpRequest();
+        if (request == null) {
+            return null;
+        }
+        return request.getHeader(name);
     }
 
     /**

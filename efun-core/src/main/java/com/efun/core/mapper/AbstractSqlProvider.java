@@ -247,7 +247,7 @@ public abstract class AbstractSqlProvider {
      * @param entityClass
      * @return
      */
-    protected String getColumns(Class<?> entityClass) {
+    protected String getColumnsWithoutNull(Class<?> entityClass) {
         StringBuilder column = new StringBuilder(256);
         column.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
@@ -257,6 +257,21 @@ public abstract class AbstractSqlProvider {
         }
         column.append("</trim>");
         return column.toString();
+    }
+
+    /**
+     * 获取表字段
+     * <p>column0, column1, column2, ...</p>
+     *
+     * @param entityClass
+     * @return
+     */
+    protected String getColumns(Class<?> entityClass) {
+        StringBuilder column = new StringBuilder(256);
+        for (ResultMapping mapping : getEntityResultMap(entityClass).getResultMappings()) {
+            column.append("`").append(mapping.getColumn()).append("`").append(Constants.SEPARATOR_COMMA);
+        }
+        return column.substring(0, column.length() - 1);
     }
 
     /**

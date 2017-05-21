@@ -39,7 +39,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
-        String columns = getColumns(entityClass);
+        String columns = getColumnsWithoutNull(entityClass);
         String values = getValues(entityClass);
         StringBuilder sql = new StringBuilder();
         sql.append("insert " + tableName);
@@ -56,7 +56,7 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         String values = getBatchValues(entityClass);
         StringBuilder sql = new StringBuilder();
         sql.append("insert " + tableName);
-        sql.append(columns);
+        sql.append("(" + columns + ")");
         sql.append(" values " + values);
         return sql.toString();
     }

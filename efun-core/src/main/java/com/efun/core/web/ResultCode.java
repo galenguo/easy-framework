@@ -10,7 +10,7 @@ public interface ResultCode {
 
     String SUCCESS = "e1000";
 
-    String FAILURE = "e1000";
+    String FAILURE = "e1001";
 
     String PARAM_EXCEPTION = "e1002";
 
