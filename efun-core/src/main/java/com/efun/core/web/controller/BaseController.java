@@ -28,7 +28,7 @@ public abstract class BaseController {
     }
 
     protected ResultBean returnResult(String code, String message) {
-        return returnResult(code, null, message);
+        return returnResult(code, message, null);
     }
 
     protected ResultBean returnResult(String code, Object data) {
@@ -36,7 +36,6 @@ public abstract class BaseController {
     }
 
     protected ResultBean returnResult(String code, String message, String... args) {
-
         return returnResult(code, null, message, args);
     }
 

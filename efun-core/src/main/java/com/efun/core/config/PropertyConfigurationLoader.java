@@ -110,6 +110,7 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
             @Override
             public void run() {
                 try {
+                    // TODO: 2017/5/21 应用服务器重启watcher可能被关闭 
                     WatchKey key = watcher.take();
                     for(WatchEvent<?> event : key.pollEvents()){
                         String fileName = event.context().toString();
