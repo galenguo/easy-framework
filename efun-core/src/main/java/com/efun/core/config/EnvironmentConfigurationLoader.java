@@ -4,6 +4,8 @@ import com.efun.core.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -42,7 +44,14 @@ public class EnvironmentConfigurationLoader implements ConfigurationLoader {
                         ThreadContext.put((String) key, value);
                         //刷新log4j2配置
                         if (key.startsWith("log")) {
-                            ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
+                            LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+                            ctx.reconfigure();
+                            /*if (key.equals("log.level.root")) {
+                                org.apache.logging.log4j.core.config.Configuration config = ctx.getConfiguration();
+                                LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+                                loggerConfig.setLevel(level);
+                                ctx.updateLoggers();
+                            }*/
                         }
                         logger.info("putProperty {}={}", key, value);
                     }

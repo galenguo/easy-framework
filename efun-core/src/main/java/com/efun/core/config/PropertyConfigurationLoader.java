@@ -51,6 +51,8 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
 
     private ScheduledExecutorService executor;
 
+    private volatile boolean running = true;
+
     /**
      * 设置文件位置
      * @param baseLocation
@@ -110,7 +112,6 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
             @Override
             public void run() {
                 try {
-                    // TODO: 2017/5/21 应用服务器重启watcher可能被关闭 
                     WatchKey key = watcher.take();
                     for(WatchEvent<?> event : key.pollEvents()){
                         String fileName = event.context().toString();
@@ -184,6 +185,9 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
     @Override
     public void destroy() throws Exception {
         this.executor.shutdown();
+        while (this.executor.awaitTermination(1, TimeUnit.SECONDS)){
+
+        }
         this.watcher.close();
     }
 

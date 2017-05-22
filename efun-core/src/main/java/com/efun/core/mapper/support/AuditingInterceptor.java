@@ -174,7 +174,10 @@ public class AuditingInterceptor implements Interceptor {
         }
         if (field != null) {
             field.setAccessible(true);
-            field.set(parameter, currentDate);
+            Object object = field.get(parameter);
+            if (object == null) {
+                field.set(parameter, currentDate);
+            }
             field.setAccessible(false);
         } else {
             localDateFieldMap.put(clazz, new NoField());

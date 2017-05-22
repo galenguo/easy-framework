@@ -1,5 +1,7 @@
 package com.efun.core.service;
 
+import com.efun.core.db.annotation.DSType;
+import com.efun.core.db.annotation.DataSource;
 import com.efun.core.domain.BaseEntity;
 import com.efun.core.domain.page.Page;
 import com.efun.core.domain.page.PageImpl;
@@ -7,6 +9,7 @@ import com.efun.core.domain.page.Pageable;
 import com.efun.core.mapper.BaseMapper;
 import com.efun.core.mapper.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -57,21 +60,30 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
     public int insert(E entity) {
         return this.mapper.insert(entity);
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
     public int insertBatch(Collection<E> entities) {
         return this.mapper.insertBatch(entities);
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
+
     public int update(E entity) {
         return this.mapper.update(entity, null);
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
     public int save(E entity) {
         int result = 0;
         if (entity.getId() != null && !entity.getId().toString().equals("")) {
@@ -86,11 +98,16 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
+
     public int delete(E entity) {
         return this.mapper.delete(entity.getId());
     }
 
     @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
     public int delete(ID id) {
         return this.mapper.delete(id);
     }

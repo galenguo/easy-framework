@@ -197,7 +197,7 @@ public class HttpUtils {
      * @param bodyParams requestbody的内容map
      * @return
      */
-    public static String doPost(String url, Map<String, String> bodyParams) {
+    public static String doPost(String url, Map<String, Object> bodyParams) {
         return doPost(url, bodyParams, DEFAULT_ENCODING);
     }
 
@@ -218,12 +218,12 @@ public class HttpUtils {
      * @param encoding 编码类型
      * @return
      */
-	public static String doPost(String url, Map<String, String> bodyParams, String encoding) {
+	public static String doPost(String url, Map<String, Object> bodyParams, String encoding) {
 		List<NameValuePair> pairs = null;
         if(bodyParams != null && !bodyParams.isEmpty()){
             pairs = new ArrayList<NameValuePair>(bodyParams.size());
-            for(Map.Entry<String,String> entry : bodyParams.entrySet()){
-                String value = entry.getValue();
+            for(Map.Entry<String,Object> entry : bodyParams.entrySet()){
+                String value = entry.getValue() != null ? entry.getValue().toString() : "";
                 if(value != null){
                     pairs.add(new BasicNameValuePair(entry.getKey(),value));
                 }
