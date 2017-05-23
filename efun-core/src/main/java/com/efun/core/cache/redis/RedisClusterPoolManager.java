@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Timer;
 
 /**
  * RedisClusterPoolManager
@@ -118,15 +119,15 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
                 JedisCluster cluster = new JedisCluster(nodes, timeout, poolConfig);
                 logger.info("cluster.nodes(config) >>> " + clusterNodes);
 
-                JedisPool tempPool=cluster.getClusterNodes().values().iterator().next();
-                Jedis jedis=tempPool.getResource();
+                JedisPool tempPool = cluster.getClusterNodes().values().iterator().next();
+                Jedis jedis = tempPool.getResource();
                 jedis.close();
                 logger.info("cluster.nodes >>> " + cluster.getClusterNodes().keySet() + " message:\n" + jedis.clusterNodes());
                 //jedis集群对象注入服务端集群对象
                 serverCluster = new RedisServerCluster(cluster);
                 isServerCluster = true;
 
-            //客服端分布式
+                //客服端分布式
             } else if (StringUtils.isNotBlank(sentinels)) {
                 Set<String> serverNameSet = new LinkedHashSet<String>();
                 Set<String> sentinelSet = new LinkedHashSet<String>();
@@ -210,13 +211,25 @@ public class RedisClusterPoolManager implements InitializingBean, DisposableBean
         }
     }
 
+    private final static Timer delTimer = new Timer("delay_clear_delete_cache_timer");
+
+    /**
+     * 定时删除数据的，保证主从数据一致的timer
+     * @return
+     */
+    public static final Timer getDelTimer() {
+        return delTimer;
+    }
+
     @Override
+
     public void afterPropertiesSet() throws Exception {
         initPool();
     }
 
     @Override
     public void destroy() {
+        delTimer.cancel();
         destroyPool();
     }
 

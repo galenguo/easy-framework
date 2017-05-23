@@ -1500,7 +1500,8 @@ public class RedisUtils {
     }
 
     //清除key的timmer
-    private final static Timer timer = new Timer("delay_clear_delete_cache_timer");
+    private final static Timer timer = RedisClusterPoolManager.getDelTimer();
+
     private final static long time = 10 * 60 * 1000;
 
     static {

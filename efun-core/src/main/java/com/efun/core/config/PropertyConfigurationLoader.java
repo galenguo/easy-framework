@@ -18,6 +18,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +51,8 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
     private int intervalSeconds = 30;
 
     private ScheduledExecutorService executor;
+
+    private ScheduledFuture future;
 
     private volatile boolean running = true;
 
@@ -108,7 +111,7 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
         Path dir = Paths.get(resources[0].getFile().getParentFile().toURI());
         WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(new Runnable() {
+        future = executor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -184,11 +187,12 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
 
     @Override
     public void destroy() throws Exception {
+        this.running = false;
+        this.future.cancel(false);
         this.executor.shutdown();
-        while (this.executor.awaitTermination(1, TimeUnit.SECONDS)){
-
+        while (this.executor.isTerminated()) {
+            this.watcher.close();
         }
-        this.watcher.close();
     }
 
     static class LinkedProperties extends Properties {
