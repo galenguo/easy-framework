@@ -3,6 +3,7 @@ package com.efun.core.config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ResourceLoaderAware;
@@ -53,8 +54,6 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
     private ScheduledExecutorService executor;
 
     private ScheduledFuture future;
-
-    private volatile boolean running = true;
 
     /**
      * 设置文件位置
@@ -116,7 +115,7 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
             public void run() {
                 try {
                     WatchKey key = watcher.take();
-                    for(WatchEvent<?> event : key.pollEvents()){
+                    for (WatchEvent<?> event : key.pollEvents()) {
                         String fileName = event.context().toString();
                         String kind = event.kind().toString();
                         switch (kind) {
@@ -137,9 +136,11 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
                         }
                     }
                     //重置key状态，实现连续地监控目录
-                    if(!key.reset()){
+                    if (!key.reset()) {
                         return;
                     }
+                } catch (InterruptedException e) {
+                    return;
                 } catch (Throwable throwable) {
                     logger.error(throwable.getMessage(), throwable);
                 }
@@ -158,12 +159,6 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
                 String value = (String) properties.get(key);
                 //导入配置
                 Configuration.putProperty((String) key, value);
-                //导入log4j2上下文
-                ThreadContext.put((String) key, value);
-                //刷新log4j2配置
-                if (((String) key).startsWith("log")) {
-                    ((org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false)).reconfigure();
-                }
                 logger.info("putProperty {}={}", key, value);
             }
         } else {
@@ -187,12 +182,12 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
 
     @Override
     public void destroy() throws Exception {
-        this.running = false;
         this.future.cancel(false);
         this.executor.shutdown();
-        while (this.executor.isTerminated()) {
-            this.watcher.close();
+        if (!this.executor.awaitTermination(500, TimeUnit.MILLISECONDS)) {
+            this.executor.shutdownNow();
         }
+        this.watcher.close();
     }
 
     static class LinkedProperties extends Properties {

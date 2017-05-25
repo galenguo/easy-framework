@@ -36,7 +36,4 @@
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
-    <!--配置跨域-->
-    <!--<bean id="webCongifAdapter" class="com.efun.core.web.config.WebCongifAdapter"/>-->
-
 </beans>
