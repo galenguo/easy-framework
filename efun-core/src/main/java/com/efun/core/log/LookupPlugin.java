@@ -7,11 +7,8 @@ import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.core.io.support.ResourcePatternUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -26,7 +23,7 @@ public class LookupPlugin implements StrLookup {
     private Properties properties;
 
     public LookupPlugin() {
-        properties = readProperties(System.getProperty("efunPlatformRegion") + "/log.properties");
+        properties = readProperties(System.getProperty("efunPlatformRegion") + "/log4j.properties");
     }
 
     public static Properties readProperties(String fileName){
