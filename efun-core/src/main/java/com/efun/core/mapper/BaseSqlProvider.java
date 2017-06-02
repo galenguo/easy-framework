@@ -73,16 +73,28 @@ public class BaseSqlProvider extends AbstractSqlProvider {
         return sql.toString();
     }
 
-
-
     public String delete(MappedStatement mappedStatement) {
         Class<?> entityClass = getEntityClass(mappedStatement);
         setResultType(mappedStatement, entityClass);
         String tableName = getTableName(entityClass);
         String idField = getId(entityClass);
         String sql = new SQL() {{
-            DELETE_FROM(tableName);
-            WHERE(idField + "= #{id}");
+            UPDATE(tableName);
+            SET("deleted = 1");
+            WHERE(idField + " = #{id}");
+        }}.toString();
+        return sql;
+    }
+
+    public String deleteBatch(MappedStatement mappedStatement) {
+        Class<?> entityClass = getEntityClass(mappedStatement);
+        setResultType(mappedStatement, entityClass);
+        String tableName = getTableName(entityClass);
+        String idField = getId(entityClass);
+        String sql = new SQL() {{
+            UPDATE(tableName);
+            SET("deleted = 1");
+            WHERE(idField + " in <foreach collection=\"ids\" item=\"valueItem\" open=\"(\" close=\")\" separator=\",\"> #{valueItem} </foreach>");
         }}.toString();
         return sql;
     }

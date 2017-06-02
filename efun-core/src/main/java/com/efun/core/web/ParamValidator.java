@@ -184,7 +184,7 @@ public final class ParamValidator {
     public void validEffectiveness() {
         Long timestamp = isObjectType("timestamp", Long.class);
         if (timestamp == null || (System.currentTimeMillis() - timestamp > 30 * 60 * 1000)) {
-            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.request.timeout"));
+            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.signature.timeout"));
         }
         String signature = (String) params.remove("signature");
         TreeMap<String, Object> treeMap = new TreeMap<String, Object>(params);

@@ -68,6 +68,15 @@ public interface BaseMapper<E extends BaseEntity<ID>, ID extends Serializable> {
     <E extends BaseEntity> int delete(@Param("id")Object id);
 
     /**
+     *
+     * @param ids
+     * @param <E>
+     * @return
+     */
+    @DeleteProvider(type = BaseSqlProvider.class, method = "deleteBatch")
+    <E extends Serializable> int deleteBatch(@Param("ids")Collection<E> ids);
+
+    /**
      * 计算记录条数
      * @return
      */

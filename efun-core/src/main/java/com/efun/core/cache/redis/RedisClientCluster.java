@@ -46,7 +46,9 @@ public class RedisClientCluster implements CommonRedisCommands {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
-            shardedJedis.close();
+            if (shardedJedis != null) {
+                shardedJedis.close();
+            }
         }
         return result;
     }

@@ -1,7 +1,6 @@
 package com.efun.core.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -198,7 +197,7 @@ public class HttpUtils {
      * @return
      */
     public static String doPost(String url, Map<String, Object> bodyParams) {
-        return doPost(url, bodyParams, DEFAULT_ENCODING);
+        return  doPost(url, bodyParams, DEFAULT_ENCODING);
     }
 
     /**

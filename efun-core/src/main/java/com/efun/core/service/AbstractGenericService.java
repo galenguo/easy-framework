@@ -76,7 +76,6 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     @Override
     @Transactional
     @DataSource(DSType.WRITE)
-
     public int update(E entity) {
         return this.mapper.update(entity, null);
     }
@@ -100,7 +99,6 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     @Override
     @Transactional
     @DataSource(DSType.WRITE)
-
     public int delete(E entity) {
         return this.mapper.delete(entity.getId());
     }
@@ -110,6 +108,13 @@ public class AbstractGenericService<M extends BaseMapper<E, ID>, E extends BaseE
     @DataSource(DSType.WRITE)
     public int delete(ID id) {
         return this.mapper.delete(id);
+    }
+
+    @Override
+    @Transactional
+    @DataSource(DSType.WRITE)
+    public int deleteBatch(Collection<ID> ids) {
+        return this.mapper.deleteBatch(ids);
     }
 
     @Override

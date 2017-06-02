@@ -96,6 +96,13 @@ public interface GenericService<M extends BaseMapper<E, ID>, E extends BaseEntit
     int delete(ID id);
 
     /**
+     * 批量删除
+     * @param ids
+     * @return
+     */
+    int deleteBatch(Collection<ID> ids);
+
+    /**
      * 计算记录数量
      * @return
      */
