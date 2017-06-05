@@ -117,6 +117,9 @@ public class PropertyConfigurationLoader extends PropertyPlaceholderConfigurer i
                     WatchKey key = watcher.take();
                     for (WatchEvent<?> event : key.pollEvents()) {
                         String fileName = event.context().toString();
+                        if (!fileName.endsWith(".properties")) {
+                            continue;
+                        }
                         String kind = event.kind().toString();
                         switch (kind) {
                             case "ENTRY_CREATE": {

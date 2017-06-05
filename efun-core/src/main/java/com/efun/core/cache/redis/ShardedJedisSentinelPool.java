@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.*;
 import redis.clients.jedis.exceptions.JedisConnectionException;
-import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.util.Hashing;
 import redis.clients.util.Pool;
 import redis.clients.util.Sharded;
@@ -260,6 +259,32 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
             shard.setPassword(password);
         }
         return shard;
+    }
+
+    @Override
+    public ShardedJedis getResource() {
+        ShardedJedis jedis = super.getResource();
+        jedis.setDataSource(this);
+        return jedis;
+    }
+
+    /** @deprecated */
+    @Deprecated
+    public void returnBrokenResource(ShardedJedis resource) {
+        if(resource != null) {
+            this.returnBrokenResourceObject(resource);
+        }
+
+    }
+
+    /** @deprecated */
+    @Deprecated
+    public void returnResource(ShardedJedis resource) {
+        if(resource != null) {
+            resource.resetState();
+            this.returnResourceObject(resource);
+        }
+
     }
 
     public void destroy() {
