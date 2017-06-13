@@ -125,7 +125,7 @@ public final class ParamValidator {
                 throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotEmpty.message","", paramName));
             }
         }
-        throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.NotSupport.message","", paramName, clazz.getSimpleName()));
+        return result;
     }
 
     /**
