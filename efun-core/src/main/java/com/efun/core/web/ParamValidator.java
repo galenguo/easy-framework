@@ -82,10 +82,10 @@ public final class ParamValidator {
      */
     public String length(String paramName, int min, int max) {
         String result = isObjectType(paramName, String.class);
-        if (StringUtils.isBlank(result) && result.length() > min && result.length() <= max) {
-            throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.length.message","", paramName, min, max));
+        if (StringUtils.isNotBlank(result) && result.length() >= min && result.length() < max) {
+            return result;
         }
-        return result;
+        throw new EfunParamValidException(ApplicationContext.getMessage("validation.constraints.length.message","", paramName, min, max));
     }
 
     /**

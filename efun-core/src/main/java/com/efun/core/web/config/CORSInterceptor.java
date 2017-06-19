@@ -22,7 +22,7 @@ public class CORSInterceptor implements HandlerInterceptor {
 
     protected final Logger logger = LogManager.getLogger(getClass());
 
-    private final String innerHeaders = "advertiser,appplatform,content-type,devicetype,encoding,osversion,packagename,sdkversion,timezone,versioncode";
+    private final String innerHeaders = "advertiser,appplatform,content-type,devicetype,encoding,osversion,packagename,sdkversion,timezone,versioncode,gameVersion,platform";
 
     private final String crossDomain = StringUtils.isNotBlank(Configuration.getProperty("cross.domains")) ? Configuration.getProperty("cross.domains") : "*";
 
