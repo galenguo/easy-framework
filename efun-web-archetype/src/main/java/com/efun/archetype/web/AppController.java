@@ -150,7 +150,6 @@ public class AppController extends BaseController {
     @RequestMapping("insert")
     public String insert() {
         User user = new User();
-        user.setId(100L);
         user.setName("test");
         user.setPhoneNumber("12345678");
         int id = userMapper.insert(user);

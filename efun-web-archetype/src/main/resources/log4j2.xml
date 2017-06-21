@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="info" monitorInterval="1800">
+<Configuration status="info" monitorInterval="15" packages="com.efun.core.log">
 
     <properties>
-        <property name="LOG_NAME">${ctx:log.file.name}</property>
+        <property name="LOG_NAME">${log:log.file.name.base}</property>
     </properties>
 
     <Appenders>
@@ -23,8 +23,8 @@
     <Loggers>
         <AsyncLogger name="org.springframework" level="info" includeLocation="true"/>
         <AsyncLogger name="com.efun.core.config" level="info" includeLocation="true"/>
-        <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="${ctx:log.level}" includeLocation="true"/>
-        <AsyncLogger name="com.efun" level="${ctx:log.level}" includeLocation="true"/>
+        <AsyncLogger name="org.apache.ibatis.logging.jdbc" level="${log:log.level}" includeLocation="true"/>
+        <AsyncLogger name="com.efun" level="${log:log.level}" includeLocation="true"/>
 
         <AsyncRoot level="info" includeLocation="true">
             <AppenderRef ref="log" />
