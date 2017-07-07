@@ -585,9 +585,10 @@
                         <target>${jdk.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <fork>true</fork>
-                        <compilerArgument>-proc:none</compilerArgument>
                         <compilerArguments>
-                            <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar;;${java.home}/lib/jsse.jar</bootclasspath>
+                            <arg>-proc:none</arg>
+                            <arg>-bootclasspath</arg>
+                            <arg>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar;;${java.home}/lib/jsse.jar</arg>
                         </compilerArguments>
                         <showWarnings>true</showWarnings>
                         <showDeprecation>false</showDeprecation>
