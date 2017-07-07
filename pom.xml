@@ -587,7 +587,6 @@
                         <fork>true</fork>
                         <compilerArgument>-proc:none</compilerArgument>
                         <compilerArguments>
-                            <verbose />
                             <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar;;${java.home}/lib/jsse.jar</bootclasspath>
                         </compilerArguments>
                         <showWarnings>true</showWarnings>
