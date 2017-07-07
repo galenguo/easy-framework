@@ -584,6 +584,7 @@
                         <source>${jdk.version}</source>
                         <target>${jdk.version}</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
+                        <fork>true</fork>
                         <compilerArgument>-proc:none</compilerArgument>
                         <compilerArguments>
                             <verbose />
