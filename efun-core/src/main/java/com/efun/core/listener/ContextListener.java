@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.jar.Manifest;
 
 /**
@@ -44,10 +45,13 @@ public class ContextListener implements ServletContextListener {
             //get app version from manifiest file
             try {
                 Manifest metainfo = new Manifest();
-                metainfo.read(sce.getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF"));
-                String manifestVersion = metainfo.getMainAttributes().getValue("Manifest-Version");
-                if (StringUtils.isNotEmpty(manifestVersion)) {
-                    appVersion = manifestVersion;
+                InputStream inputStream = sce.getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
+                if (inputStream != null) {
+                    metainfo.read(inputStream);
+                    String manifestVersion = metainfo.getMainAttributes().getValue("Manifest-Version");
+                    if (StringUtils.isNotEmpty(manifestVersion)) {
+                        appVersion = manifestVersion;
+                    }
                 }
             } catch (NullPointerException e) {
                 logger.error(e.getMessage(), e);
