@@ -1,5 +1,6 @@
 package com.efun.core.cache.redis;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import redis.clients.jedis.*;
@@ -7,10 +8,7 @@ import redis.clients.jedis.params.geo.GeoRadiusParam;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 import redis.clients.jedis.params.sortedset.ZIncrByParams;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * RedisClientCluster
@@ -51,6 +49,311 @@ public class RedisClientCluster implements CommonRedisCommands {
             }
         }
         return result;
+    }
+
+    @Override
+    public <T> T get(String key, Class<T> clz) {
+        try {
+            return JSON.parseObject(get(key), clz);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> String set(String key, T value) {
+        try {
+            return set(key, JSON.toJSONString(value));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long setnx(String key, T value) {
+        try {
+            return setnx(key, JSON.toJSONString(value));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> String setex(String key, int seconds, T value) {
+        try {
+            return setex(key, seconds, JSON.toJSONString(value));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+
+    }
+
+    @Override
+    public <T> T hget(String key, String field, Class<T> clz) {
+        try {
+            return JSON.parseObject(hget(key, field), clz);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long hset(String key, String field, T value) {
+        try {
+            return hset(key, field, JSON.toJSONString(value));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long hsetnx(String key, String field, T value) {
+        try {
+            return hsetnx(key, field, JSON.toJSONString(value));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Map<String, T> hgetAll(String key, Class<T> clz) {
+        try {
+            Map<String, String> temp = hgetAll(key);
+            Map<String, T> result = new HashMap<String, T>(temp.size());
+            for (Map.Entry<String, String> item : temp.entrySet()) {
+                result.put(item.getKey(), JSON.parseObject(item.getValue(), clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T rpop(String key, Class<T> clz) {
+        try {
+            return JSON.parseObject(rpop(key), clz);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long rpush(String key, T... value) {
+        try {
+            String[] temp = new String[value.length];
+            for (int i = 0; i < value.length; i++) {
+                temp[i] = JSON.toJSONString(value[i]);
+            }
+            return rpush(key, temp);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long rpushx(String key, T... value) {
+        try {
+            String[] temp = new String[value.length];
+            for (int i = 0; i < value.length; i++) {
+                temp[i] = JSON.toJSONString(value[i]);
+            }
+            return rpushx(key, temp);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T lpop(String key, Class<T> clz) {
+        try {
+            return JSON.parseObject(lpop(key), clz);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+
+    }
+
+    @Override
+    public <T> Long lpush(String key, T... value) {
+        try {
+            String[] temp = new String[value.length];
+            for (int i = 0; i < value.length; i++) {
+                temp[i] = JSON.toJSONString(value[i]);
+            }
+            return lpush(key, temp);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long lpushx(String key, T... value) {
+        try {
+            String[] temp = new String[value.length];
+            for (int i = 0; i < value.length; i++) {
+                temp[i] = JSON.toJSONString(value[i]);
+            }
+            return lpushx(key, temp);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+
+    }
+
+    @Override
+    public <T> List<T> lrange(String key, long start, long end, Class<T> clz) {
+        try {
+            List<String> temp = lrange(key, start, end);
+            List<T> result = new ArrayList<T>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long sadd(String key, T... value) {
+        try {
+            String[] temp = new String[value.length];
+            for (int i = 0; i < value.length; i++) {
+                temp[i] = JSON.toJSONString(value[i]);
+            }
+            return sadd(key, temp);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> smembers(String key, Class<T> clz) {
+        try {
+            Set<String> temp = smembers(key);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T spop(String key, Class<T> clz) {
+        try {
+            return JSON.parseObject(spop(key), clz);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Long zadd(String key, double score, T member) {
+        try {
+            return zadd(key, score, JSON.toJSONString(member));
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> zrange(String key, long start, long end, Class<T> clz) {
+        try {
+            Set<String> temp = zrange(key, start, end);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> zrevrange(String key, long start, long end, Class<T> clz) {
+        try {
+            Set<String> temp = zrevrange(key, start, end);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> zrangeByScore(String key, long start, long end, Class<T> clz) {
+        try {
+            Set<String> temp = zrangeByScore(key, start, end);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> zrevrangeByScore(String key, long start, long end, Class<T> clz) {
+        try {
+            Set<String> temp = zrevrangeByScore(key, start, end);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> Set<T> zrangeByLex(String key, String min, String max, int offset, int count, Class<T> clz) {
+        try {
+            Set<String> temp = zrangeByLex(key, min, max, offset, count);
+            Set<T> result = new HashSet<>(temp.size());
+            for (String item : temp) {
+                result.add(JSON.parseObject(item, clz));
+            }
+            return result;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
+        return null;
     }
 
     private interface RedisCallBack<T> {
@@ -2801,4 +3104,6 @@ public class RedisClientCluster implements CommonRedisCommands {
     public List<Long> bitfield(String s, String... strings) {
         return null;
     }
+
+
 }
