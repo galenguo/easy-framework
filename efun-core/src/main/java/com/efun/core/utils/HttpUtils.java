@@ -1,359 +1,355 @@
 package com.efun.core.utils;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.DnsResolver;
+import org.apache.http.conn.HttpConnectionFactory;
+import org.apache.http.conn.ManagedHttpClientConnection;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.ManagedHttpClientConnectionFactory;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
+import org.apache.http.impl.io.DefaultHttpRequestWriterFactory;
+import org.apache.http.impl.io.DefaultHttpResponseParserFactory;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * HttpUtils
+ * Http
  *
  * @author Galen
- * @since 2016/05/30.
+ * @since 2017/8/6
  */
 public class HttpUtils {
 
     protected final static Logger logger = LogManager.getLogger(HttpUtils.class);
 
-    private static final int TIMEOUT_SECONDS = 20;
+    static PoolingHttpClientConnectionManager manager = null;
 
-    private static final int POOL_SIZE = 20;
+    static volatile CloseableHttpClient httpClient = null;
 
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    public static CloseableHttpClient getHttpClient() {
+        if (httpClient == null) {
+            synchronized (HttpUtils.class) {
+                if (httpClient == null) {
+                    //注册访问协相关的socket工厂
+                    Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+                            .<ConnectionSocketFactory>create()
+                            .register("http", PlainConnectionSocketFactory.INSTANCE)
+                            .register("https", SSLConnectionSocketFactory.getSystemSocketFactory()).build();
 
-    private static RequestConfig requestConfig;
+                    //HttpConnection工厂：配置写请求/解析响应处理器
+                    HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connectionFactory
+                            = new ManagedHttpClientConnectionFactory(DefaultHttpRequestWriterFactory.INSTANCE,
+                            DefaultHttpResponseParserFactory.INSTANCE);
 
-    private static HttpClientBuilder httpClientBuilder;
+                    //DSN解析器
+                    DnsResolver dnsResolver = SystemDefaultDnsResolver.INSTANCE;
 
-    static {
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = null;
-        try {
-            //信任任何链接
-            X509TrustManager anyTrustManager = new X509TrustManager() {
-                @Override
-                public void checkClientTrusted(
-                        java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
-                        String paramString) throws CertificateException {
+                    //创建池化连接管理器
+                    manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, connectionFactory, dnsResolver);
+
+                    //默认为socket配置
+                    SocketConfig defaultSocketConfig = SocketConfig.custom().setTcpNoDelay(true).build();
+                    manager.setDefaultSocketConfig(defaultSocketConfig);
+
+                    //设置连接池整体最大连接数
+                    manager.setMaxTotal(300);
+                    //设置每个路由的最大连接数
+                    manager.setDefaultMaxPerRoute(200);
+                    //从连接池获取连接时，连接不活跃长时间后需要进行一次验证，默认为2s
+                    manager.setValidateAfterInactivity(5 * 1000);
+                    RequestConfig defaultRequestConfig = RequestConfig.custom()
+                            .setConnectTimeout(2 * 1000)//设置连接超时时间，2s
+                            .setSocketTimeout(5 * 1000)//设置等待数据超时时间，5s
+                            .setConnectionRequestTimeout(2 * 1000)//设置从连接池获取连接的等待超时时间
+                            .build();
+
+                    //穿件HttpClient
+                    httpClient = HttpClients.custom()
+                            .setConnectionManager(manager)
+                            //连接池不是共享模式，共享模式下，多个httpclient对象共享一个连接池，回收线程也只能一个。
+                            .setConnectionManagerShared(false)
+                            //定义回收空闲连接
+                            .evictIdleConnections(60, TimeUnit.SECONDS)
+                            //定期回收过期线程
+                            .evictExpiredConnections()
+                            //连接存货时间，如果不设置，则根据长连接信息决定
+                            .setConnectionTimeToLive(60, TimeUnit.SECONDS)
+                            //设置默认请求配置
+                            .setDefaultRequestConfig(defaultRequestConfig)
+                            //连接重用策略，是否能keepalive
+                            .setConnectionReuseStrategy(DefaultConnectionReuseStrategy.INSTANCE)
+                            //长连接配置，即获取长连接生产多长的时间
+                            .setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE)
+                            //重试次数，默认是3次；当前禁用掉，根据需要开启
+                            .setRetryHandler(new DefaultHttpRequestRetryHandler(0, false))
+                            .build();
+
+                    //JVM停止或者重启时，关闭连接池释放掉连接
+                    Runtime.getRuntime().addShutdownHook(new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                httpClient.close();
+                            } catch (Exception ex) {
+                                logger.error(ex.getMessage(), ex);
+                            }
+                        }
+                    });
                 }
-
-                @Override
-                public void checkServerTrusted(
-                        java.security.cert.X509Certificate[] paramArrayOfX509Certificate,
-                        String paramString) throws CertificateException {
-                }
-
-                @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            };
-            SSLContext sslContext = SSLContext.getInstance("SSLv3");
-            sslContext.init(null, new TrustManager[] {anyTrustManager}, null);
-            // 设置协议http和https对应的处理socket链接工厂的对象
-            socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                    .register("http", PlainConnectionSocketFactory.INSTANCE)
-                    .register("https", new SSLConnectionSocketFactory(sslContext))
-                    .build();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
+            }
         }
-        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-        requestConfig = RequestConfig.custom().setSocketTimeout(TIMEOUT_SECONDS * 1000)
-                .setConnectTimeout(TIMEOUT_SECONDS * 1000).build();
-        httpClientBuilder = HttpClients.custom().setConnectionManager(connManager).setMaxConnTotal(POOL_SIZE).setMaxConnPerRoute(POOL_SIZE)
-                .setDefaultRequestConfig(requestConfig);
+        return httpClient;
     }
 
     /**
-     * 获取连接
-     * @return
-     */
-    private static CloseableHttpClient createHttpClient() {
-        return httpClientBuilder.build();
-    }
-
-    /**
-     * get请求
+     * 建立请求builder
      * @param url
      * @return
      */
-    public static String doGet(String url) {
-        return doGet(url, new HashMap<String, String>(), DEFAULT_ENCODING);
+    public static HttpBuilder url(String url) {
+        return HttpBuilder.createHttpBuilder(url);
     }
 
     /**
-     * get请求
-     * @param url
-     * @param params
-     * @return
+     * builder模式，满足http请求的多参数的组合。
      */
-    public static String doGet(String url, Map<String, String> params) {
-        return doGet(url, params, DEFAULT_ENCODING);
-    }
+    public static class HttpBuilder {
 
-    /**
-     * get请求
-     * @param url
-     * @param encoding
-     * @return
-     */
-    public static String doGet(String url, String encoding) {
-        return doGet(url, new HashMap<String, String>(), encoding);
-    }
+        private static final String DEFAULT_CHARSET = "UTF-8";
 
-    /**
-     * get请求
-     * @param url 请求url
-     * @param queryString 请求的参数字符串
-     * @param encoding 编码类型
-     * @return
-     */
-    public static String doGet(String url, String queryString, String encoding) {
-        return doGet(url, queryStrTOMap(queryString), encoding);
-    }
+        private static final ContentType DEFAULT_CONTENTTYPE = ContentType.APPLICATION_FORM_URLENCODED;
 
-    /**
-     * get请求
-     * @param url 请求url
-     * @param params 请求参数map
-     * @param encoding 编码类型
-     * @return
-     */
-    public static String doGet(String url, Map<String, String> params, String encoding) {
-        if(StringUtils.isBlank(url)){
-            return null;
+        private CloseableHttpClient httpClient = null;
+
+        //默认编码
+        private String charset = DEFAULT_CHARSET;
+
+        //默认内容格式
+        private ContentType contentType = DEFAULT_CONTENTTYPE;
+
+        //请求头
+        private Map<String, String> headers = new HashMap<String, String>();
+
+        //请求参数
+        private Map<String, Object> params = new HashMap<String, Object>();
+
+        //请求内容，用于post
+        private String content = null;
+
+        //请求url
+        private String url = null;
+
+        private HttpBuilder () {
         }
 
-        try {
+        private HttpBuilder(String url) {
+            AssertUtils.notNull(url, "url can not be null");
+            this.url = url;
+        }
 
-            if (params != null && params.size() != 0) {
-                url += "?" + mapToQueryStr(params, encoding);
+        public static HttpBuilder createHttpBuilder(String url) {
+            HttpBuilder builder = new HttpBuilder(url);
+            return builder;
+        }
+
+        public HttpBuilder addHeader(String name, String value) {
+            this.headers.put(name, value);
+            return this;
+        }
+
+        public HttpBuilder addHeaders(Map<String, String> headers) {
+            this.headers.putAll(headers);
+            return this;
+        }
+
+        public HttpBuilder addParam(String key, Object value) {
+            this.params.put(key, value);
+            return this;
+        }
+
+        public HttpBuilder addParams(Map<String, Object> params) {
+            this.params.putAll(params);
+            return this;
+        }
+
+        /**
+         * 设置请求内容的格式
+         * @param contentType
+         * @return
+         */
+        public HttpBuilder contentType(ContentType contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        /**
+         * 设置请求内容
+         * @param content
+         * @return
+         */
+        public HttpBuilder content(String content) {
+            this.content = content;
+            return this;
+        }
+
+        private Header[] getHeaders() {
+            this.headers.put("Content-Type", contentType.toString());
+            Header[] headers = new Header[this.headers.size()];
+            int i = 0;
+            for (Map.Entry<String, String> item : this.headers.entrySet()) {
+                headers[i++] = new BasicHeader(item.getKey(), item.getValue());
             }
+            return headers;
+        }
 
-            logger.debug("get request url : " + url);
-
-            HttpGet httpGet = new HttpGet(url);
-            CloseableHttpClient httpClient = createHttpClient();
-            CloseableHttpResponse response = httpClient.execute(httpGet);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                httpGet.abort();
-                logger.debug("http request failed");
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
+        private List<NameValuePair> getParams() {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            for (Map.Entry<String, Object> item : this.params.entrySet()) {
+                params.add(new BasicNameValuePair(item.getKey(), String.valueOf(item.getValue())));
             }
-
-
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
-            EntityUtils.consume(entity);
-            response.close();
-            return result;
-        } catch (Exception e) {
-            logger.error(url + "\n" + e.getMessage(), e);
+            return params;
         }
-        return null;
-    }
 
-    /**
-     * post请求
-     * @param url 请求url
-     * @param bodyParams requestbody的内容map
-     * @return
-     */
-    public static String doPost(String url, Map<String, Object> bodyParams) {
-        return  doPost(url, bodyParams, DEFAULT_ENCODING);
-    }
-
-    /**
-     * post请求
-     * @param url 请求url
-     * @param reqeustBody 请求json格式的requestbody字符串
-     * @return
-     */
-    public static String doPost(String url, String reqeustBody) {
-        return doPost(url, reqeustBody, DEFAULT_ENCODING);
-    }
-
-    /**
-     * post请求
-     * @param url 请求url
-     * @param bodyParams requestbody的内容为FormEntity格式
-     * @param encoding 编码类型
-     * @return
-     */
-	public static String doPost(String url, Map<String, Object> bodyParams, String encoding) {
-		List<NameValuePair> pairs = null;
-        if(bodyParams != null && !bodyParams.isEmpty()){
-            pairs = new ArrayList<NameValuePair>(bodyParams.size());
-            for(Map.Entry<String,Object> entry : bodyParams.entrySet()){
-                String value = entry.getValue() != null ? entry.getValue().toString() : "";
-                if(value != null){
-                    pairs.add(new BasicNameValuePair(entry.getKey(),value));
-                }
-            }
+        /**
+         * get请求
+         * @return
+         */
+        public String get() {
+            return get(String.class);
         }
-        try {
-			return doPost(url, new UrlEncodedFormEntity(pairs, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING), encoding);
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e.getMessage(), e);
-		}
-		return null;
-	}
 
-    /**
-     * post请求
-     * @param url 请求url
-     * @param reqeustBody 请求json格式的requestbody字符串
-     * @param encoding 编码类型
-     * @return
-     * @throws UnsupportedEncodingException
-     */
-    public static String doPost(String url, String reqeustBody, String encoding) {
-        if(StringUtils.isNotBlank(reqeustBody)) {
-            StringEntity stringEntity = new StringEntity(reqeustBody, ContentType.APPLICATION_JSON);
-            stringEntity.setChunked(true);
-            return doPost(url, stringEntity, encoding);
-        } else {
-            return doPost(url, new StringEntity("{}", ContentType.APPLICATION_JSON), StringUtils.isNotBlank(encoding)
-                    ? encoding : DEFAULT_ENCODING);
-        }
-    }
-
-    /**
-     * post请求
-     * @param url 请求url
-     * @param httpEntity 请求实体
-     * @param encoding 编码类型
-     * @return
-     */
-    public static String doPost(String url, HttpEntity httpEntity, String encoding) {
-        if(StringUtils.isBlank(url)){
-            return null;
-        }
-        try {
-            logger.debug("post request url : " + url);
-
-            HttpPost httpPost = new HttpPost(url);
-
-            logger.debug("post request body : " + httpEntity.toString());
-            httpPost.setEntity(httpEntity);
-            CloseableHttpClient httpClient = createHttpClient();
-            CloseableHttpResponse response = httpClient.execute(httpPost);
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                httpPost.abort();
-                logger.debug("http request failed");
-                throw new RuntimeException("HttpClient,error status code :" + statusCode);
-            }
-            HttpEntity entity = response.getEntity();
-            String result = EntityUtils.toString(entity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
-            EntityUtils.consume(entity);
-            response.close();
-            return result;
-        } catch (Exception e) {
-            String content = null;
+        /**
+         * get请求，支持返回String或者byte[]类型
+         * @return
+         */
+        public <T> T get(Class<T> clz) {
+            HttpResponse response = null;
+            T result = null;
             try {
-                content = EntityUtils.toString(httpEntity, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING);
-            } catch (IOException e1) {
-                logger.error(e1.getMessage(), e1);
-            }
-            logger.error(url + "\n" + content + "\n" + e.getMessage(), e);
-        }
-        return null;
-    }
-
-    /**
-     * 请求参数字符串转化为map
-     * @param queryString
-     * @return
-     */
-    public static Map<String, String> queryStrTOMap(String queryString) {
-        String[] subQueryStrs = null;
-        if(StringUtils.isNotBlank(queryString)){
-            subQueryStrs = queryString.split("&");
-        }
-        Map<String, String> params = new HashMap<String, String>(subQueryStrs.length);
-        for(String item : subQueryStrs){
-            if(StringUtils.isNotBlank(item)){
-                String[] keyValue = item.split("=");
-                if(keyValue.length == 2){
-                    params.put(keyValue[0], keyValue[1]);
+                if (this.params.size() > 0) {
+                    String queryStr = EntityUtils.toString(new UrlEncodedFormEntity(getParams(), charset));
+                    this.url = this.url + "?" + queryStr;
+                }
+                HttpGet get = new HttpGet(this.url);
+                if (this.headers.size() > 0) {
+                    get.setHeaders(getHeaders());
+                }
+                response = getHttpClient().execute(get);
+                if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                    EntityUtils.consume(response.getEntity());
+                    logger.warn("http get failed, code: {}, url:{}", response.getStatusLine().getStatusCode(), url);
+                }
+                if (byte[].class.equals(clz)) {
+                    result = (T) EntityUtils.toByteArray(response.getEntity());
+                } else {
+                    result = (T) EntityUtils.toString(response.getEntity(), charset);
+                }
+            } catch (Exception ex) {
+                logger.warn("http get failed, url: {}", url);
+                logger.warn(ex.getMessage(), ex);
+                if (response != null) {
+                    try {
+                        EntityUtils.consume(response.getEntity());
+                    } catch (IOException e) {
+                        logger.warn(e.getMessage(), e);
+                    }
                 }
             }
+            return result;
         }
-        return params;
+
+        /**
+         * post请求
+         * @return
+         */
+        public String post() {
+           return post(String.class);
+        }
+        /**
+         * post请求，默认支持form_urlencoded, 可以选择json。返回值支持String或byte[]类型
+         * @return
+         */
+        public <T> T post(Class<T> clz) {
+            HttpResponse response = null;
+            T result = null;
+            try {
+                HttpEntity entity = null;
+                if (StringUtils.isNotBlank(content)) {
+                    entity = new StringEntity(content, contentType);
+                } else if (params.size() > 0) {
+                    if (contentType.equals(ContentType.APPLICATION_FORM_URLENCODED)) {
+                        entity = new UrlEncodedFormEntity(getParams(), charset);
+                    } else if (contentType.equals(ContentType.APPLICATION_JSON)) {
+                        entity = new StringEntity(JSON.toJSONString(params), charset);
+                    }
+                }
+                HttpPost post = new HttpPost(this.url);
+                if (this.headers.size() > 0) {
+                    post.setHeaders(getHeaders());
+                }
+                if (entity != null) {
+                    post.setEntity(entity);
+                }
+                response = getHttpClient().execute(post);
+                if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                    EntityUtils.consume(response.getEntity());
+                    logger.warn("http post failed, code: {}, url:{} content:{}", response.getStatusLine().getStatusCode(), url, content);
+                }
+                if (byte[].class.equals(clz)) {
+                    result = (T) EntityUtils.toByteArray(response.getEntity());
+                } else {
+                    result = (T) EntityUtils.toString(response.getEntity(), charset);
+                }
+            } catch (Exception ex) {
+                logger.warn("http post failed, url: {}", url);
+                logger.warn(ex.getMessage(), ex);
+                if (response != null) {
+                    try {
+                        EntityUtils.consume(response.getEntity());
+                    } catch (IOException e) {
+                        logger.warn(e.getMessage(), e);
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 
-    /**
-     * 请求参数map转化为字符串，并且按照编码转换
-     * @param params
-     * @param encoding
-     * @return
-     */
-    public static String mapToQueryStr(Map<String, String> params, String encoding) {
-        List<NameValuePair> pairs = new ArrayList<NameValuePair>(params.size());
-        for(Map.Entry<String,String> entry : params.entrySet()){
-            String value = entry.getValue();
-            if(value != null){
-                pairs.add(new BasicNameValuePair(entry.getKey(),value));
-            }
-        }
-        try {
-            return EntityUtils.toString(new UrlEncodedFormEntity(pairs, StringUtils.isNotBlank(encoding) ? encoding : DEFAULT_ENCODING));
-        } catch (Exception e) {
-            logger.debug("map to queryStr failed !");
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
 
     public static void main(String[] args) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name", "1");
-        map.put("phoneNumber", "2");
-        map.put("gender", "MAN");
-        String body = JSON.toJSONString(map);
-        long begin = System.currentTimeMillis();
-        for (int i = 0; i < 2000; i++) {
-            doPost("http://localhost:8000/app/performence", body);
-        }
-        System.out.print((System.currentTimeMillis() - begin));
+        System.out.println(HttpUtils.url("http://assist.efuntw.com/ip/welcome.shtml").addHeader("User-Agent", "java8").get());
+        System.out.println(HttpUtils.url("https://assist.efuntw.com/ip/welcome.shtml").post());
+        System.out.println(new String(HttpUtils.url("http://assist.efuntw.com/ip/welcome.shtml").get(byte[].class)));
+        System.out.println(HttpUtils.url("https://assist.efuntw.com/ip/welcome.shtml").post(String.class));
     }
-
 }
