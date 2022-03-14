@@ -1,5 +1,5 @@
 ##1.目录结构
-    efun-core
+    esay-core
         -java
             -config     框架配置组件包
             -context    框架上下文组件包
@@ -8,11 +8,11 @@
             -web        控制层组件和接口包
         -resources
             -META-INF
-                -efun-core-mvc.xml      核心mvc组件spring配置文件
-                -efun-core-service.xml  核心服务组件spring配置文件
-            -efun.properties        默认核心文件
+                -esay-core-mvc.xml      核心mvc组件spring配置文件
+                -esay-core-service.xml  核心服务组件spring配置文件
+            -esay.properties        默认核心文件
 
-    efun-web
+    esay-web
         -java
             -项目代码（基本包括domain、mapper、service、web）
         -resources
@@ -28,19 +28,19 @@
 
 
 ##2.配置组件的使用
-    1）配置框架使用的环境变量"config_path"指向某一个文件夹，例如config_path=D:\efunConfig\
+    1）配置框架使用的环境变量"config_path"指向某一个文件夹，例如config_path=D:\esayConfig\
         此文件夹中存放项目需要存放的properties配置文件。
     2）在applicationContext-environment.xml文件中配置注册properties配置组件，此处注册了一个echo-web-demo.properties文件，可以注册多个。
-        <bean class="com.efun.core.config.PropertyConfigurationLoader">
+        <bean class="com.esay.core.config.PropertyConfigurationLoader">
             <property name="fileNames">
                 <list>
                     <value>echo-web-demo.properties</value>
                 </list>
             </property>
         </bean>
-    3）然后可以在整个项目中通过com.efun.core.config.Configuration.getProperty(String key)获取所需要的配置。
+    3）然后可以在整个项目中通过com.esay.core.config.Configuration.getProperty(String key)获取所需要的配置。
        代码中可以通过Configuration.getProperty(key)使用；
-       配置spring配置文件中，可以通过#{T(com.efun.core.config.Configuration).getProperty('key')}使用
+       配置spring配置文件中，可以通过#{T(com.esay.core.config.Configuration).getProperty('key')}使用
        log4j2配置文件中，可以通过${ctx:key}方式使用
 
 ##3.领域模型的使用
@@ -97,7 +97,7 @@
     6）分页参数可以直接使用Pageable 定义一个参数，如果请求中带有"pageNumber", "pageSize", "pageOder", "pageDirection"参数，就会自动注入到pageable参数中
 
 ##7.核心组件
-    1）com.efun.core.config.Configuration
+    1）com.esay.core.config.Configuration
         提供获取配置文件的配置接口，properties可以通过PropertiesConfigurationLoader组件注册
-    2）com.efun.core.context.ApplicationContext
+    2）com.esay.core.context.ApplicationContext
         提供应用上下文和应用公共服务接口，例如获取spring bean、request、国际化信息、http相关其他服务。
